@@ -1,0 +1,13 @@
+vscode/
+.idea/
+# .gitignore.py
+# *.txt
+*.bak
+tmp/
+# Ignorar el entorno virtual
+venv/
+# Ignorar archivos compilados
+__pycache__/
+*.py[cod]
+# Ignorar archivos de logs
+*.log

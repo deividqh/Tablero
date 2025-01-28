@@ -11,7 +11,7 @@
 # TABLERO: Def Un marco tipo excel con Rangos y operaciones complejas para imprimir en Screen
 # ============================================================================================
 # RANGUTAN : HEREDA DE TABLERO
-# MONKEY_KING: CREA UN MENU CON CABECERA / CUERPO / PIE Y MARCO..... ESPECIAL PARA XINDEX
+# Monkey_Men: CREA UN MENU CON CABECERA / CUERPO / PIE Y MARCO..... ESPECIAL PARA XINDEX
 # ============================================================================================
 """ 
 Para el alfabeto lowerstrig, upperstring. """
@@ -228,18 +228,29 @@ class SttS():
         return listaToReLong
         pass
     # 
+    # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm    
     # Entra una cadena separada por un caracter (coma) y devuelve una l i s t a   c o n   c a d a   i t e m 
     @staticmethod
-    def lista_from_cadena(cadena, char=','):
+    def cadena_to_lista(cadena:str, char:str=','):  
+        """ >>> Entra Una cadena separada por comaas, retorna una list de coma en coma 
+        Entra: 'cadena, de , ejemplo' |   Sale: ['cadena', 'de', 'ejemplo'] """      
         try:
-            cadena = str(cadena).strip()
-            lst_retorno = cadena.split(sep=',')
+            if not isinstance(cadena, str): return None
+            # Quita Espacios delante y detras_________________
+            cadena = cadena.strip()
+            # Eliminar comas al inicio o al final_____________
+            if cadena.startswith(char) or cadena.endswith(char):
+                cadena = cadena.strip(char)
+            # Convierte la cadena en una lista________________
+            lst_retorno = cadena.split(sep=char)
             if not lst_retorno: return 
+            # Quita los espacios de delante y detras de cada item_______
             lst_to_tablero = [str(item).strip() for item in lst_retorno]
         except Exception as e:
             return None
         finally:
             return lst_retorno
+
 
     # 'frase ejemplo' en 'f r a s e  E j e m p l o_____________________________________________
     @staticmethod
@@ -426,25 +437,21 @@ class SttS():
         if lst_retorno == None: 
             lst_retorno = []
 
-        for iterator in iterator:
-            if isinstance(iterator, list) or isinstance(iterator, tuple):
+        if isinstance(iterator, list) or isinstance(iterator, tuple):
+            for item in iterator:
+                SttS.to_str_rcrsv(item, lst_retorno)            
+        elif isinstance(iterator, dict):                            
+            t_fila = [(key, item) for key, item in iterator.items()][0]          
+            """ >>> Convierte el dicc en una list (key , valor en str)... con el primer elemento la key del diccionario 
+            """
+            fila_str = [str(item) for item in t_fila]
+            """ >>> Convierte a string cada elemento de la item 
+            """
+            lst_retorno.append(fila_str)
+            SttS.to_str_rcrsv(t_fila, lst_retorno)
 
-                SttS.to_str_rcrsv(iterator, lst_retorno)
-                
-            elif isinstance(iterator, dict):                 
-                
-                t_fila = [(key, *item) for key, item in iterator.items()][0]          
-                """ >>> Convierte el dicc en una list (key , valor en str)... con el primer elemento la key del diccionario 
-                """
-                fila_str = [str(item) for item in t_fila]
-                """ >>> Convierte a string cada elemento de la iterator 
-                """
-                lst_retorno.append(fila_str)
-                SttS.to_str_rcrsv(iterator, lst_retorno)
-
-            else:
-                
-                lst_retorno.append(iterator)
+        else:            
+            lst_retorno.append(iterator)
         
         return lst_retorno
 
@@ -548,7 +555,7 @@ class Rango():
         self.b_oculto = b_oculto    
         """ >>> Si no quieres que se vea en self.ver_rango con rango a None (ver Todos) 
             sirve para marcar el primer rango ('Tabero') como oculto... es todo el panel y son muchos valores que mostraar. así es mas agíl.
-            con las filas pasa parecido.....en Monkey_King
+            con las filas pasa parecido.....en Monkey_Men
         """
                                     
         self.flag = ''              # No lo uso de momento, pero el objeto es hacer "marcas especiales" en aplicacion.
@@ -1266,20 +1273,20 @@ class Tablero():
     # I M P R I M I R   B Y   C O L   E N   T A B L E R O  SEGURAMENTE SE ELIMINARÁ PARA IMPRIMIR EL RANGO - TABLERO  - Prnt(nombre_rango='Tablero',.....)
     #   de esta manera puedo imprimir rangos y operar todo a través de los rangos
     #   La idea es que los datos externos (out) se tienen que traducir a un rango siempre.
-    def to_print(self, b_ajustado=False , b_columnas_head=False , b_num_filas=False,  numSP=1 , padx=0 ):
+    def to_print(self, b_ajustado=False , b_columnas_head=False , b_num_filas=False,  numSP=1 , pad_x=0 ):
         """ 
         [b_ajustado] (bool): True, presenta la tabla en modo columnas ancho el maximo de la tabla.. False, presenta la tabla según lo que de sin formato format.
         [b_columnas_head] : False, No muestra la cabecera de letras de columna, True, Si muestra(para las pruebas) 
         [b_num_filas]=False,  no muestra el numero de filas del final de linea. True, Si la numeración de linea.
         [fila]=None , muestra sólo una fila concreta-
         [numSP]=1 para b_ajustado = True, es el número de 
-        [padx](int)(con b_ajustado = True), es el espacio entre el final de la columna y el siguiente item.
+        [pad_x](int)(con b_ajustado = True), es el espacio entre el final de la columna y el siguiente item.
         """
         # ________________________
         # Valida que haya tablero
         if not self.tablero: print('TO PRINT-> :(') ; return 
         # _________________________________________ SE ESTABLECE LA CADENA STR DE FORMATO() DE CADA FILA
-        str_format = self.__get_formato_to_print(len_columnas = numSP, b_ajustado=b_ajustado, padx=padx)        
+        str_format = self.__get_formato_to_print(len_columnas = numSP, b_ajustado=b_ajustado, pad_x=pad_x)        
         
         # >>> I m p r i m e   N u m e r o s   de cabecera de columa....si tal            
         print(str_format.format(*self.dicc_numcol_value)) if b_columnas_head==True else None
@@ -1297,12 +1304,12 @@ class Tablero():
                 print(str_format.format(*lst_filas))  # Cuando b_num_filas == False, no imprime los numeros de las Filas
     # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     # FORMATO IMPR _____________________________
-    def __get_formato_to_print(self,  b_ajustado=False, len_columnas=5,padx=0):        
+    def __get_formato_to_print(self,  b_ajustado=False, len_columnas=5,pad_x=0):        
         """ >>> 
         strformato += "{:<" + str(num_espacios_columna) + "}"  pejem: {:<"+str(15)+"}" 
         [len_columnas](int) : Longitud de la columna fijo... cuando b_ajustado = False
         [b_ajustado](bool) : True: metodo auto-ajuste al tamaño de columna maximo ; False= sin auto-ajuste... usa len_columnas.
-        [padx](int): cuanndo b_ajustado = True -> es el espacio que tiene que haber entre el final de una columna y el siguiente.
+        [pad_x](int): cuanndo b_ajustado = True -> es el espacio que tiene que haber entre el final de una columna y el siguiente.
         """  
         totalLen=0
         strformato=''
@@ -1310,11 +1317,11 @@ class Tablero():
             for i in range (self.numero_columnas):
                 strformato += "{:<" + str(len_columnas) + "}"
         else:
-            if padx >= 0:
-                """ Ajustado y con PadX -> calcula el maximo de la columna y le añade un margen de padx """
+            if pad_x >= 0:
+                """ Ajustado y con PadX -> calcula el maximo de la columna y le añade un margen de pad_x """
                 for i in range (self.numero_columnas):
                     maximo = self.get_max_columna(columna=i)
-                    maximo += padx
+                    maximo += pad_x
                     strformato += "{:<" + str(maximo) + "}"
             else:
                 for i in range (self.numero_columnas):
@@ -1900,21 +1907,21 @@ class Rangutan(Tablero):
     # # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
     # I m p r i m e   u n   R a n g o . 
     # # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
-    def Prango(self, nombre_rango, column_adjust = None , padx = 0):    
+    def Prango(self, nombre_rango, column_adjust = None , pad_x = 0):    
         """ 
         I m p r i m e   u n   r a n g o  d i r e c t a m e n t e . N O   l o   i m p r i m e   s o b r e   t a b l e r o .
-        [column_adjust] (None): True, ajusta al len maximo de cada columna , padx es la separacion entre columnas.(maximo columna)
-        int,  Ajuste fixed para todas las columnas. si padx = 0 => modo literal/talcual , si padx > 0 => espacio después de la última línea fijo.
-              No controla los len de las columnas. (fixed), pero si la longitud de la fila para aplicar el padx
+        [column_adjust] (None): True, ajusta al len maximo de cada columna , pad_x es la separacion entre columnas.(maximo columna)
+        int,  Ajuste fixed para todas las columnas. si pad_x = 0 => modo literal/talcual , si pad_x > 0 => espacio después de la última línea fijo.
+              No controla los len de las columnas. (fixed), pero si la longitud de la fila para aplicar el pad_x
         list: (int) Ajusta cada columa al tamaño del item de la list. (personalizado.)
 
-        ['padx']  : el espacio entre columnas cundo b_ajustado = True , el espacio final antes del ultimo char de linea cuando b_ajustado = False
-        ejemplo_1: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = None , padx = 0 ) => ajusta al maximo de cada columna(mode tabla)
-        ejemplo_2: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = None , padx = 2 ) => ajusta al maximo de cada columna(mode tabla) pero dejando un espacio entre celdas de 2
-        ejemplo_3: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = 1 , padx = 0 ) => literal pero deja un espacio por celda.
-        ejemplo_4: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = 0 , padx = 0 ) => literal / tal cual....XindeX
-        ejemplo_5: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = 15 , padx = 5 ) => columnas al 15 todas. pero no restrictivo. al final deja padx=5 con la ultima columna para posible marco.
-        ejemplo_6: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = [0,1,5,4,3,2] , padx = 15 ) => cada columna a su ajuste y deja 15 self.char_padx
+        ['pad_x']  : el espacio entre columnas cundo b_ajustado = True , el espacio final antes del ultimo char de linea cuando b_ajustado = False
+        ejemplo_1: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = None , pad_x = 0 ) => ajusta al maximo de cada columna(mode tabla)
+        ejemplo_2: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = None , pad_x = 2 ) => ajusta al maximo de cada columna(mode tabla) pero dejando un espacio entre celdas de 2
+        ejemplo_3: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = 1 , pad_x = 0 ) => literal pero deja un espacio por celda.
+        ejemplo_4: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = 0 , pad_x = 0 ) => literal / tal cual....XindeX
+        ejemplo_5: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = 15 , pad_x = 5 ) => columnas al 15 todas. pero no restrictivo. al final deja pad_x=5 con la ultima columna para posible marco.
+        ejemplo_6: TABLERO.Prango(nombre_rango = 'rango_1' , column_adjust = [0,1,5,4,3,2] , pad_x = 15 ) => cada columna a su ajuste y deja 15 self.char_padx
         """
         if nombre_rango == None:
             nombre_rango = self.BASE_RANGO_TABLERO
@@ -1922,9 +1929,9 @@ class Rangutan(Tablero):
         if not rango: return None
 
         # width = kwargs.get('width', 0)  # Si no existe, usa 0
-        # padx = kwargs.get('padx', 0)  # Si no existe, usa 0
+        # pad_x = kwargs.get('pad_x', 0)  # Si no existe, usa 0
         # width = abs(width)
-        # padx = abs(padx)
+        # pad_x = abs(pad_x)
 
         if rango.b_ghost == True: return None
         """ >>> Si eres un rango ghost, no tienes nada que hacer por aquí :( 
@@ -1935,48 +1942,48 @@ class Rangutan(Tablero):
         """
 
         if column_adjust == None:            
-            if padx == 0:   
-                """ >>> Ajusta a tamaño columnas ajustado al maximo, pero no deja espacio con la siguiente columna([padx]==0). 
+            if pad_x == 0:   
+                """ >>> Ajusta a tamaño columnas ajustado al maximo, pero no deja espacio con la siguiente columna([pad_x]==0). 
                 hay que controlar las coordenadas para imprimir ( A:0, C:2) o rangos... """
-                str_format = self.__formato_to_prango_maxcol( rango= rango, padx = 0  )
+                str_format = self.__formato_to_prango_maxcol( rango= rango, pad_x = 0  )
             
             else:
-                """ >>> Ajusta a tamaño columnas ajustado al maximo, pero SI deja espacio con la siguiente columna([padx]==0). 
+                """ >>> Ajusta a tamaño columnas ajustado al maximo, pero SI deja espacio con la siguiente columna([pad_x]==0). 
                 hay que controlar las coordenadas para imprimir ( A:0, C:2) o rangos... """
-                str_format = self.__formato_to_prango_maxcol( rango= rango, padx = padx  )
+                str_format = self.__formato_to_prango_maxcol( rango= rango, pad_x = pad_x  )
             pass
         elif isinstance(column_adjust, int):
             column_adjust = abs(column_adjust)
-            padx = abs(padx)
-            if column_adjust == 0 and padx == 0:                   
+            pad_x = abs(pad_x)
+            if column_adjust == 0 and pad_x == 0:                   
                 """ >>> l i t e r a l  |  Formato fixed | se mantienen las coordenadas | sin tamaño de columna | escribes literalmente 
                """
-                str_format = self.__formato_to_prango_fixed( rango= rango, len_columnas = 0, padx = 0)
+                str_format = self.__formato_to_prango_fixed( rango= rango, len_columnas = 0, pad_x = 0)
                 pass
             
-            elif column_adjust > 0 and padx == 0:                   
+            elif column_adjust > 0 and pad_x == 0:                   
                 """ Modo literal con tamaño de columna minimo """
-                str_format = self.__formato_to_prango_fixed( rango= rango, len_columnas = column_adjust, padx = 0)
+                str_format = self.__formato_to_prango_fixed( rango= rango, len_columnas = column_adjust, pad_x = 0)
             
-            elif column_adjust == 0 and padx > 0:                   
-                """ columna Sin tamaño fijo pero no restrictivo. Con padx > 0 . 
-                El padx se aplica al final del ultimo texto como ' ' o como self.char_padx . 
+            elif column_adjust == 0 and pad_x > 0:                   
+                """ columna Sin tamaño fijo pero no restrictivo. Con pad_x > 0 . 
+                El pad_x se aplica al final del ultimo texto como ' ' o como self.char_padx . 
                 puede valer para xindex """
-                str_format = self.__formato_to_prango_fixed( rango= rango, len_columnas = 0, padx = padx)
+                str_format = self.__formato_to_prango_fixed( rango= rango, len_columnas = 0, pad_x = pad_x)
                 lst_max_len = self.get_lst_max_filas(rango = rango)
 
-            elif column_adjust > 0 and padx > 0:                   
-                str_format = self.__formato_to_prango_fixed( rango= rango, len_columnas = column_adjust, padx = padx)
+            elif column_adjust > 0 and pad_x > 0:                   
+                str_format = self.__formato_to_prango_fixed( rango= rango, len_columnas = column_adjust, pad_x = pad_x)
                 lst_max_len = self.get_lst_max_filas(rango = rango)
             pass
         elif isinstance(column_adjust, list):
             """ >>> Entra con una lista de int con el tamaño del formato para cada columna de la lista. 
             Y o   E l i j o  d e s d e   f u e r a   el tamaño de las columnas. < Modo  personalizado >
-            El padx da igual en este caso, se le aplica el que haya """            
+            El pad_x da igual en este caso, se le aplica el que haya """            
             # Validacion del tipo
             try:
                 lst_lens = [int(item) for item in column_adjust]
-                str_format = self.__formato_to_prango_list(rango=rango, lista=lst_lens , padx=0)
+                str_format = self.__formato_to_prango_list(rango=rango, lista=lst_lens , pad_x=0)
             except Exception:
                 return None
             pass
@@ -1998,12 +2005,12 @@ class Rangutan(Tablero):
     
     # # # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
     #   F R O M   F I L A   T O   F I L A 
-    def Prango_rows(self, desde:int, hasta:int, column_adjust = None , padx:int = 0 ):
+    def Prango_rows(self, desde:int, hasta:int, column_adjust = None , pad_x:int = 0 ):
         """ >>> imprime desde la fila hasta la fila con las mismas características que Prango 
         [desde](int): el numero de la fila de inicio.
         [hasta](int): el numero de la fila de fin.
         [column_adjust](int, bool, list)    .... ver documentacion de Prango.
-        [padx](int):                        .... ver documentacion de Prango.
+        [pad_x](int):                        .... ver documentacion de Prango.
         """
         # Cogemos sólo los nombres de los rangos que tienen 'rango_fila_' en su nombre
         lst_nombre_rango = [rango.data['nombre'] for rango in self.lst_rangos  if self.BASE_RANGO_FILA in rango.data['nombre'] ]
@@ -2012,9 +2019,9 @@ class Rangutan(Tablero):
             return None
         for i , nombre_rango in enumerate(lst_nombre_rango):
             if desde <= i <= hasta:
-                self.Prango(nombre_rango = nombre_rango  , column_adjust = column_adjust , padx = padx)
+                self.Prango(nombre_rango = nombre_rango  , column_adjust = column_adjust , pad_x = pad_x)
     
-    def Prango_cols(self, desde:int, hasta:int, column_adjust = None , padx:int = 0):
+    def Prango_cols(self, desde:int, hasta:int, column_adjust = None , pad_x:int = 0):
         """ >>> imprime desde la column hasta la columna con las mismas características que Prango 
         """
         # Cogemos sólo los nombres de los rangos que tienen 'rango_columna_' en su nombre
@@ -2023,7 +2030,7 @@ class Rangutan(Tablero):
             return None
         for i , nombre_rango in enumerate(lst_nombre_rango):
             if desde <= i <= hasta:
-                self.Prango(nombre_rango = nombre_rango  , column_adjust = column_adjust , padx = padx)
+                self.Prango(nombre_rango = nombre_rango  , column_adjust = column_adjust , pad_x = pad_x)
 
     #  Devuelve los  v a l u e s   de   u n a   f i l a   d e   u n   r a n g o .
     def __get_fila_rango_prango(self, rango,  fila_a_buscar:int):
@@ -2036,19 +2043,19 @@ class Rangutan(Tablero):
                 return dicc_cols.values()
 
     # FORMATO IMPR _____________________________
-    def __formato_to_prango_maxcol(self, rango, padx = 0 ):        
+    def __formato_to_prango_maxcol(self, rango, pad_x = 0 ):        
         """ >>> Pone cada columna a su maximo 
         strformato += "{:<" + str(num_espacios_columna) + "}"  pejem: {:<"+str(15)+"}" 
         [len_columnas](int)(list) : Longitud de la columna fijo... cuando b_ajustado = False
-        [padx](int): cuanndo b_ajustado = True -> es el espacio que tiene que haber entre el final de una columna y el siguiente.
+        [pad_x](int): cuanndo b_ajustado = True -> es el espacio que tiene que haber entre el final de una columna y el siguiente.
         """  
         totalLen=0
         strformato=''
-        if padx >= 0:
-            """ Ajustado y con PadX -> calcula el maximo de la columna y le añade un margen de padx """
+        if pad_x >= 0:
+            """ Ajustado y con PadX -> calcula el maximo de la columna y le añade un margen de pad_x """
             for i in range (rango.data['total_columnas']): 
                 maximo = self.get_max_columna(columna=i)
-                maximo += padx
+                maximo += pad_x
                 strformato += "{:<" + str(maximo) + "}"
         else:
             for i in range (rango.data['total_columnas']):
@@ -2059,24 +2066,24 @@ class Rangutan(Tablero):
         return strformato
     
     # FORMATO IMPR _____________________________
-    def __formato_to_prango_fixed(self, rango, len_columnas = 0, padx=0):        
+    def __formato_to_prango_fixed(self, rango, len_columnas = 0, pad_x=0):        
         """ >>> Imprime un Rango sin ajuste de ventanas.
         [len_columnas](int) : Longitud de la columna fijo... cuando b_ajustado = False
-        [padx](int): cuanndo b_ajustado = True -> es el espacio que tiene que haber entre el final de una columna y el siguiente.
+        [pad_x](int): cuanndo b_ajustado = True -> es el espacio que tiene que haber entre el final de una columna y el siguiente.
         """  
         totalLen = 0
         strformato = ''
         """ >>> strformato += "{:<" + str(num_espacios_columna) + "}"  pejem: {:<"+str(15)+"}"  """                
 
         for i in range (rango.data['total_columnas']):
-            strformato += "{:<" + str(len_columnas + padx) + "}"
+            strformato += "{:<" + str(len_columnas + pad_x) + "}"
         return strformato
     
     # FORMATO IMPR _____________________________
-    def __formato_to_prango_list(self, rango, lista , padx=0):        
+    def __formato_to_prango_list(self, rango, lista , pad_x=0):        
         """ >>> Imprime un Rango sin ajuste de ventanas.
         [len_columnas](int) : Longitud de la columna fijo... cuando b_ajustado = False
-        [padx](int): cuanndo b_ajustado = True -> es el espacio que tiene que haber entre el final de una columna y el siguiente.
+        [pad_x](int): cuanndo b_ajustado = True -> es el espacio que tiene que haber entre el final de una columna y el siguiente.
         """  
         strformato = ''
         """ >>> strformato += "{:<" + str(len(item)) + "}"  pejem: {:<"+str(15)+"}"  """                
@@ -2110,7 +2117,7 @@ class Rangutan(Tablero):
     # # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
     """ Desde Fuera hacia el rango - tablero  """
     # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
-    def out_lista_to_rango(self, lista, nombre_rango):
+    def lista_to_rango(self, lista, nombre_rango):
         """ Entra una lista de valores y se la asigna directamente al rango uno a uno..."""
         rango = self.buscar_rango( nombre_a_buscar = nombre_rango )
         if not rango: return None
@@ -2126,7 +2133,7 @@ class Rangutan(Tablero):
         return True
     
     # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
-    def out_lista_to_tablero(self, lista, celda_inicio, pega_horizontal = True):
+    def lista_to_tablero(self, lista, celda_inicio, pega_horizontal = True):
         """ >>> Entra una lista y acaba en el tablero:  1- Crea un rango oculto de lista( misma_fila ) 
         puede entrar una lista o un str separado por comas que se convertirá en una lista.
         """
@@ -2134,7 +2141,7 @@ class Rangutan(Tablero):
         if isinstance(lista, list):
             pass
         elif isinstance(lista, str):
-            lista_from_str = self.lista_from_cadena(cadena = lista)
+            lista_from_str = SttS.cadena_to_lista(cadena = lista)
             lista = lista_from_str
         else:
             return None
@@ -2148,7 +2155,7 @@ class Rangutan(Tablero):
         rango_aux = self.crear_rango( nombre = nombre_rango_aux , celda_inicio = celda_inicio, dimension = dimension , b_ghost=True )
         """ 
         lista To Rango Auxiliar """
-        lst_to_rng =  self.out_lista_to_rango( lista = lista , nombre_rango = nombre_rango_aux )
+        lst_to_rng =  self.lista_to_rango( lista = lista , nombre_rango = nombre_rango_aux )
         if not lst_to_rng: return None
         """ 
         Rango auxiliar to  Tablero """
@@ -2163,29 +2170,9 @@ class Rangutan(Tablero):
         else:
             return False
     
-    # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm    wip
-    def lista_from_cadena(self, cadena, char=','):  
-        """ >>> Entra Una cadena separada por comaas, retorna una list de coma en coma 
-        Entra: 'cadena, de , ejemplo' |   Sale: ['cadena', 'de', 'ejemplo'] """      
-        try:
-            if not isinstance(cadena, str): return None
-            # Quita Espacios delante y detras_________________
-            cadena = str(cadena).strip()
-            # Eliminar comas al inicio o al final_____________
-            if cadena.startswith(char) or cadena.endswith(char):
-                cadena = cadena.strip(char)
-            # Convierte la cadena en una lista________________
-            lst_retorno = cadena.split(sep=',')
-            if not lst_retorno: return 
-            # Quita los espacios de delante y detras de cada item_______
-            lst_to_tablero = [str(item).strip() for item in lst_retorno]
-        except Exception as e:
-            return None
-        finally:
-            return lst_retorno
-
+    
     # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm     wip
-    def out_matriz_to_tablero(self, matriz, celda_inicio):
+    def matriz_to_tablero(self, matriz, celda_inicio):
         """ >>> Entra una lista de listas (matriz) y acaba en el tablero:  1- Crea un rango oculto de matriz( rectangulo o cuadrado ) 
         matriz_to_tablero([3, 2, 1][4, 5, 9][15, 9, 29, 32])"""
         retorno = self.__es_lista_de_listas( matriz = matriz )
@@ -2193,7 +2180,7 @@ class Rangutan(Tablero):
             return None
         try:
             for fila in matriz:
-                self.out_lista_to_tablero(lista=lista, celda_inicio=celda_inicio, pega_horizontal=True)
+                self.lista_to_tablero(lista=lista, celda_inicio=celda_inicio, pega_horizontal=True)
         except Exception as e:
             return None
         finally:
@@ -2226,7 +2213,7 @@ class Rangutan(Tablero):
 # ████████████████████████████████████████████████████████████████████████████████████████████████████████████
 # ████████████████████████████████████████████████████████████████████████████████████████████████████████████
 """  
-                            -   M O N K E Y - K I N G   -  
+                            -   M O N K E Y - M E N   -  
 """
 # ████████████████████████████████████████████████████████████████████████████████████████████████████████████
 # ████████████████████████████████████████████████████████████████████████████████████████████████████████████
@@ -2265,7 +2252,7 @@ class MENU(Menu):
 
 # TTTTTTTTTTTTTTTTTTTTTTTTT
 # TTTTTTTTTTTTTTTTTTTTTTTTT
-class Monkey_King():
+class Monkey_Men(Rangutan):
     """ >>> Def: Define las partes esenciales de un Menu Creando y manteniendo una lista de Tableros =>  Head  | Cuerpo | Pie |    
     Head => Sobrero | Cabeza(Titulo) | Cuello |     
     Cuerpo => Fila Body:  marco | X_itemA__ | __itemA__ | __itemA_X | X_itemB__ | itemB | __itemB_X | marco
@@ -2275,22 +2262,30 @@ class Monkey_King():
     NUM_CHAR = 40                        
     ESPACIO  = ' '
 
-    def __init__(self, titulo:str, dimension:str= "20x10", linea_head:str='', linea_pie:str='', padx:int = 30 , padx_left:int = 3):        
+    def __init__(self, titulo:str, dimension:str= "20x10", linea_head:str='', linea_pie:str='', pad_x:int = 30 , x_pad:int = 3):        
+        """ >>> Inicializa el Menu con los valores de la cabecera y el pie."""
+
         # ___________________
         # RECOGE LOS VALORES        
         # self.num_filas, self.num_columnas = self.get_filas_columnas_from_dimension(dimension)
         self.num_filas, self.num_columnas = SttS.filas_columnas_from_dimension(dimension=dimension)
+        if not self.num_filas or not self.num_columnas: return None
 
+        super().__init__(total_columnas_tablero=self.num_columnas, total_filas_tablero = self.num_filas , valor_inicial='' )
+        
+        if not self.tablero: print('\n\nNo se ha podido crear el tablero!!!!!!\n\n')
+
+        self.linea_pie = linea_pie
         self.titulo = titulo.strip()                
 
-        self.padx = padx
-        self.padx_left = padx_left
+        self.pad_x = pad_x
+        self.x_pad = x_pad
 
-        # self.corona = '*'
-        self.corona = f'{chr(205)}'
+        # self.sombrero = '*'
+        self.sombrero = f'{chr(205)}'
         """>>> caracter de la primera linea de cabecera.
         """
-        self.linea_head = self.titulo   if linea_head==''    else linea_head        
+        self.linea_head = self.titulo   if linea_head == ''    else linea_head        
         """ >>> La Frase Que se pone en la Impresion del Menu: 
         """
         self.cuello = chr(205)
@@ -2315,18 +2310,18 @@ class Monkey_King():
         """ C R E A R   T A B L E R O S  :  HEAD / BODY / PIE """
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
         self.tablero_head = Rangutan(total_columnas_tablero = self.num_columnas, total_filas_tablero = 2)
-        self.tablero_body = Rangutan(total_columnas_tablero=self.num_columnas, total_filas_tablero=self.num_filas)
+        # self.tablero_body = Rangutan(total_columnas_tablero=self.num_columnas, total_filas_tablero=self.num_filas)
         self.tablero_pie  = Rangutan(total_columnas_tablero=self.num_columnas, total_filas_tablero = 2)
 
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
         """ >>>  G E S T I O N   D E L   L O S   T A B L E R O S  """
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
         self.dicc_gorila = {'head':self.tablero_head, 
-                            'body':self.tablero_body, 
+                            # 'body':self.tablero, 
                             'pie':self.tablero_pie}
 
         HEAD = self.dicc_gorila['head']
-        BODY = self.dicc_gorila['body']
+        # BODY = self.dicc_gorila['body']
         PIE = self.dicc_gorila['pie']
 
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
@@ -2339,28 +2334,25 @@ class Monkey_King():
         Reducir prango y prango_to a una sola funcion de impresion... Prango(incluir from - to ) """        
         # Los Pasos  para imprimir tiene que ser: 
         # 1-Asignacion de datos en body + 2-Creacion_marco + 3-preparacionImpresion + 4-Impresion
-        # BODY.xy(fil=4, col='B', valor='   ')
-        BODY.xy(fil=4, col='B', valor = self.ESPACIO*self.padx_left)
-        BODY.xy(fil=4, col='E', valor='En un lugar de la mancha jAJAJAJAJAJAJAJAJA ')
+        self.xy(fil=4, col='B', valor = self.ESPACIO*self.x_pad)
+        self.xy(fil=4, col='E', valor='En un lugar de la mancha jAJAJAJAJAJAJAJAJA ')
 
       
         # MARCO over head
-        HEAD.xy(fil=1, col='B', valor = self.ESPACIO*self.padx_left)
+        HEAD.xy(fil=1, col='B', valor = self.ESPACIO*self.x_pad)
         HEAD.xy(fil=1, col='C', valor = 'F r a s e   d e   E n t r a d a')
         HEAD.set_valor_over_columna(columna='A', valor='█') 
         HEAD.set_valor_over_columna(columna=HEAD.ultima_columna(), valor='█')         
         
         # MARCO over body
-        BODY.set_valor_over_columna(columna='A', valor='█')
-        BODY.set_valor_over_columna(columna=BODY.ultima_columna(), valor='█')
+        self.set_valor_over_columna(columna='A', valor='█')
+        self.set_valor_over_columna(columna=self.ultima_columna(), valor='█')
 
         # MARCO over pie
-        PIE.xy(fil=0, col='B', valor = self.ESPACIO*self.padx_left)
+        PIE.xy(fil=0, col='B', valor = self.ESPACIO*self.x_pad)
         PIE.xy(fil=0, col='C', valor = 'F r a s e   d e   S a l i d a')
         PIE.set_valor_over_columna( columna = 'A', valor = '█' )
         PIE.set_valor_over_columna( columna = PIE.ultima_columna(), valor = '█' )
-
-
 
 
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
@@ -2369,12 +2361,12 @@ class Monkey_King():
         
         # Recopilando los datos para colocar el marco
         len_head = HEAD.get_max_filas()
-        len_body = BODY.get_max_filas()
+        len_body = self.get_max_filas()
         len_pie = PIE.get_max_filas()
         maximo : int = max(len_head, len_body, len_pie)
         print(f'longitud maxima del menu = {maximo}')
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
-        self.total_len: int = maximo + int(padx) + 2
+        self.total_len: int = maximo + int(pad_x) + 2
 
 
         # paso del tablero al rango principal.... de esta forma puedo imprimir con Prango
@@ -2390,14 +2382,14 @@ class Monkey_King():
 
 
         # paso del tablero al rango principal..... de esta forma puedo imprimir con Prango
-        BODY.tablero_to_rango()
+        self.tablero_to_rango()
         # colocando el pie
-        lst_length = BODY.get_lst_max_filas( rango = BODY.buscar_rango(BODY.BASE_RANGO_TABLERO) )
+        lst_length = self.get_lst_max_filas( rango = self.buscar_rango(self.BASE_RANGO_TABLERO) )
         print(lst_length)
         lst_num_faltan = [ self.total_len - int(length) for length in lst_length ]
         for i, faltan in enumerate(lst_num_faltan):
-            BODY.xy(fil=i, col= BODY.ultima_columna(), valor=f'{self.ESPACIO * faltan}█')
-        BODY.tablero_to_rango()
+            self.xy(fil=i, col= self.ultima_columna(), valor=f'{self.ESPACIO * faltan}█')
+        self.tablero_to_rango()
 
         # paso del tablero al rango principal..... de esta forma puedo imprimir con Prango
         PIE.tablero_to_rango()
@@ -2409,22 +2401,22 @@ class Monkey_King():
             PIE.xy(fil=i, col= PIE.ultima_columna(), valor=f'{self.ESPACIO * faltan}█')
         PIE.tablero_to_rango()
 
-        # PIE.set_valor_over_columna( columna = PIE.ultima_columna(), valor = f'{' '*padx}█' )
+        # PIE.set_valor_over_columna( columna = PIE.ultima_columna(), valor = f'{' '*pad_x}█' )
 
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
         """ -  I M P R E S I O N   D E L   M E N U  - """
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦       
 
         print(f'{'▄'*self.total_len}')
-        # HEAD.to_print(b_ajustado = False, numSP=0, b_columnas_head = False    , b_num_filas=False, padx=0)
-        HEAD.Prango( nombre_rango = HEAD.BASE_RANGO_TABLERO, column_adjust = 0 , padx = 0)
+        # HEAD.to_print(b_ajustado = False, numSP=0, b_columnas_head = False    , b_num_filas=False, pad_x=0)
+        HEAD.Prango( nombre_rango = HEAD.BASE_RANGO_TABLERO, column_adjust = 0 , pad_x = 0)
         print(f'{'▄'*self.total_len}')
         
-        # BODY.to_print(b_ajustado = False, numSP=0, b_columnas_head = False  , b_num_filas =True, padx=0)
-        BODY.Prango( nombre_rango = BODY.BASE_RANGO_TABLERO, column_adjust = 0 , padx = 0)
+        # self.to_print(b_ajustado = False, numSP=0, b_columnas_head = False  , b_num_filas =True, pad_x=0)
+        self.Prango( nombre_rango = self.BASE_RANGO_TABLERO, column_adjust = 0 , pad_x = 0)
 
         print(f'█{'═'*(self.total_len-2)}█')
-        PIE.Prango( nombre_rango = PIE.BASE_RANGO_TABLERO, column_adjust = 0, padx = 0)
+        PIE.Prango( nombre_rango = PIE.BASE_RANGO_TABLERO, column_adjust = 0, pad_x = 0)
         print(f'{'▀'*self.total_len}')
 
     # Impresion de l clase
@@ -2433,9 +2425,9 @@ class Monkey_King():
 
     # __________________________________________________________________
     # CAMBIA EL ESTILO(CARACTERES DE CABECERA, PIE, PRE-NUM , POST-NUM )
-    def style(self, linea_head = '' , corona= '*', cuello= '*' , marco= '|' , pie = '~' , info = '' , the_end= '~' ):
+    def style(self, corona:str = '*', linea_head:str = '' ,  cuello:str = '*' ,  pie:str = '~' , marco:str = '|' , info:str = '' , the_end:str= '~' ):
         """ Cambia el estilo de los caracteres del menu """
-        if corona: self.corona = corona
+        if corona: self.sombrero = corona
         if linea_head: self.linea_head = linea_head
         if cuello: self.cuello = cuello
         if marco: self.marco = marco
@@ -2451,10 +2443,10 @@ class Monkey_King():
 
     # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
     # PONE UN MARCO EN TODO EL TABLERO (TODAS SUS FILAS CON '|'  Y EN TODAS SUS COLUMNAS '_' o '-' o '~' o '='
-    def set_marco(self, x_margin=0, margin_x=0, padx=40):
+    def set_marco(self, x_margin=0, margin_x=0, pad_x=40):
         """ [x_margin] (int) el margen entre el marco y el primer caracter de la linea.
         [margin_x] (int) el margen entre el marco y el final de linea.
-        [padx] (int) espacio entre el final de la linea y el marco.
+        [pad_x] (int) espacio entre el final de la linea y el marco.
         """
         if not self.tablero: 
             return None

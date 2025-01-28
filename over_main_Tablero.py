@@ -11,18 +11,18 @@ import time
 
 # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 # El objeto de estas pruebas xxxxxxxxxxxxxxxxxxxxxxxxxx
-# from fromdvd.classMenuDvd.Tablero_X_Men import Tablero
-from fromdvd.classMenuDvd.Tablero_X_Men import Rangutan as Rangutan
+# from classMenuDvd.Tablero_X_Men import Tablero
+from classMenuDvd.Tablero_X_Men import Rangutan as Rangutan
 
 # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
 # El Menu de todo Esto mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
-from fromdvd.classMenuDvd.classXindeX import XindeX 
+from classMenuDvd.classXindeX import XindeX 
 # _____________________________________________________________________________
 # Cachar Datos Seguros por Teclado 
-from fromdvd.classTeclaData.listTOdict_Tcld import listTOdict_byTcld as TeclD
+from classTeclado.listTOdict_Tcld import listTOdict_byTcld as TeclD
 # ____________________________________________________________
 # Para validar: mail, valores entre, fechas... 
-from fromdvd.classTeclaData.validator import ValidReg as VAL
+from classTeclado.validator import ValidReg as VAL
 
 # ====================================================================================
 # DEF: Desarrollo y memoria de la clase Tablero. 
@@ -44,7 +44,7 @@ def main():
     The_X_Men.addX(     titulo='SUB_GET'  , padre='MenuPpal', ipadre="GET"     , lst_items=[("Get Fila",get_fila), ("Get Column",get_columna), ("Get Valor By Fila-Columna", get_fila_columna), ("Get Valor By Celda(A:0)", get_celda)])
     The_X_Men.addX(     titulo='SUB_SET'  , padre='MenuPpal', ipadre="SET"     , lst_items=[("Set Fila",set_valor_over_fila), ("Set Column",set_valor_over_columna), ("Set Valor By Fila-Columna", set_fila_columna), ('Set Valor By Celda(A:0)', set_celda)])
     The_X_Men.addX(     titulo='SUB_DEL'  , padre='MenuPpal', ipadre="DEL"     , lst_items=[("Del Fila",del_fila), ("Del Column",del_columna), ("Del Celda", del_xy)])    
-    The_X_Men.addX(     titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS" , lst_items=[("Crear Rango",crear_rango), ("Buscar Rango",buscar_rango), ("Eliminar Rango",eliminar_rango), ("Ver Rango", ver_rango) , ("Tablero to Rango",tablero_to_rango), ("Rango To Tablero",rango_to_tablero),("Lista To Rango ['lista', 'de', 'ejemplo']",out_lista_to_rango) , ("Lista To Tablero",out_lista_to_tablero), ("Imprime Rango",imprime_prango), ('Imprime Rango From Fila / To Fila', prango_to)])  
+    The_X_Men.addX(     titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS" , lst_items=[("Crear Rango",crear_rango), ("Buscar Rango",buscar_rango), ("Eliminar Rango",eliminar_rango), ("Ver Rango", ver_rango) , ("Tablero to Rango",tablero_to_rango), ("Rango To Tablero",rango_to_tablero),("Lista To Rango ['lista', 'de', 'ejemplo']",lista_to_rango) , ("Lista To Tablero",lista_to_tablero), ("Imprime Rango",imprime_prango), ('Imprime Rango From Fila / To Fila', prango_to)])  
     The_X_Men.addX(     titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Recursiv",prueba_recursiva), ("T+ (Menu Simulation)",tablero_plus), ("-", None)])    
 
     # 3- LLAMO A MYSTYCA PARA VISUALIZAR EL MENU ╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦
@@ -100,10 +100,10 @@ def print_tablero():
 # IMPRIME UN TABLERO AJUSTANDO EL TAMAÑO (PIDE MARGEN)
 def print_ajustado():
     global TABLERO  
-    padx = TeclD.byTcld( listaStrKeys=['p'], listaDef=[(int, True)], msgIntro='\npadX (0 by def)... ')        
+    pad_x = TeclD.byTcld( listaStrKeys=['p'], listaDef=[(int, True)], msgIntro='\npadX (0 by def)... ')        
     if TABLERO:
         print()
-        TABLERO.to_print( b_columnas_head='A', b_num_filas=True,  b_ajustado=True, padx=padx['p'])
+        TABLERO.to_print( b_columnas_head='A', b_num_filas=True,  b_ajustado=True, pad_x=pad_x['p'])
         # TABLERO.to_print(numSP=val['val'], bHead=True)
     print('\nPRINT TABLERO AJUSTADO;)') 
 
@@ -235,9 +235,9 @@ def set_marco():
 # __________________________________
 # Llama  a la clase Tablero_Plus que avanza la funcionalidad de Tablero y crea Estructura de Salida tipo Menu
 def tablero_plus():
-    from fromdvd.classMenuDvd.Tablero_X_Men import Monkey_King
+    from classMenuDvd.Tablero_X_Men import Monkey_Men
     print('\nC l a s e   T a b l e r o   P l u s \n')
-    TPlus = Monkey_King(titulo='tablero_01', dimension="10x14", linea_head='Tablero de Prueba', padx=40 , padx_left=10 )
+    TPlus = Monkey_Men(titulo='tablero_01', dimension="30x50", linea_head='Tablero de Prueba', pad_x=40 , x_pad=10 )
 
 # Crea un Rango
 def crear_rango():
@@ -290,7 +290,7 @@ def rango_to_tablero():
     print(f'Transferencia de {n['n']} completada :) \n') if retorno != None else f'Transferencia de {n['n']} Error :( \n'
 
 
-def out_lista_to_rango():
+def lista_to_rango():
     global TABLERO
     # lista = ['lista', 'de', 'ejemplo']
     n = TeclD.byTcld( listaStrKeys=['n'], listaDef=[(str, True)], msgIntro='\nNombre del  R a n g o  sobre el que operar')    
@@ -300,15 +300,15 @@ def out_lista_to_rango():
     if not lst_to_tablero: return 
     lst_to_tablero = [str(item).strip() for item in lst_to_tablero if str(item) != '']
     
-    TABLERO.out_lista_to_rango(lista=lst_to_tablero, nombre_rango=n['n'])
+    TABLERO.lista_to_rango(lista=lst_to_tablero, nombre_rango=n['n'])
 
     b_tablero = TeclD.byTcld( listaStrKeys=['vf'], listaDef=[(bool, True)], msgIntro='Lo Quieres tambien en el tablero( V ) o sólo en el rango( F )?')    
     if b_tablero['vf'] == True:
         TABLERO.rango_to_tablero( nombre_rango = n['n'] )
 
 # Entra una lista en forma de lista o str separado por comas y lo introduce en el tablero 
-# No hace falta rango, lo crea la funcion out_lista_to_tablero() de forma auxiliar y luego lo elimina
-def out_lista_to_tablero():
+# No hace falta rango, lo crea la funcion lista_to_tablero() de forma auxiliar y luego lo elimina
+def lista_to_tablero():
     global TABLERO
     str_lista = TeclD.byTcld( listaStrKeys=['l'], listaDef=[(str, True)], msgIntro='\nIntroduce  L i s t a   separada por comas (1,2,3,...)')
     
@@ -316,9 +316,9 @@ def out_lista_to_tablero():
     
     pos = TeclD.byTcld( listaStrKeys=['pos'], listaDef=[(bool, True)], msgIntro='Lo Quieres Vertical( V ) o Horizontal( F )?')    
     if pos['pos'] == True:
-        retorno = TABLERO.out_lista_to_tablero(lista=str_lista['l'], celda_inicio = celda['ci'], pega_horizontal = False)    
+        retorno = TABLERO.lista_to_tablero(lista=str_lista['l'], celda_inicio = celda['ci'], pega_horizontal = False)    
     else:
-        retorno = TABLERO.out_lista_to_tablero(lista=str_lista['l'], celda_inicio = celda['ci'], pega_horizontal = True)    
+        retorno = TABLERO.lista_to_tablero(lista=str_lista['l'], celda_inicio = celda['ci'], pega_horizontal = True)    
 
     if retorno == True: 
         print('\nLista llevada al tablero con Exito :)')
@@ -331,21 +331,21 @@ def imprime_prango():
     
     adjust = TeclD.byTcld( listaStrKeys=['adjust'], listaDef=[(str, True)], msgIntro='Ajuste al  M a x i m o  de columna: (None) , F i x e d : (int) , P e r s o n a l (list) ') 
 
-    padx = TeclD.byTcld( listaStrKeys=['padx'], listaDef=[(int, False)], msgIntro='P a d X  ....')    
+    pad_x = TeclD.byTcld( listaStrKeys=['pad_x'], listaDef=[(int, False)], msgIntro='P a d X  ....')    
 
     # Al pedir una cadena para que tenga varias posibilidades, cuando permito nulo devuelve cadena vacia ''
     if adjust['adjust'] == '':
 
-        TABLERO.Prango(nombre_rango=n['n'], column_adjust = None , padx = padx['padx'] )
+        TABLERO.Prango(nombre_rango=n['n'], column_adjust = None , pad_x = pad_x['pad_x'] )
     
     elif adjust['adjust'].isdigit():
         fixed_columna=abs(int(adjust['adjust']))
-        TABLERO.Prango(nombre_rango=n['n'], column_adjust = fixed_columna , padx = padx['padx'] )
+        TABLERO.Prango(nombre_rango=n['n'], column_adjust = fixed_columna , pad_x = pad_x['pad_x'] )
     
     else:
         if ',' in adjust['adjust']:
-            lst_cadena = TABLERO.lista_from_cadena(cadena = adjust['adjust'], char=',')
-            if lst_cadena: TABLERO.Prango(nombre_rango=n['n'], column_adjust= lst_cadena ,  padx = padx['padx'] )
+            lst_cadena = TABLERO.SttS.cadena_to_lista(cadena = adjust['adjust'], char=',')
+            if lst_cadena: TABLERO.Prango(nombre_rango=n['n'], column_adjust= lst_cadena ,  pad_x = pad_x['pad_x'] )
         else:
             print('Dato/s de Entrada Error :( \n')
 
@@ -355,7 +355,7 @@ def prango_to():
     fila_hasta = TeclD.byTcld( listaStrKeys=['hasta'], listaDef=[(int, True)], msgIntro='\nFila Hasta.... ')    
     
     retorno = TABLERO.tablero_to_all_rango_fila()
-    TABLERO.Prango_rows(desde=fila_desde['desde'], hasta=fila_hasta['hasta'], column_adjust = None , padx = 2)
+    TABLERO.Prango_rows(desde=fila_desde['desde'], hasta=fila_hasta['hasta'], column_adjust = None , pad_x = 2)
     print('tablero to all rango fila  :) ') if retorno else f'tablero to all :( '
 
 
