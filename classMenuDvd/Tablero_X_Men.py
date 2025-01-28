@@ -2173,18 +2173,40 @@ class Rangutan(Tablero):
     
     # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm     wip
     def matriz_to_tablero(self, matriz, celda_inicio):
-        """ >>> Entra una lista de listas (matriz) y acaba en el tablero:  1- Crea un rango oculto de matriz( rectangulo o cuadrado ) 
+        """ >>> Entra una lista de listas (matriz) y acaba en el tablero:  
+        1- Crea un rango oculto de matriz( rectangulo o cuadrado ) 
         matriz_to_tablero([3, 2, 1][4, 5, 9][15, 9, 29, 32])"""
+
         retorno = self.__es_lista_de_listas( matriz = matriz )
-        if  retorno == False:
-            return None
+        filas = len(matriz)
+        columnas = len(matriz[0])
+        dimension = f'{filas}x{columnas}'
+        nombre_rango = 'rango_aux'
+        nombre_rango = self.__new_nombre_secuencial(cadena = nombre_rango)
         try:
-            for fila in matriz:
-                self.lista_to_tablero(lista=lista, celda_inicio=celda_inicio, pega_horizontal=True)
+            rango_aux = self.crear_rango( nombre = nombre_rango , celda_inicio = celda_inicio, dimension = dimension , b_ghost=True )
+            if not rango_aux: return False
+            
+            lst_matriz = [item for sublist in matriz for item in sublist]            
+            retorno = self.lista_to_rango( lista = lst_matriz , nombre_rango = nombre_rango )
+            if not retorno: return False
+            pass
+            
+            retorno = self.rango_to_tablero( nombre_rango = rango_aux.data['nombre'] )
+            if  retorno == False:
+                return False
         except Exception as e:
-            return None
+            return False
+        pass
+        try:
+            del_rng_aux = self.elimina_rango( nombre_rango = nombre_rango )
+            if not del_rng_aux: 
+                return False                    
+        except Exception as e:
+            self.elimina_rango( nombre_rango = nombre_rango )            
+            return False
         finally:
-            return lst_retorno
+            return True
 
     # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm (ia)         wip
     def __es_lista_de_listas(self, matriz):

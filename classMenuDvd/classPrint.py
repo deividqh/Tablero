@@ -49,15 +49,17 @@ class PrinteX():
         >>> strformato += "{:<" + str(num_espacios_columna) + "}"  pejem: {:<"+str(15)+"}"  
         """
         if listaTitulo==None: 
-            listaTitulo=self.listaTitulo if self.listaTitulo else None
-        if listaDatos==None: 
-            listaDatos=self.listaDatos if self.listaDatos else None
-        if not listaTitulo and not listaDatos: return None
+            listaTitulo = self.listaTitulo if self.listaTitulo else None
+        
+        if listaDatos == None: 
+            listaDatos = self.listaDatos if self.listaDatos else None
+        
+        if  not listaDatos: return None
 
         totalLen=0
         strformato=''
         if esAjustado == True:
-            listaMaxCol = self.__maximoXColumna(listaTitulo=listaTitulo, listaDatos=listaDatos)
+            listaMaxCol = self.maximoXColumna(listaTitulo=listaTitulo, listaDatos=listaDatos)
             """ lista con el numero maximo de caracteres por columna. 
             Devuelve tantos numeros como columnas tiene tanto listaTitulo como listaDatos
             Con estos datos Genera el Formato ajustado a la columna. """
@@ -69,7 +71,7 @@ class PrinteX():
             totalLen = sum(listaMaxCol)
             # totalLen+=2
         else:
-            maximo = self.__get_maximo(listaTitulo, listaDatos)        
+            maximo = self.get_maximo(listaTitulo, listaDatos)        
             for i in range (len(listaTitulo)):
                 strformato += "{:<" + str(maximo) + "}"
 
@@ -93,12 +95,13 @@ class PrinteX():
         # primera Validacion
         if not isinstance(listaTitulo, list): return None
         if not isinstance(listaDatos, list): return None
-        
-        # Valida que todos los elementos de listaDatos son diccionario
+
+        # segunda Validacion        
         for iterador in listaDatos:
             if isinstance(iterador, list) or isinstance(iterador, tuple):
                 pass
             elif isinstance(iterador, dict): 
+                return False
                 pass
             else:
                 return False
@@ -110,13 +113,13 @@ class PrinteX():
         
         for iterador in listaDatos:
             if isinstance(iterador, list) or isinstance(iterador, tuple):                
-                t_fila_str.append(iterador)
+                t_fila_str.append(str(iterador))
         
             elif isinstance(iterador, dict): 
                 t_fila = [(key, *item) for key, item in iterador.items()][0]          
                 """ >>> Convierte en una lista con el primer elemento la key del diccionario """
                 fila_str = [str(item) for item in t_fila]
-                """ >>> Convierte a string cada elemento de la lista """
+                """ >>> Convierte a string cada elemento del diccionario """
                 t_fila_str.append(fila_str)
         
         return t_fila_str
@@ -138,7 +141,7 @@ class PrinteX():
 
         print(self.strformato.format(*listaTitulo))   
         if esAjustado==False:
-            maximo = self.__get_maximo(listaTitulo=listaTitulo, listaDatos=listaDatos)        
+            maximo = self.get_maximo(listaTitulo=listaTitulo, listaDatos=listaDatos)        
             print("-"*len(listaTitulo)*(maximo))     #Linea de corte
         else:
             print("-"*(sumaTotChar))     #Linea de corte
@@ -146,17 +149,17 @@ class PrinteX():
         # _________
         # Datos
         for iterador in listaDatos:           
-            self.__imprListaDatos(listaDatos=iterador)
+            self.imprListaDatos(listaDatos=iterador)
         
         # _________
         # Fin
         if esAjustado==False:
-            maximo = self.__get_maximo(listaTitulo=listaTitulo, listaDatos=listaDatos)        
+            maximo = self.get_maximo(listaTitulo=listaTitulo, listaDatos=listaDatos)        
             print("-"*len(listaTitulo)*(maximo))     #Linea de corte
         else:
             print("-"*(sumaTotChar))     #Linea de corte
     
-    def __maximoXColumna(self, listaTitulo, listaDatos):
+    def maximoXColumna(self, listaTitulo, listaDatos):
         """ 
         Retorna una lista con el máximo número de caracteres de cada columna.
         """
@@ -171,7 +174,7 @@ class PrinteX():
         return retorno
     # ___________________________________
     # Imprime en consola con un formato alineado. 
-    def __imprListaDatos(self, listaDatos=None):
+    def imprListaDatos(self, listaDatos=None):
         """ 
         Def: Imprime en la Terminal CON FORMATO
         -Calculando la longitud maxima para alinear correctamente.
@@ -190,12 +193,12 @@ class PrinteX():
         else:
             return True
     # _________________________
-    def __imprTitulos(self, listaTitulo=None):
+    def imprTitulos(self, listaTitulo=None):
         print(self.strformato.format(*listaTitulo))   
         print("-"*len(listaTitulo)*(self.maximo))     #Linea de corte
 
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-    def __get_maximo(self,listaTitulo:list = None, listaDatos:list = None):
+    def get_maximo(self,listaTitulo:list = None, listaDatos:list = None):
         """ Se trata de conseguir saber cual es el maximo valor en una lista de datos 
         """
         if listaTitulo == None: 
@@ -207,10 +210,10 @@ class PrinteX():
         # _____________________
         # Recojo datos de listaTitulo
         longTitulo=len(listaTitulo)
-        max_len_titulo = self.__get_max_len_lststr(listaTitulo)
+        max_len_titulo = self.get_max_len_lststr(listaTitulo)
         
         # ╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═╦═
-        max_len_datos = self.__get_max_len(listaDatos)
+        max_len_datos = self.get_max_len(listaDatos)
         """ Recojo datos de listaDatos """
 
         # _____________________
@@ -218,21 +221,21 @@ class PrinteX():
         maximo = max_len_titulo if max_len_titulo>=max_len_datos else max_len_datos 
         return maximo + 1
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-    def __get_max_len(self, iterador):
-        listaCadenas = self.___listRcsv(iterador=iterador)
+    def get_max_len(self, iterador):
+        listaCadenas = self.listRcsv(iterador=iterador)
         if listaCadenas:
             listaLen=[len(string) for string in listaCadenas]
             return max(listaLen)
 
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄    
     # F u n c i o n   R e c u r s i v a    para Recorrer listas y devolver el str mas largo
-    def ___listRcsv(self, iterador, retorno=None):
+    def listRcsv(self, iterador, retorno=None):
         """ Devuelve los valores que se va encontrando en una estructura de izquierda a derecha."""
         if retorno==None: retorno=[]        
 
         if isinstance(iterador, list) or isinstance(iterador, tuple):
             for subList in iterador:
-                self.___listRcsv(iterador = subList, retorno = retorno)
+                self.listRcsv(iterador = subList, retorno = retorno)
         else:
             retorno.append(iterador)
         return retorno
@@ -240,7 +243,7 @@ class PrinteX():
         pass
     # ________________________
     # Calcula la maxima longitud de un titulo o un genero en la tupla de peliculas
-    def __get_max_len_lststr(self, iterador:list):
+    def get_max_len_lststr(self, iterador:list):
         listLargos=[len(item) for item in iterador]        
         # Como ya tengo una lista con solo números, puedo aplicar max()         
         max_longitud = max(listLargos)        

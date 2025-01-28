@@ -44,7 +44,7 @@ def main():
     The_X_Men.addX(     titulo='SUB_GET'  , padre='MenuPpal', ipadre="GET"     , lst_items=[("Get Fila",get_fila), ("Get Column",get_columna), ("Get Valor By Fila-Columna", get_fila_columna), ("Get Valor By Celda(A:0)", get_celda)])
     The_X_Men.addX(     titulo='SUB_SET'  , padre='MenuPpal', ipadre="SET"     , lst_items=[("Set Fila",set_valor_over_fila), ("Set Column",set_valor_over_columna), ("Set Valor By Fila-Columna", set_fila_columna), ('Set Valor By Celda(A:0)', set_celda)])
     The_X_Men.addX(     titulo='SUB_DEL'  , padre='MenuPpal', ipadre="DEL"     , lst_items=[("Del Fila",del_fila), ("Del Column",del_columna), ("Del Celda", del_xy)])    
-    The_X_Men.addX(     titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS" , lst_items=[("Crear Rango",crear_rango), ("Buscar Rango",buscar_rango), ("Eliminar Rango",eliminar_rango), ("Ver Rango", ver_rango) , ("Tablero to Rango",tablero_to_rango), ("Rango To Tablero",rango_to_tablero),("Lista To Rango ['lista', 'de', 'ejemplo']",lista_to_rango) , ("Lista To Tablero",lista_to_tablero), ("Imprime Rango",imprime_prango), ('Imprime Rango From Fila / To Fila', prango_to)])  
+    The_X_Men.addX(     titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS" , lst_items=[("Crear Rango",crear_rango), ("Buscar Rango",buscar_rango), ("Eliminar Rango",eliminar_rango), ("Ver Rango", ver_rango) , ("Tablero to Rango",tablero_to_rango), ("Rango To Tablero",rango_to_tablero),("Lista To Rango ['lista', 'de', 'ejemplo']",lista_to_rango) , ("Lista To Tablero",lista_to_tablero), ('Matriz To Tablero', matriz_to_tablero), ("Imprime Rango",imprime_prango), ('Imprime Rango From Fila / To Fila', prango_to)])  
     The_X_Men.addX(     titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Recursiv",prueba_recursiva), ("T+ (Menu Simulation)",tablero_plus), ("-", None)])    
 
     # 3- LLAMO A MYSTYCA PARA VISUALIZAR EL MENU ╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦
@@ -324,6 +324,21 @@ def lista_to_tablero():
         print('\nLista llevada al tablero con Exito :)')
     else:
         print('\nLista llevada al tablero con Error :(')
+
+def matriz_to_tablero():
+    global TABLERO
+    matriz = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ]
+    celda = TeclD.byTcld( listaStrKeys=['ci'], listaDef=[(str, True)], msgIntro='\nIntroduce C e l d a  en Tablero (pejem: M:8 ) donde colocar la matriz ... ')
+    tablero = TABLERO.matriz_to_tablero(matriz=matriz, celda_inicio=celda['ci'])
+    if tablero == True:
+        print('\nMatriz llevada al tablero con Exito :)')
+    else:
+        print('\nMatriz llevada al tablero con Error :(')
+
 
 def imprime_prango():
     global TABLERO
