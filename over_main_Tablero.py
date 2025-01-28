@@ -237,7 +237,7 @@ def set_marco():
 def tablero_plus():
     from classMenuDvd.Tablero_X_Men import Monkey_Men
     print('\nC l a s e   T a b l e r o   P l u s \n')
-    TPlus = Monkey_Men(titulo='tablero_01', dimension="30x50", linea_head='Tablero de Prueba', pad_x=40 , x_pad=10 )
+    TPlus = Monkey_Men(titulo='tablero_01', dimension="30x50", linea_head='Tablero de Prueba', pad_x=40 , x_pad=5 )
 
 # Crea un Rango
 def crear_rango():

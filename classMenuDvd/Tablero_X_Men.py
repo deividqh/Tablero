@@ -1219,7 +1219,7 @@ class Tablero():
         for dicc_fila in self.tablero:
             long_fila=0
             for cadena in dicc_fila.values():
-                long_fila += len(cadena)
+                long_fila += len(str(cadena))
 
             lst_fila.append(long_fila)    
                 
@@ -2105,7 +2105,7 @@ class Rangutan(Tablero):
         for dicc_fila in rango.matriz:
             long_fila=0
             for cadena in dicc_fila.values():
-                long_fila += len(cadena)
+                long_fila += len(str(cadena))
 
             lst_fila.append(long_fila)    
 
@@ -2358,6 +2358,20 @@ class Monkey_Men(Rangutan):
         # 1-Asignacion de datos en body + 2-Creacion_marco + 3-preparacionImpresion + 4-Impresion
         self.xy(fil=4, col='B', valor = self.ESPACIO*self.x_pad)
         self.xy(fil=4, col='E', valor='En un lugar de la mancha jAJAJAJAJAJAJAJAJA ')
+        matriz = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]
+        ]        
+        # self.celda(celda = 'A:8' , valor = self.ESPACIO*self.x_pad)
+        self.xy(fil=8, col='B', valor = self.ESPACIO*self.x_pad)
+        tablero = self.matriz_to_tablero(matriz = matriz, celda_inicio = 'M:8')
+        # if tablero == True:
+        #     print('\nMatriz llevada al tablero con Exito :)')
+        # else:
+        #     print('\nMatriz llevada al tablero con Error :(')
+
+
 
       
         # MARCO over head
