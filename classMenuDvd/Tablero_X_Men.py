@@ -1234,7 +1234,7 @@ class Tablero():
             long_fila=0
             for cadena in dicc_fila.values():
                 long_fila += len(str(cadena))
-
+            pass
             lst_fila.append(long_fila)    
                 
         return max(lst_fila) if lst_fila else 0
@@ -2461,7 +2461,7 @@ class Monkey_Men(Rangutan):
         # Los Pasos  para imprimir tiene que ser: 
         # 1-Asignacion de datos en body + 2-Creacion_marco + 3-preparacionImpresion + 4-Impresion
         # self.xy(fil=4, col='B', valor = self.ESPACIO*self.x_pad)
-        self.xy(fil=4, col='E', valor='En un lugar de la mancha jAJAJAJAJAJAJAJAJA ')
+        self.xy(fil=4, col='E', valor='En un lugar de la mancha jAJAJAJAJAJAJAJAJA')
         matriz = [
             [1, 2, 3],
             [4, 5],
@@ -2478,7 +2478,7 @@ class Monkey_Men(Rangutan):
         """ - P R E P A R A C I O N   X A    I M P R E S I O N   D E L   M E N U  - """
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦       
         
-        # Recopilando los datos para colocar el marco
+        # Recopilando los datos para colocar el marco... incluye: margen, len(marco_h), x_pad, data , pad_x, len(marco_h)
         len_head = HEAD.get_max_filas()
         len_body = self.get_max_filas()
         len_pie = PIE.get_max_filas()
@@ -2486,8 +2486,8 @@ class Monkey_Men(Rangutan):
         print(f'longitud maxima del menu = {maximo}')
         
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
-        self.total_len: int = self.margen + len(self.marco_h) + self.x_pad + maximo + self.pad_x + len(self.marco_h)
-        # self.total_len: int = maximo 
+        # self.total_len: int = self.margen + len(self.marco_h) + self.x_pad + maximo + self.pad_x + len(self.marco_h)
+        self.total_len: int = maximo 
 
 
         # paso del tablero al rango principal.... de esta forma puedo imprimir con Prango
@@ -2499,7 +2499,7 @@ class Monkey_Men(Rangutan):
         """ >>> Devuelve una lista con las longitudes que faltan para completar la longitud total 
         """
         for i, faltan in enumerate(lst_num_faltan):
-            HEAD.xy(fil=i, col= HEAD.ultima_columna(), valor=f'{self.ESPACIO * ( faltan )}█')
+            HEAD.xy(fil=i, col= HEAD.ultima_columna(), valor=f'{self.ESPACIO * ( faltan + self.pad_x )}█')
         HEAD.tablero_to_rango()
         # print(f'{'█'*self.total_len}')
 
@@ -2509,8 +2509,9 @@ class Monkey_Men(Rangutan):
         lst_length = self.get_lst_max_filas( rango = self.rango_tablero )
         print(lst_length)
         lst_num_faltan = [ self.total_len - int(length) for length in lst_length ]
+        # lst_num_faltan = [ self.total_len - self.pad_x for length in lst_length ]
         for i, faltan in enumerate(lst_num_faltan):
-            self.xy(fil=i, col= self.ultima_columna(), valor=f'{self.ESPACIO * faltan}█')
+            self.xy(fil=i, col= self.ultima_columna(), valor=f'{self.ESPACIO * (faltan + self.pad_x)}█')
         self.tablero_to_rango()
 
         # paso del tablero al rango principal..... de esta forma puedo imprimir con Prango
@@ -2520,24 +2521,26 @@ class Monkey_Men(Rangutan):
         print(lst_length_pie)
         lst_num_faltan_pie = [ self.total_len - int(length) for length in lst_length_pie ]
         for i, faltan in enumerate(lst_num_faltan_pie):
-            PIE.xy(fil=i, col= PIE.ultima_columna(), valor=f'{self.ESPACIO * (faltan )}█')
+            PIE.xy(fil=i, col= PIE.ultima_columna(), valor=f'{self.ESPACIO * (faltan + self.pad_x)}█')
         PIE.tablero_to_rango()
 
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
         """ -  I M P R E S I O N   D E L   M E N U  - """
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦       
         print()
-        print(f'{'▀' * ( maximo + self.x_pad + 2 )}')        #220
+        print(f'{'▀' * ( maximo )}')        #220
         # HEAD.to_print(b_ajustado = False, numSP=0, b_columnas_head = False    , b_num_filas=False, pad_x=0)
         HEAD.Prango( nombre_rango = HEAD.BASE_RANGO_TABLERO, column_adjust = 0 , pad_x = 0)
-        print(f'{'▄' * ( maximo + self.x_pad + 2 )}')          #220
+        print(f'{'▄' * ( maximo  )}')          #220
         
         # self.to_print(b_ajustado = False, numSP=0, b_columnas_head = False  , b_num_filas =True, pad_x=0)
-        self.Prango( nombre_rango = self.BASE_RANGO_TABLERO, column_adjust = 0 , pad_x = 0)
+        # self.Prango( nombre_rango = self.BASE_RANGO_TABLERO, column_adjust = 0 , pad_x = 0)        
+        self.tablero_to_rango()
+        self.Prango_rows(desde = 1, hasta =25, column_adjust = 0 , pad_x = 0 )
 
-        print(f'█{'═' * ( maximo + self.x_pad  )}█')    
+        print(f'{'▀' * ( maximo )}')    
         PIE.Prango( nombre_rango = PIE.BASE_RANGO_TABLERO, column_adjust = 0, pad_x = 0)
-        print(f'{'▀' * ( maximo + self.x_pad + 2 )}')        #223 ■
+        print(f'{'▀' * ( maximo )}')        #223 ■
         # print(f'{'■' * ( maximo + self.x_pad + 2 )}')        #223 ■
         
 
