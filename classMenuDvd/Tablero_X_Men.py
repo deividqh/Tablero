@@ -88,7 +88,7 @@ class SttS():
             [cadena] (str): La cadena a descomponer (e.g., 'A:0', '20x15').
             [char] (str): El carácter que separa las dos partes de la cadena (por defecto ':').
         Retorno:
-            tuple: (str, str) con las dos partes de la cadena. Devuelve (None, None) si la entrada es inválida.
+            tuple: (str, str) con las dos partes de la cadena. Devuelve (None, None) si la head es inválida.
         Ejemplo:
             >>> SttS.desata_binomio("A:0")
             ('A', '0')
@@ -227,6 +227,20 @@ class SttS():
 
         return listaToReLong
         pass
+     # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm (ia)         wip
+    @staticmethod
+    def es_lista_de_listas(matriz):
+        """ Usada por matriz_to_tablero para validar que es una lista de listas para imprimir. """
+        # Verificar si es una lista
+        if not isinstance(matriz, list):
+            return False
+        
+        # Verificar que cada elemento dentro de la lista principal sea también una lista
+        for elemento in matriz:
+            if not isinstance(elemento, list):
+                return False
+        
+        return True
     # 
     # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm    
     # Entra una cadena separada por un caracter (coma) y devuelve una l i s t a   c o n   c a d a   i t e m 
@@ -1036,7 +1050,7 @@ class Tablero():
         
     # _______________________________
     def get_valor_inicial(self):
-        return self.valor_inicial if self.valor_inicial else None        
+        return self.valor_inicial if self.valor_inicial else ''        
     # _______________________________
     def set_valor_inicial(self, valor_inicial):        
         self.valor_inicial=valor_inicial
@@ -1451,7 +1465,7 @@ class Tablero():
 # ███████████████████████████████████████████████████████████████████████████████████████████████████████████
 
 class Rangutan(Tablero):
-    """ >>> Hijo de Tablero, determina las opcioes que se pueden realizar con los rangos.
+    """ >>> Determina los  R a n g o s   E N   E L   T A B L E R O (su papá).
     """
     BASE_RANGO_TABLERO = 'rango_tablero'
     BASE_RANGO_FILA = 'rango_fila_'
@@ -1460,16 +1474,18 @@ class Rangutan(Tablero):
 
     def __init__(self, total_columnas_tablero:int, total_filas_tablero:int = 10 , valor_inicial='' ):
         """ >>> Define un Tablero y Maneja una lista de rangos rigiendo las operaciones sobre los rangos
-        Clase defiida aparte y no en tablero para dar abstración a las operaciones sobre los rangos en tablero """
-        super().__init__(total_columnas_tablero  = total_columnas_tablero,  total_filas_tablero = total_filas_tablero , 
+        Clase defiida aparte y no en tablero para dar abstración a las operaciones sobre los rangos en tablero 
+        """
+        super().__init__(total_columnas_tablero  = total_columnas_tablero,  
+                        total_filas_tablero = total_filas_tablero , 
                         valor_inicial = valor_inicial)
 
-         # # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
+         # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
         # L I S T A   D E   R A N G O S   D E   T A B L E R O        
         self.lst_rangos=[]   
-        """ Lista de objetos rango.  Provoca que cada Tablero pueda tener su coleccion de rangos y por lo tanto hacer operaciones complejas con los datos """
+        """ Cada Tablero pueda tener su coleccion de rangos y por lo tanto hacer operaciones complejas con los datos en su ambito"""
 
-        self.char_padx = ' '    # caracter de relleno de la impresion. desde la última celda escrita hasta el final.
+        # self.char_padx = ' '    # caracter de relleno de la impresion. desde la última celda escrita hasta el final.
 
         # # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
         # E S T R U C T U R A   D E   D A T O S   D E L   T A B L E R O   ==>   R A N G O                
@@ -1487,6 +1503,7 @@ class Rangutan(Tablero):
             print('rango_tablero ~)')
         else:
             print('rango_tablero ~(')
+            return None
         pass
         
         # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -1519,7 +1536,7 @@ class Rangutan(Tablero):
     # sssssssssssssssssssssssssssssssssssssssssssssssssss
     # C r e a   u n   n o m b r e   s e c u e n c i a l 
     def __new_nombre_secuencial(self, cadena:str, separador:str='_'):
-        """ Crea un nuevo nombre en lst.rangos a partir de una cadena de entrada. """
+        """ Crea un nuevo nombre en lst.rangos a partir de una cadena de head. """
         lst_nombres = [rango.data['nombre'] for rango in self.lst_rangos]
         lst_match = [nombre for nombre in lst_nombres if cadena in nombre]
         
@@ -1798,7 +1815,7 @@ class Rangutan(Tablero):
             # Construcción final del resultado
             print (f"{cabeceras}\n{separador}\n" + "\n".join(filas))
 
-    # ELIMINA RANGO
+    # ELIMINA RANGO DE LA LISTA
     def elimina_rango(self, nombre_rango:str):
         i_rango = self.buscar_rango(nombre_a_buscar=nombre_rango, b_index=True)        
         if i_rango !=None:
@@ -1885,14 +1902,18 @@ class Rangutan(Tablero):
         return True
 
     # Otra manera de cargar los rangos, en este caso, del tablero a las filas.
-    def tablero_to_all_rango_fila(self):
-        """ pasa todos los datos desde el tablero hacia los rangos de fila """
+    def tablero_to_all(self):
+        """ pasa todos los datos desde el tablero hacia los rangos de fila 
+        y los carga en la matriz y dicc de Rango"""
         try:
             lst_rangos_fila = [rango for rango in self.lst_rangos if self.BASE_RANGO_FILA in rango.data['nombre'] and rango.b_ghost == False]
-            if lst_rangos_fila:
-                pass
+            if not lst_rangos_fila:
+                return None
             for rango in lst_rangos_fila:
                 self.tablero_to_rango(nombre_rango = rango.data['nombre'])            
+                pass
+                
+
 
         except Exception as e:
             print(f'{e}')
@@ -2175,52 +2196,74 @@ class Rangutan(Tablero):
     def matriz_to_tablero(self, matriz, celda_inicio):
         """ >>> Entra una lista de listas (matriz) y acaba en el tablero:  
         1- Crea un rango oculto de matriz( rectangulo o cuadrado ) 
-        matriz_to_tablero([3, 2, 1][4, 5, 9][15, 9, 29, 32])"""
 
-        retorno = self.__es_lista_de_listas( matriz = matriz )
-        filas = len(matriz)
-        columnas = len(matriz[0])
-        dimension = f'{filas}x{columnas}'
-        nombre_rango = 'rango_aux'
-        nombre_rango = self.__new_nombre_secuencial(cadena = nombre_rango)
+        self.matriz_to_tablero([[3, 2, 1] , [4, 5, 9] , [15, 29, 32]])      -> matriz simetrica
+        self.matriz_to_tablero( [[3, 2, 1] , [4, 5] , [15, 9, 29, 32]] )    -> matriz NO simetrica"""
         try:
-            rango_aux = self.crear_rango( nombre = nombre_rango , celda_inicio = celda_inicio, dimension = dimension , b_ghost=True )
+            rango_aux = self.matriz_to_rango( matriz = matriz , celda_inicio = celda_inicio , nombre_rango = 'rango_aux' )
             if not rango_aux: return False
             
-            lst_matriz = [item for sublist in matriz for item in sublist]            
-            retorno = self.lista_to_rango( lista = lst_matriz , nombre_rango = nombre_rango )
-            if not retorno: return False
-            pass
-            
+            # Los datos trabajados sobre el rango los pasamos al tablero
             retorno = self.rango_to_tablero( nombre_rango = rango_aux.data['nombre'] )
             if  retorno == False:
-                return False
+                return False            
         except Exception as e:
-            return False
-        pass
-        try:
-            del_rng_aux = self.elimina_rango( nombre_rango = nombre_rango )
-            if not del_rng_aux: 
-                return False                    
-        except Exception as e:
-            self.elimina_rango( nombre_rango = nombre_rango )            
             return False
         finally:
             return True
+        
+    def matriz_to_rango(self, matriz:list, nombre_rango:str = '', celda_inicio:str='A:0'):
+        """ Pasa los valores de una matriz a un rango creado """
+        retorno = SttS.es_lista_de_listas( matriz = matriz )
+        if not retorno: return False
+        filas = len(matriz)
 
-    # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm (ia)         wip
-    def __es_lista_de_listas(self, matriz):
-        """ Usada por matriz_to_tablero para validar que es una lista de listas para imprimir. """
-        # Verificar si es una lista
-        if not isinstance(matriz, list):
+        # Calculo la longitud de la dimension de la matriz maxima(por si no es simetrica.)
+        lst_len_matriz = [len(item) for item in matriz]
+        columnas = max(lst_len_matriz) if lst_len_matriz else 0
+        
+        # Creo una fila de columnas para rellenar los huecos
+        lst_aux = [i for i in range(columnas)]
+
+        # hago la matriz de entrada uniforme y relleno los vacios con el valor Inicial.
+        for i  in range(len(matriz)):
+            matriz[i] = SttS.igualar_listas(listaKeys = lst_aux, listaToReLong = matriz[i], valor_relleno = self.get_valor_inicial())
+
+        # Saco la dimension para crear su rango ghost
+        dimension = f'{filas}x{columnas}'
+
+        b_eliminar_rango = False
+        # Creo un nombre de rango único. si no mete nombre de rango, lo creo yo y luego lo elimino. Si mete nombre de rango, no lo elimino.
+        if nombre_rango == '':
+            nombre_rango = 'rango_aux_'
+            b_eliminar_rango = True
+
+        nombre_rango = self.__new_nombre_secuencial(cadena = nombre_rango)        
+        pass
+        try:
+            # Creo el rango ghost
+            rango_aux = self.crear_rango( nombre = nombre_rango , celda_inicio = celda_inicio, dimension = dimension , b_ghost=True )
+            if not rango_aux: return False
+            
+            # Paso la matriz a una lista de izquierda a derecha de arriba a abajo.
+            lst_matriz = [item for sublist in matriz for item in sublist]            
+            if not lst_matriz: return False
+
+            # ahora le pso la lista de la matriz pasada al rango ghost creado
+            retorno = self.lista_to_rango( lista = lst_matriz , nombre_rango = nombre_rango )
+            if not retorno: return False
+
+            if b_eliminar_rango:
+                rango_lista = self.elimina_rango( nombre_rango = nombre_rango )
+                return rango_lista  if rango_lista  else False
+            else:
+                return rango_aux
+            # Retorno solo si retorno existe
+            
+        except Exception as e:
             return False
-        
-        # Verificar que cada elemento dentro de la lista principal sea también una lista
-        for elemento in matriz:
-            if not isinstance(elemento, list):
-                return False
-        
-        return True
+
+   
     
     # ???????????????????????????????????????????????????????????????????????????????????
     # ???????????????????????????????????????????????????????????????????????????????????
@@ -2275,121 +2318,161 @@ class MENU(Menu):
 # TTTTTTTTTTTTTTTTTTTTTTTTT
 # TTTTTTTTTTTTTTTTTTTTTTTTT
 class Monkey_Men(Rangutan):
-    """ >>> Def: Define las partes esenciales de un Menu Creando y manteniendo una lista de Tableros =>  Head  | Cuerpo | Pie |    
-    Head => Sobrero | Cabeza(Titulo) | Cuello |     
-    Cuerpo => Fila Body:  marco | X_itemA__ | __itemA__ | __itemA_X | X_itemB__ | itemB | __itemB_X | marco
-    Pie => Linea_Fondo | InfoPie | Linea_Final
-    InfoPie =>  marco |  Informacion | marco
+    """ >>> Def: Define las partes esenciales de un Menu Creando y manteniendo una lista de Tableros =>  Head  + Cuerpo + Pie + 
+    linaje ::: Tablero -> Rangutan -> Monkey_Men   
+    Definicion de Monkey_Men(x linea): 
+    y_head  => margen + marco_h * total
+    Head    => margen + marco_h + x_pad +DATA_ENTRADA) + pad_x + marco_h
+    head_y  => margen + marco_h * total
+
+    Cuerpo(x Fila)  => :  margen + marco_v + X_pad + DATA + pad_x + marco
+
+    y_pie   => margen + marco_h_fin_datos * total
+    Pie     => margen + marco_h +  DATA_SALIDA + marco_h
+    pie_y   => margen + marco_h * total
+
+    >>> DATA_ENTRADA:  Datos de entrada(HEAD) del menu. Puede ser un str o una lista de str o matriz de str
+    >>> DATA:          Datos del cuerpo del menu. Puede ser un str o una lista de str o matriz de str
+    >>> DATA_SALIDA:   Datos de salida(PIE) del menu. Puede ser un str o una lista de str o matriz de str
     """   
     NUM_CHAR = 40                        
     ESPACIO  = ' '
 
-    def __init__(self, titulo:str, dimension:str= "20x10", linea_head:str='', linea_pie:str='', pad_x:int = 30 , x_pad:int = 3):        
-        """ >>> Inicializa el Menu con los valores de la cabecera y el pie."""
+    def __init__(self,  dimension:str= "20x10", head = None, pie = None, margen = 0,  pad_x:int = 30 , x_pad:int = 3):        
+        """ >>> Inicializa el Menu con los valores de la cabecera y el pie.
+        [titulo](str): Titulo del Menu 
+        [dimension](str): Dimension del Menu
+        [head](str)(list): Frase del Head
+        [pie]:(str)(list): Frase del Pie
+        [x_pad]: Espacio entre el marco y el contenido
+        [pad_x](int): Espacio desde el último caracter de la linea y el margen
+        """
 
-        # ___________________
-        # RECOGE LOS VALORES        
-        # self.num_filas, self.num_columnas = self.get_filas_columnas_from_dimension(dimension)
         self.num_filas, self.num_columnas = SttS.filas_columnas_from_dimension(dimension=dimension)
-        if not self.num_filas or not self.num_columnas: return None
+        if not self.num_filas or  not self.num_columnas: return None
 
-        super().__init__(total_columnas_tablero=self.num_columnas, total_filas_tablero = self.num_filas , valor_inicial='' )
+        # M e   c o n f i g u r o   c o m o   R a n g u t a n e r o   por lo tanto tengo un Tablero
+        super().__init__(total_columnas_tablero = self.num_columnas, 
+                        total_filas_tablero = self.num_filas , 
+                        valor_inicial='' )
         
-        if not self.tablero: print('\n\nNo se ha podido crear el tablero!!!!!!\n\n')
-
-        self.linea_pie = linea_pie
-        self.titulo = titulo.strip()                
-
+        if not self.tablero: 
+            print('\n\nNo se ha podido crear el tablero!!!!!!\n\n')
+            return None
+        
+        """ >>> D e f i n i c i o n   d e   E s p a c i o s  H o r i z o n t a l e s"""
         self.pad_x = pad_x
         self.x_pad = x_pad
+        self.margen = margen
 
-        # self.sombrero = '*'
-        self.sombrero = f'{chr(205)}'
-        """>>> caracter de la primera linea de cabecera.
-        """
-        self.linea_head = self.titulo   if linea_head == ''    else linea_head        
-        """ >>> La Frase Que se pone en la Impresion del Menu: 
-        """
-        self.cuello = chr(205)
-        """ >>> caracter de la linea de cierre del Head
-        """
-        # self.marco='|'
-        self.marco = chr(219)
-        """ >>> caracter de la linea de cierre del Head
-        """        
-        self.pie = '~'
-        self.pie = chr(205)  # ══
-        """ >>> caracter de la linea de cierre
-        """        
-        self.info = ''
-        """ >>> informacion del pie(Salida Help Repeat)
-        """
-        self.the_end = '~' 
-        self.the_end = chr(254)
-        """ >>> caracter de la ultima linea de cierre
-        """        
+        """  >>> C a r a c t e r  e s   H o r i  z o n t a l e s   x a   M a r c o  """
+        self.marco_h = '█'    # 219       >>> caracter de la linea de inicio y cierre de: Head / Body / Pie
+
+        """ >>> C h r a r s   V e r t i c a l e s   p a r a   e l   M a r c o   d e   l a   C a b e c e r a   y   e l   P i e """
+        self.y_head = '■' # 254       >>> caracter de la primera linea de cabecera.
+        self.head = head               # >>> La Frase Que se pone en el Head del Menu:                
+        self.head_y = '▄'   # 220       >>> caracter de la linea de cierre del Head
+        
+        self.y_pie = '═'      # 205       >>> caracter de la linea de cierre               
+        self.pie = pie            # >>> informacion del pie(Salida Help Repeat)
+        self.pie_y = '■'  # 254       >>> caracter de la ultima linea de cierre del Pie
+        
+        """ >>> Lista de celdas  R e s e r v a d a s  x a   M a r c o """
+        self.lst_celdas_reservadas_marco = []
+        
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
-        """ C R E A R   T A B L E R O S  :  HEAD / BODY / PIE """
+        """ >>>  G E S T I O N   D E   L O S   T A B L E R O S  """
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
-        self.tablero_head = Rangutan(total_columnas_tablero = self.num_columnas, total_filas_tablero = 2)
-        # self.tablero_body = Rangutan(total_columnas_tablero=self.num_columnas, total_filas_tablero=self.num_filas)
-        self.tablero_pie  = Rangutan(total_columnas_tablero=self.num_columnas, total_filas_tablero = 2)
+        self.dicc_gorila = {}
 
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
-        """ >>>  G E S T I O N   D E L   L O S   T A B L E R O S  """
-        # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
-        self.dicc_gorila = {'head':self.tablero_head, 
-                            # 'body':self.tablero, 
-                            'pie':self.tablero_pie}
-
+        """ C R E A R   T A B L E R O  :  HEAD """
+        # Puede venir en formato string, list o matriz(list de list de str).
+        if self.head:
+            if isinstance(self.head, str):
+                """ >>> Si es un str, celda() o xy()  """
+                self.tablero_head = Rangutan(total_columnas_tablero = self.num_columnas, total_filas_tablero = 1)
+                self.tablero_head.celda(celda = 'C:0' , valor = self.head)
+                pass
+            elif isinstance(self.head, list):
+                if SttS.es_lista_de_listas(matriz = self.head):
+                    """ >>> CACHAR FILAS Y COLUMNAS. Si es una lista de listas, matriz_to_tablero() """
+                    filas = len(self.head)
+                    self.tablero_head = Rangutan(total_columnas_tablero = self.num_columnas, total_filas_tablero = filas)
+                    self.tablero_head.matriz_to_tablero(matriz = self.head, celda_inicio = 'C:0')
+                    pass                
+                else:
+                    """ >>> Si es una lista de str, lista_to_tablero() 1 X COLUMNAS"""
+                    self.tablero_head = Rangutan(total_columnas_tablero = self.num_columnas, total_filas_tablero = 1)
+                    self.tablero_head.lista_to_tablero(lista = self.head, celda_inicio = 'C:0')
+                    pass
+            
+            self.tablero_head.tablero_to_all()
+            self.dicc_gorila['head'] = self.tablero_head
+            
+        """ Borrar. solo para pruebas """
         HEAD = self.dicc_gorila['head']
-        # BODY = self.dicc_gorila['body']
+            
+        
+        # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
+        """ C R E A R   T A B L E R O  :   PIE """
+        # Puede venir en formato string, list o matriz(list de list de str).
+        if self.pie:
+            if isinstance(self.pie, str):
+                """ >>> Si es un str, celda() o xy()  """
+                self.tablero_pie  = Rangutan(total_columnas_tablero = self.num_columnas, total_filas_tablero = 1)
+                self.tablero_pie.celda(celda = 'C:0' , valor = self.pie)
+                pass
+            elif isinstance(self.pie, list):
+                if SttS.es_lista_de_listas(matriz = self.pie):
+                    """ >>> cachar filas y columnas... luego, Si es una lista de listas, matriz_to_tablero() """
+                    filas = len(self.pie)
+                    self.tablero_pie  = Rangutan(total_columnas_tablero = self.num_columnas, total_filas_tablero = filas) 
+                    self.tablero_pie.matriz_to_tablero(matriz = self.pie, celda_inicio = 'C:0')
+                    pass
+                else:
+                    """ >>> cachar columnas y 1 x len(self.pie).... luego,  Si es una lista de str, lista_to_tablero() """
+                    self.tablero_pie  = Rangutan(total_columnas_tablero = self.num_columnas, total_filas_tablero = 1)
+                    self.tablero_pie.lista_to_tablero(lista = self.pie, celda_inicio = 'C:0')
+                    pass
+            # self.tablero_pie  = Rangutan(total_columnas_tablero = self.num_columnas, total_filas_tablero = 2)        
+            self.tablero_pie.tablero_to_all()
+            self.dicc_gorila['pie'] = self.tablero_pie
+
+            """ Borrar. solo para pruebas """
         PIE = self.dicc_gorila['pie']
+        
 
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
         """ C R E A C I O N   D E L    M A R C O  """       # █219 ▄220  ▀223 ■254 ▓178 ▒177 ░176 »175 «174 ┼167 ╣185 ┤180 
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦       
-        
+        self.set_marco(margen = self.margen ,  x_pad = self.x_pad, pad_x = self.pad_x)
+
+
+        """ THE END .... de aqui en adelante borrar. """
+
+        """ R E L L E N O   D E   P R U E B A S   . . .   B O R R A R   """       # █219 ▄220  ▀223 ■254 ▓178 ▒177 ░176 »175 «174 ┼167 ╣185 ┤180 
+        # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦       
+
         """ Relleno del body de pruebas......  
         Hay que r e d e f i n i r   l a s   f i l a s   ú t i l e s    teniendo en cuenta los caracteres del marco.
         para cuaando se llame a Prango o to_print o Prango_rows
         Reducir prango y prango_to a una sola funcion de impresion... Prango(incluir from - to ) """        
         # Los Pasos  para imprimir tiene que ser: 
         # 1-Asignacion de datos en body + 2-Creacion_marco + 3-preparacionImpresion + 4-Impresion
-        self.xy(fil=4, col='B', valor = self.ESPACIO*self.x_pad)
+        # self.xy(fil=4, col='B', valor = self.ESPACIO*self.x_pad)
         self.xy(fil=4, col='E', valor='En un lugar de la mancha jAJAJAJAJAJAJAJAJA ')
         matriz = [
             [1, 2, 3],
-            [4, 5, 6],
-            [7, 8, 9]
+            [4, 5],
+            [7, 8, 9, 8]
         ]        
-        # self.celda(celda = 'A:8' , valor = self.ESPACIO*self.x_pad)
-        self.xy(fil=8, col='B', valor = self.ESPACIO*self.x_pad)
-        tablero = self.matriz_to_tablero(matriz = matriz, celda_inicio = 'M:8')
-        # if tablero == True:
-        #     print('\nMatriz llevada al tablero con Exito :)')
-        # else:
-        #     print('\nMatriz llevada al tablero con Error :(')
+        retorno = self.matriz_to_tablero(matriz = matriz, celda_inicio = 'M:8')
 
-
-
-      
-        # MARCO over head
-        HEAD.xy(fil=1, col='B', valor = self.ESPACIO*self.x_pad)
-        HEAD.xy(fil=1, col='C', valor = 'F r a s e   d e   E n t r a d a')
-        HEAD.set_valor_over_columna(columna='A', valor='█') 
-        HEAD.set_valor_over_columna(columna=HEAD.ultima_columna(), valor='█')         
         
-        # MARCO over body
-        self.set_valor_over_columna(columna='A', valor='█')
-        self.set_valor_over_columna(columna=self.ultima_columna(), valor='█')
-
-        # MARCO over pie
-        PIE.xy(fil=0, col='B', valor = self.ESPACIO*self.x_pad)
-        PIE.xy(fil=0, col='C', valor = 'F r a s e   d e   S a l i d a')
-        PIE.set_valor_over_columna( columna = 'A', valor = '█' )
-        PIE.set_valor_over_columna( columna = PIE.ultima_columna(), valor = '█' )
-
+        # HEAD.xy(fil=1, col='C', valor = 'F r a s e   d e   E n t r a d a')
+        # PIE.xy(fil=0, col='C', valor = 'F r a s e   d e   S a l i d a')
+        
 
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
         """ - P R E P A R A C I O N   X A    I M P R E S I O N   D E L   M E N U  - """
@@ -2401,26 +2484,29 @@ class Monkey_Men(Rangutan):
         len_pie = PIE.get_max_filas()
         maximo : int = max(len_head, len_body, len_pie)
         print(f'longitud maxima del menu = {maximo}')
+        
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
-        self.total_len: int = maximo + int(pad_x) + 2
+        self.total_len: int = self.margen + len(self.marco_h) + self.x_pad + maximo + self.pad_x + len(self.marco_h)
+        # self.total_len: int = maximo 
 
 
         # paso del tablero al rango principal.... de esta forma puedo imprimir con Prango
         HEAD.tablero_to_rango()
         # colocando el pie
-        lst_length = HEAD.get_lst_max_filas( rango = HEAD.buscar_rango(HEAD.BASE_RANGO_TABLERO) )
-        # print(lst_length)
-        lst_num_faltan = [ self.total_len - int(length) for length in lst_length ]
+        lst_length_head = HEAD.get_lst_max_filas( rango = HEAD.rango_tablero )
+        print(lst_length_head)        
+        lst_num_faltan = [ self.total_len - int(length)  for length in lst_length_head ]
+        """ >>> Devuelve una lista con las longitudes que faltan para completar la longitud total 
+        """
         for i, faltan in enumerate(lst_num_faltan):
-            HEAD.xy(fil=i, col= HEAD.ultima_columna(), valor=f'{self.ESPACIO * faltan}█')
+            HEAD.xy(fil=i, col= HEAD.ultima_columna(), valor=f'{self.ESPACIO * ( faltan )}█')
         HEAD.tablero_to_rango()
         # print(f'{'█'*self.total_len}')
 
-
-        # paso del tablero al rango principal..... de esta forma puedo imprimir con Prango
+        # paso del tablero al rango principal..... de esta forma puedo imprimir con Prango...in the future
         self.tablero_to_rango()
         # colocando el pie
-        lst_length = self.get_lst_max_filas( rango = self.buscar_rango(self.BASE_RANGO_TABLERO) )
+        lst_length = self.get_lst_max_filas( rango = self.rango_tablero )
         print(lst_length)
         lst_num_faltan = [ self.total_len - int(length) for length in lst_length ]
         for i, faltan in enumerate(lst_num_faltan):
@@ -2431,29 +2517,29 @@ class Monkey_Men(Rangutan):
         PIE.tablero_to_rango()
         # colocando el pie
         lst_length_pie = PIE.get_lst_max_filas( rango = PIE.buscar_rango(PIE.BASE_RANGO_TABLERO) )
-        # print(lst_length_pie)
+        print(lst_length_pie)
         lst_num_faltan_pie = [ self.total_len - int(length) for length in lst_length_pie ]
         for i, faltan in enumerate(lst_num_faltan_pie):
-            PIE.xy(fil=i, col= PIE.ultima_columna(), valor=f'{self.ESPACIO * faltan}█')
+            PIE.xy(fil=i, col= PIE.ultima_columna(), valor=f'{self.ESPACIO * (faltan )}█')
         PIE.tablero_to_rango()
-
-        # PIE.set_valor_over_columna( columna = PIE.ultima_columna(), valor = f'{' '*pad_x}█' )
 
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
         """ -  I M P R E S I O N   D E L   M E N U  - """
         # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦       
-
-        print(f'{'▄'*self.total_len}')
+        print()
+        print(f'{'▀' * ( maximo + self.x_pad + 2 )}')        #220
         # HEAD.to_print(b_ajustado = False, numSP=0, b_columnas_head = False    , b_num_filas=False, pad_x=0)
         HEAD.Prango( nombre_rango = HEAD.BASE_RANGO_TABLERO, column_adjust = 0 , pad_x = 0)
-        print(f'{'▄'*self.total_len}')
+        print(f'{'▄' * ( maximo + self.x_pad + 2 )}')          #220
         
         # self.to_print(b_ajustado = False, numSP=0, b_columnas_head = False  , b_num_filas =True, pad_x=0)
         self.Prango( nombre_rango = self.BASE_RANGO_TABLERO, column_adjust = 0 , pad_x = 0)
 
-        print(f'█{'═'*(self.total_len-2)}█')
+        print(f'█{'═' * ( maximo + self.x_pad  )}█')    
         PIE.Prango( nombre_rango = PIE.BASE_RANGO_TABLERO, column_adjust = 0, pad_x = 0)
-        print(f'{'▀'*self.total_len}')
+        print(f'{'▀' * ( maximo + self.x_pad + 2 )}')        #223 ■
+        # print(f'{'■' * ( maximo + self.x_pad + 2 )}')        #223 ■
+        
 
     # Impresion de l clase
     def __str__(self):                
@@ -2461,15 +2547,18 @@ class Monkey_Men(Rangutan):
 
     # __________________________________________________________________
     # CAMBIA EL ESTILO(CARACTERES DE CABECERA, PIE, PRE-NUM , POST-NUM )
-    def style(self, corona:str = '*', linea_head:str = '' ,  cuello:str = '*' ,  pie:str = '~' , marco:str = '|' , info:str = '' , the_end:str= '~' ):
-        """ Cambia el estilo de los caracteres del menu """
-        if corona: self.sombrero = corona
-        if linea_head: self.linea_head = linea_head
-        if cuello: self.cuello = cuello
-        if marco: self.marco = marco
+    def style(self, y_head:str = '', head:str = '' ,  head_y:str = '' ,  y_pie:str = '' , marco_h:str = '' , pie:str = '' , pie_y:str= '' , pad_x:int = 0 , x_pad:int = 0):
+        """ >>> Cambia el estilo de los caracteres del menu 
+        Se pueden cambiar todos los char, la head y la pie. """
+        if y_head: self.y_head = y_head
+        if head: self.head = head
+        if head_y: self.head_y = head_y
+        if marco_h: self.marco_h = marco_h
+        if y_pie: self.y_pie = y_pie
         if pie: self.pie = pie
-        if info: self.info = info
-        if the_end: self.the_end = the_end
+        if pie_y: self.pie_y = pie_y
+        if pad_x: self.pad_x = pad_x
+        if x_pad: self.x_pad = x_pad
     
     # def texto_fuente_color(self, texto, fuente="mini", color=Fore.CYAN):
     #     ascii_art = pyfiglet.figlet_format(texto, font=fuente)
@@ -2479,28 +2568,65 @@ class Monkey_Men(Rangutan):
 
     # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
     # PONE UN MARCO EN TODO EL TABLERO (TODAS SUS FILAS CON '|'  Y EN TODAS SUS COLUMNAS '_' o '-' o '~' o '='
-    def set_marco(self, x_margin=0, margin_x=0, pad_x=40):
-        """ [x_margin] (int) el margen entre el marco y el primer caracter de la linea.
-        [margin_x] (int) el margen entre el marco y el final de linea.
-        [pad_x] (int) espacio entre el final de la linea y el marco.
+    def set_marco(self, margen:int = 0, x_pad:int = 5, pad_x:int = 40):
+        """ >>> Pone un marco en todo el tablero (todas sus filas con '|'  y en todas sus columnas '_' o '-' o '~' o '='
+        [margen] (int) el margen entre el inicio de linea y el marco.
+        [pad_x] (int) espacio entre el final de la linea y el marco. se asigna a la ultima columna del tablero.
+        [x_pad] (int) espacio entre el inicio de la linea y el inicio del contenido. se asigna a la column B. 
+
         """
         if not self.tablero: 
             return None
-        """ >>> Obliga a buscar la longitud maxima.... de las filas, para poner el marco final( '|' ) en el mismo punto de cada fila.
-        Si se imprime por ajuste=true siempre quedará en el mismo punto, pero si se imprime por ajuste = False es necesario. """
-        maximo_fila = self.get_max_filas()
-        
-        """ Pone Los caracteres en los límites del marco fila y columna 0 fila final y columna final """
-        # self.set_valor_over_columna(columna=self.data['int_ci'], valor=f'|')    # int columna inicio
-        # self.set_valor_over_columna(columna=self.data['int_cf'], valor=f'|')    # int columna fin
-        # self.set_valor_over_fila(fila_to_set=self.data['int_fi'], valor=f'_')    # int fila inicio
-        # self.set_valor_over_fila(fila_to_set=self.data['int_ff'], valor=f'=')    # int fila fin
+        if not self.dicc_gorila: 
+            return None
 
-        """ Recorre cada fila del tablero para ajustarle el marco """
-        for dicc_fila in self.tablero:
-            pass        
+        # V a l i d a c i o n   d e   t i p o s   y   e v i t o   v a l o r e s   n e g a t i v o s 
+        try:
+            margen=abs(margen)
+            x_pad=abs(x_pad)
+            pad_x=abs(pad_x)
+        except Exception as e:
+            return False
+
+        # C a c h o   e l   h e a d   y   e l   p i e ... creados en __init__
+        try:
+            HEAD = self.dicc_gorila['head'] if self.dicc_gorila['head'] else None
+            PIE  = self.dicc_gorila['pie']  if self.dicc_gorila['pie']  else None
+        except Exception as e:
+            return False
+
+        # ::: M A R C O   o v e r   h e a d :::        
+        if HEAD:
+            try:
+                HEAD.set_valor_over_columna(columna='A', valor=f'{self.ESPACIO * margen}█{self.ESPACIO * x_pad}') 
+                HEAD.set_valor_over_columna(columna=HEAD.ultima_columna(), valor = f'{self.ESPACIO * pad_x}█')         
+                # HEAD.set_valor_over_columna(columna='B', valor=self.ESPACIO*self.x_pad)
+                # HEAD.set_valor_over_columna(columna=HEAD.ultima_columna(),  valor=self.ESPACIO*self.pad_x)    
+            except Exception as e:
+                return False
+
+        # ::: M A R C O   o v e r   b o d y ::: .... si hay tablero, hay body.
+        self.set_valor_over_columna(columna='A', valor=f'{self.ESPACIO * margen}█{self.ESPACIO * x_pad}')
+        self.set_valor_over_columna(columna=self.ultima_columna(), valor = f'{self.ESPACIO * pad_x}█')
+
+        # ::: M A R C O   o v e r   p i e :::
+        if PIE:
+            try:
+                PIE.set_valor_over_columna( columna = 'A', valor = f'{self.ESPACIO * margen}█{self.ESPACIO * x_pad}' )                
+                PIE.set_valor_over_columna( columna = PIE.ultima_columna(), valor = f'{self.ESPACIO * pad_x}█' )
+                # PIE.set_valor_over_columna(columna='B', valor=self.ESPACIO*self.x_pad)
+                # PIE.set_valor_over_columna(columna=PIE.ultima_columna(), valor=self.ESPACIO*self.pad_x)         
+            except Exception as e:
+                return False
+        
+        # ahora tengo que cachar la lista de self.lst_celdas_reservadas_marco para no introducir datos en las celdas marco
+        self.lst_celdas_reservadas_marco = [f'{self.rango_tablero.data['letra_inicio']}:{i}' for i in range(self.num_filas)]        
+        self.lst_celdas_reservadas_marco +=[f'{self.rango_tablero.data['letra_fin']}:{i}' for i in range(self.num_filas)]
+        return True    
     
-    
+    def es_reservada(self, celda)->bool:
+        """ >>> Valida si la celda es una celda reservada para el marco. """
+        return True if celda in self.lst_celdas_reservadas_marco else False
 # ============================================================================================
 # ============================================================================================
 # ============================================================================================

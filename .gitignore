@@ -1,6 +1,6 @@
 vscode/
 .idea/
-# .gitignore.py
+# .gitignore
 # *.txt
 *.bak
 tmp/
