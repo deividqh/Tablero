@@ -12,7 +12,8 @@ import time
 # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 # El objeto de estas pruebas xxxxxxxxxxxxxxxxxxxxxxxxxx
 # from classMenuDvd.Tablero_X_Men import Tablero
-from classMenuDvd.Tablero_X_Men import Rangutan as Rangutan
+# from classMenuDvd.Tablero_X_Men import Rangutan as Rangutan
+from classMenuDvd.Tablero_X_Men import Rango as Rango
 
 # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
 # El Menu de todo Esto mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
@@ -27,7 +28,8 @@ from classTeclado.validator import ValidReg as VAL
 # ====================================================================================
 # DEF: Desarrollo y memoria de la clase Tablero. 
 # ====================================================================================
-TABLERO = Rangutan(total_columnas_tablero=50, total_filas_tablero=30, valor_inicial='-')
+# TABLERO = Rangutan(total_columnas_tablero=50, total_filas_tablero=30, valor_inicial='-')
+TABLERO = None
 
 # ######################################################################
 # ######################## xindex ######################################
@@ -375,35 +377,7 @@ def prango_to():
 
 
 def prueba_recursiva():
-    global TABLERO
-    matriz_0 = [{'dos':[3, 4]}, {'tres':[6, 7, 8]}, [9 ,10] ]
-    matriz_1 = {
-            "usuarios": [
-                {
-                    "id": 1 ,
-                    "nombre": "Ana" ,
-                    "email": "ana@example.com" ,
-                    "activo": True
-                },
-                {
-                    "id": 2,
-                    "nombre": "Luis",
-                    "email": "luis@example.com",
-                    "activo": False
-                }
-            ],
-            "configuracion": {
-                "modo": "oscuro",
-                "notificaciones": True
-            }
-            ,
-            "data": {
-                "item_1": "data_1",
-                "item_2": [True, 22, 'data_2']
-            }
-
-        }
-    TABLERO.prueba_recursiva_Rangutan( matriz = matriz_1 )
+   rango = Rango(nombre_rango= "r2d2", celda_inicio="A:0", dimension="C:2")
 
 # ==============================================================================================
 # ==============================================================================================
