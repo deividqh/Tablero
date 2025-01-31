@@ -991,9 +991,8 @@ class Tablero():
             total_columnas_tablero = len( SttS._may_ln.keys() )-1
         pass
 
-        # dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        # C A R G O   L O S   D A T O S  D E  L A   C L A S E
-        
+        # ☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻
+        # C A R G O   L O S   D A T O S  D E  L A   C L A S E        
         self.numero_columnas = total_columnas_tablero        
         self.numero_filas = total_filas_tablero
         self.valor_inicial = valor_inicial
