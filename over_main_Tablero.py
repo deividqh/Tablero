@@ -377,7 +377,9 @@ def prango_to():
 
 
 def prueba_recursiva():
-   rango = Rango(nombre_rango= "r2d2", celda_inicio="A:0", dimension="C:2")
+    rango = Rango(nombre_rango= "r2d2", celda_inicio="A:0", dimension="3X3" , valor_inicio = [33, 55, 77, 12])
+    print()
+    print(rango)
 
 # ==============================================================================================
 # ==============================================================================================

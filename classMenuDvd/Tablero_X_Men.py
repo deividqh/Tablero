@@ -411,11 +411,15 @@ class SttS():
         # R e t o r n o 
         return retorno
 
-        pass
+    # Busqueda recursiva por un iterator lista
+    @staticmethod
+    def get_lista_rcrsv_valor( iterator, retorno=None):
+        # p r i m e r a   v u e l t a  
+        if retorno == None : 
+            retorno = []
         if isinstance(iterator, list) or isinstance(iterator, tuple):
-            level += 1
             for subList in iterator:
-                SttS.get_lst_rcrsv_level(iterator=subList, retorno=retorno, level=level)                                       
+                SttS.get_lst_rcrsv_level(iterator=subList, retorno=retorno)                                       
 
         elif isinstance(iterator, dict): 
             t_fila = [(key, *item) for key, item in iterator.items()][0]          
@@ -425,6 +429,10 @@ class SttS():
             """ >>> Convierte a string cada elemento de la lista 
             """
             retorno.append(fila_str)
+        else:
+            retorno.append(iterator)
+
+        return retorno
 
     # Entra una lista o diccionario de str y devuelve una lista en str.... para convertir una matriz en una lista de str.
     @staticmethod
@@ -579,7 +587,8 @@ class Celda():
         ej: celda.set_valor(10, b_str=True)  => Guarda el 10 como str.
         ej: celda.set_valor(10) => Guarda el 10 como str ( '10' ).
         """
-        if isinstance(valor, iter):
+        # if isinstance(valor, iterator):
+        if isinstance(valor, str) or isinstance(valor, list) or isinstance(valor, tuple) or isinstance(valor, set) or isinstance(valor, dict):
             if isinstance(valor, str):
                 self.valor = valor
                 self.c_v[self.celda] = self.valor
@@ -641,7 +650,7 @@ class Celda():
     def sumar_fc(self, filas:int, columnas:int, b_copy_value:bool = False):
         celda_suma_fila = self.sumar_filas(filas = filas, b_copy_value = b_copy_value)
         if not celda_suma_fila: return None
-        celda_resultado = self.sumar_columnas(columnas = columnas, b_copy_value = b_copy_value)
+        celda_resultado = celda_suma_fila.sumar_columnas(columnas = columnas, b_copy_value = b_copy_value)
         return celda_resultado if celda_resultado else None
 
 
@@ -741,9 +750,9 @@ class Rango(Celda):
         
         self.nombre = nombre_rango
         
-        self.total_filas = int( self.celda_fin.get_fila()) - int(self.get_fila()+ 1 )
-        self.total_columnas = int( self.celda_fin.get_columna()) - int(self.get_columna() + 1 )
-        self.total_celdas = int(self.total_filas) * int(self.total_columnas)
+        self.total_filas    = self.celda_fin.get_fila()     - self.get_fila()  + 1
+        self.total_columnas = self.celda_fin.get_columna()  - self.get_columna() + 1
+        self.total_celdas   = self.total_filas * self.total_columnas
         
         self.es_numerico = False
         self.flag = ''          
@@ -762,18 +771,18 @@ class Rango(Celda):
                     }
         self.b__str__print_head = True
         """ >>> True(byDef) Indica que se tienen que imprimir las cabeceras en __str__  y False que se imprimen por fuera."""
-
-
         
         #  C E L D A S   I M P L I C A D A S
         self.lst = self.get_list_celdas()                       
-        """ >>> ALMACENO CELDA UNA LISTA    .... VIRTUAL """
-        
+        """ >>> LISTA DE OBJETOS CELDA     ....  """
+
         # V A L O R   I N I C I O
-        self.valor_inicio = valor_inicio      # Por defecto = ''
-        """ >>> Valor que tendrán todas las celdas por defecto. 
-        AQUI HAY QUE VALIDAR QUE EL RANGO SEA UN INT, LIST , MATRIZ, DICT Y ASIGNARLO AL RANGO. 
-        """
+        # lst_valor_inicio = SttS.get_lista_rcrsv_valor(iterator=valor_inicio)     
+        if valor_inicio:
+            self.get_matriz(matriz=valor_inicio)
+
+        print(self.lst)
+       
 
     # _____________________
     # Print de la clase
@@ -848,8 +857,8 @@ class Rango(Celda):
                     total_filas , total_columnas = SttS.desata_binomio(dimension, 'X')
                     if total_filas == None or total_columnas == None:
                         return None, None
-                    total_filas     = int(total_filas)                                     # si no es bueno, casca
-                    total_columnas  = int(total_columnas)                                      # si no es bueno, casca
+                    total_filas     = int(total_filas) - 1                                    # si no es bueno, casca
+                    total_columnas  = int(total_columnas)  - 1                                       # si no es bueno, casca
                 except Exception as e:
                     print(f'Error init Rango: {e}')
                     return None, None
@@ -859,18 +868,9 @@ class Rango(Celda):
         return total_filas, total_columnas
 
 
-    # O b t i e n e   l o s   d a t o s   d e   l a   c e l d a _ f i n  del Rango
+    # 
     def get_str_celda_fin(self, total_filas:int, total_columnas:int):
-        """ Estrategia para colocar todos los rangos en su sitio.
-            >>> pejemplo   celda_inicio = 'C:2' , dimension = '3x2'
-
-            1-  celda_inicio='C:2' -> fila_iniciocio=2 , columna_iniciocio=2 
-                dimension = '3x2' => total_filas=3 , total_columnas = 2 
-                
-            2-  fila_fin = fila_celda_inicio + total_filas - 1 => 2 + 3 - 1 ==> 4
-                columna_fin = letra_celda_inicio + total_columnas  => 2 + 2 -1 ==> 3
-
-            3- celda_fin = to_letra(columna_fin):fila_fin
+        """ obtiene el que debería de ser la cadena de la celda fin
         """
         try:            
             fila_fin    = self.get_fila() + total_filas - 1         
@@ -889,15 +889,19 @@ class Rango(Celda):
         Es conflictivo, pq no se sabe aun si es un rango valido, pero rango es un concepto, una idea ;) ... ya se validará
         quiero que sea un diccionario (key)celda : (valor)valor....pero valor va  ser = None en este punto.
         - En Tablero o la clase que lo use es la que tiene que escribir en self.tablero, o leer de self.tablero y asignar a rango o etc....
+        >>> lst_celdas=[]
         >>> for i in range(self.total_filas)):            
         >>>     for j in range(self.total_columnas):
-        >>>         sig_celda = self.sumar_fc(filas = i, columnas = j,  b_copy=True)            
+        >>>         sig_celda = self.sumar_fc(filas = i, columnas = j,  b_copy_value=True)            
         >>>         lst_celdas.append(sig_celda)
         """
         try:
-            return [ self.sumar_fc(filas = i, columnas = j,  b_copy=True) for i in range(self.total_filas)
-                                                                             for j in range(self.total_columnas)
-                    ]
+            return [
+                self.sumar_fc(filas=i, columnas=j, b_copy_value=True)
+                for i in range(self.total_filas + 1 )
+                for j in range(self.total_columnas + 1 )                  
+            ]
+
         except Exception as e:
             print(f'Error en get_list_celdas :::: {e}')
             return None
@@ -949,7 +953,31 @@ class Rango(Celda):
             self.rango.b_ghost = value
             pass
         
+    # Los valores de matriz To  valores rango.
+    def get_matriz(self, matriz):
+        """
+        Aplana la lista dada, ajusta su longitud para que coincida con la lista interna `self.lst` rellenando con un valor predeterminado,
+        y establece los valores de las celdas en `self.lst` a los valores correspondientes en la lista ajustada.
+        Args:
+            lista (list): La lista a procesar.
+        Returns:
+            None
+        """
+        
+        lista_plana = self.aplanar_matriz(matriz)
+        lista_plana = SttS.igualar_listas(listaKeys=self.lst, listaToReLong=lista_plana, valor_relleno=Celda.VALOR_INICIAL)
+        
+        for celda, valor in zip(self.lst, lista_plana):
+            celda.set_valor(valor)        
 
+    def aplanar_matriz(self, matriz):
+        lista = []
+        for elemento in matriz:
+            if isinstance(elemento, list) or isinstance(elemento, tuple):
+                lista.extend(aplanar_matriz(elemento))
+            else:
+                lista.append(elemento)
+        return lista
         
 
 # ███████████████████████████████████████████████████████████████████████████████████████████████████████████
