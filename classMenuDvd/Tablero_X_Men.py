@@ -591,19 +591,13 @@ class Celda():
         if isinstance(valor, str) or isinstance(valor, list) or isinstance(valor, tuple) or isinstance(valor, set) or isinstance(valor, dict):
             if isinstance(valor, str):
                 self.valor = valor
-                self.c_v[self.celda] = self.valor
-                return self.valor            
             else:
                 if b_str == True:
                     self.valor = str(valor)
-                    self.c_v[self.celda] = self.valor
-                    return self.valor
                 else:
                     self.valor = valor
-                    self.c_v[self.celda] = self.valor
-                    return self.valor
-        self.valor = valor
-        self.c_v[self.celda] = self.valor
+        else:
+            self.valor = valor
         return self.valor
 
     # SUMA UNA FILA A UNA CELDA y DEVUELVE LA CELDA RESULTANTE
@@ -717,7 +711,7 @@ class Rango(Celda):
         super().__init__(celda=celda_inicio)
         """ >>> C e l d a   d e   i n i c i o  Rango se define como una celda de Inicio y a partir de ahora le sumamos cosas
         """ 
-
+        if not self: return None
         # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
         """ >>> D i m e n s i o n  Puede venir como una celda de fin(AX:9) o como una dimension(3x4) """  
         self.total_filas, self.total_columnas = self.desempaqueta_dimension(dimension=dimension)         
@@ -727,7 +721,7 @@ class Rango(Celda):
         
         # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
         """ >>> C e l d a   F I N  ... (a partir de celda_inicio y dimension) ...Esto define un rango. ahora hay que capturar las celdas implicadas y los valores de cada celda""" 
-        celda_fin = self.get_str_celda_fin(total_filas = self.total_filas , total_columnas = self.total_columnas)
+        celda_fin = self.__get_str_celda_fin(total_filas = self.total_filas , total_columnas = self.total_columnas)
         if not celda_fin: 
             print("Error en la creacion de la Celda Fin")
             return None
@@ -773,16 +767,19 @@ class Rango(Celda):
         """ >>> True(byDef) Indica que se tienen que imprimir las cabeceras en __str__  y False que se imprimen por fuera."""
         
         #  C E L D A S   I M P L I C A D A S
-        self.lst = self.get_list_celdas()                       
+        self.lst = self.__get_list_celdas()                       
         """ >>> LISTA DE OBJETOS CELDA     ....  """
 
         # V A L O R   I N I C I O
         # lst_valor_inicio = SttS.get_lista_rcrsv_valor(iterator=valor_inicio)     
         if valor_inicio:
-            self.get_matriz(matriz=valor_inicio)
+            self.go_to(data = valor_inicio)
 
-        print(self.lst)
-       
+        # imprime valores de las celdas del rango. 
+        print()
+        for celda in self.lst:
+            print(f'{celda.celda} = {celda.valor}', end=' | ')
+        print()
 
     # _____________________
     # Print de la clase
@@ -857,8 +854,8 @@ class Rango(Celda):
                     total_filas , total_columnas = SttS.desata_binomio(dimension, 'X')
                     if total_filas == None or total_columnas == None:
                         return None, None
-                    total_filas     = int(total_filas) - 1                                    # si no es bueno, casca
-                    total_columnas  = int(total_columnas)  - 1                                       # si no es bueno, casca
+                    total_filas     = int(total_filas)                                     # si no es bueno, casca
+                    total_columnas  = int(total_columnas)                                  # si no es bueno, casca
                 except Exception as e:
                     print(f'Error init Rango: {e}')
                     return None, None
@@ -869,7 +866,7 @@ class Rango(Celda):
 
 
     # 
-    def get_str_celda_fin(self, total_filas:int, total_columnas:int):
+    def __get_str_celda_fin(self, total_filas:int, total_columnas:int):
         """ obtiene el que debería de ser la cadena de la celda fin
         """
         try:            
@@ -884,11 +881,11 @@ class Rango(Celda):
         return celda_fin
     
     # 
-    def get_list_celdas(self):
-        """ >>> ALMACENO CELDA:VALOR EN UN DICCIONARIO.... VIRTUAL 
-        Es conflictivo, pq no se sabe aun si es un rango valido, pero rango es un concepto, una idea ;) ... ya se validará
-        quiero que sea un diccionario (key)celda : (valor)valor....pero valor va  ser = None en este punto.
-        - En Tablero o la clase que lo use es la que tiene que escribir en self.tablero, o leer de self.tablero y asignar a rango o etc....
+    def __get_list_celdas(self):
+        """ >>> Genera una lista de celdas iterando a través del número total de filas y columnas.
+        Retorno:
+            list: Una lista de celdas obtenidas llamando al método `sumar_fc` con los índices actuales de fila y columna.
+                  Si ocurre una excepción, imprime un mensaje de error y retorna None.
         >>> lst_celdas=[]
         >>> for i in range(self.total_filas)):            
         >>>     for j in range(self.total_columnas):
@@ -903,7 +900,7 @@ class Rango(Celda):
             ]
 
         except Exception as e:
-            print(f'Error en get_list_celdas :::: {e}')
+            print(f'Error en __get_list_celdas :::: {e}')
             return None
 
     # _____________________o c u l t o   para ver. no para buscar.
@@ -954,7 +951,7 @@ class Rango(Celda):
             pass
         
     # Los valores de matriz To  valores rango.
-    def get_matriz(self, matriz):
+    def go_to(self, data):
         """
         Aplana la lista dada, ajusta su longitud para que coincida con la lista interna `self.lst` rellenando con un valor predeterminado,
         y establece los valores de las celdas en `self.lst` a los valores correspondientes en la lista ajustada.
@@ -964,15 +961,15 @@ class Rango(Celda):
             None
         """
         
-        lista_plana = self.aplanar_matriz(matriz)
+        lista_plana = self.aplanar_matriz(data)
         lista_plana = SttS.igualar_listas(listaKeys=self.lst, listaToReLong=lista_plana, valor_relleno=Celda.VALOR_INICIAL)
         
         for celda, valor in zip(self.lst, lista_plana):
             celda.set_valor(valor)        
 
-    def aplanar_matriz(self, matriz):
+    def aplanar_matriz(self, data):
         lista = []
-        for elemento in matriz:
+        for elemento in data:
             if isinstance(elemento, list) or isinstance(elemento, tuple):
                 lista.extend(aplanar_matriz(elemento))
             else:
