@@ -82,7 +82,7 @@ def iniciar_tablero():
         print('Iniciar Anulado... Chaoooo\n')
         return
     # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    TABLERO.inicializa_tablero(value=val['val'])
+    TABLERO.init_tablero(value=val['val'])
     print(f'Iniciar a {val['val']}  ;)\n')
 
 # IMPRIME UN TABLERO CON TAMAÑO FIJO DE COLUMNAS(SE PIDE POR TECLADO.)
@@ -113,7 +113,7 @@ def print_ajustado():
 def set_fila_columna():      
     global TABLERO
     f_c_v = TeclD.byTcld( listaStrKeys=['fila', 'col','valor'], listaDef=[(int, False), (str, False), (str, True)])
-    set_v = TABLERO.xy(fil=f_c_v['fila'], col=f_c_v['col'], valor=f_c_v['valor'])
+    set_v = TABLERO.xy(fila=f_c_v['fila'], col=f_c_v['col'], valor=f_c_v['valor'])
     print('\nset_value :)') if set_v == True else 'set_fila_columna :('
 
 # ESTABLECE UN VALOR EN UNA CELDA (A:0)
@@ -134,7 +134,7 @@ def set_valor_over_fila():
     TABLERO.set_valor_over_fila(fila_to_set=f['f'], valor=val['v'])
     # generic_cols = TABLERO.get_dicc_numcol_value()
     # for i,columna in enumerate(generic_cols):
-    #     TABLERO.xy(fil=f['f'], col=columna, valor=val['v'])
+    #     TABLERO.xy(fila=f['f'], col=columna, valor=val['v'])
 
 # ESTABLECE UNA COLUMNA
 def set_valor_over_columna():
@@ -157,7 +157,7 @@ def get_fila_columna():
     global TABLERO
     f = TeclD.byTcld( listaStrKeys=['f'], listaDef=[(int, False)], msgIntro='\nIntroduce Fila to Get Valor ')    
     c = TeclD.byTcld( listaStrKeys=['c'], listaDef=[(str, False)], msgIntro='\nIntroduce Columna to Get Valor [0, "a", "A"] ')    
-    valor_en_tablero = TABLERO.xy(fil=f['f'], col=c['c'])    
+    valor_en_tablero = TABLERO.xy(fila=f['f'], col=c['c'])    
     print(f'valor en Tablero: {valor_en_tablero}\n')
 
 # OBTIENE UNA FILA
@@ -377,9 +377,14 @@ def prango_to():
 
 
 def prueba_recursiva():
-    rango = Rango(nombre_rango= "r2d2", celda_inicio="A:0", dimension="30x50" , valor_inicio = [33, 55.5, 'Hola Flipy', 12])
+    v_ini=[[33, 55.5, 'Hola Flipy', 12], 
+    [45 , 'Adios', 112], 
+    [77, " " , 'hawai', 666]]
+    rango = Rango(nombre_rango= "r2d2", celda_inicio="A:0", dimension="7X4" , valor_inicial = v_ini)
     print()
     print(rango)
+    print('ver rango:\n')
+    rango.show()
 
 # ==============================================================================================
 # ==============================================================================================
