@@ -326,8 +326,7 @@ class SttS():
             print(f"Error::: get_filas_columnas_from_dimension::: {e}")
             return None, None    
 
-
-
+    
     # ██████████████████████  R E C U R S I V A S  █████████████████████████    
 
     # Busqueda recursiva por un iterator lista
@@ -713,21 +712,9 @@ class Rango(Celda):
         # V A L O R   I N I C I O ... puede ser una lista, una matriz, un str, int, bool...
         if valor_inicial:
             self.set_data_plana(data = valor_inicial, relleno = valor_inicial)
-
-        # imprime valores de las celdas del rango.... a capon
-        # print()
-        # for celda in self.lst_celdas:
-        #     print(f'{celda.celda} = {celda.valor}', end=' | ')
-        # print()
-
+            
         self.matriz = self.__get_matriz()
         if not self.matriz: return None
-
-        print('\nV e r   M a t r i z:\n')
-        for fila in self.matriz:
-            for celda in fila:
-                print(celda.celda, end='  ')
-            print()
 
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     # Info del Rango
@@ -758,7 +745,7 @@ class Rango(Celda):
         else:
             return f"\nDatos del Rango( {self.nombre} ): [ {self.get_celda()} ]  To [ {self.celda_fin.get_celda()} ] Total Celdas: {self.data['total_celdas']} => {self.total_filas} Filas y {self.total_columnas} Columnas .......es Oculto?: {self.b_oculto} ..... Ghost?: {self.b_ghost}"  
     
-    # self.lst_celdas lo mete en una matriz.
+    # DEVUELVE LA MATRIZ DE self.lst_celdas
     def __get_matriz(self):
         """ >>> Devuelve un rango en forma de lista de listas. """
         if not self.lst_celdas: return None
@@ -766,7 +753,7 @@ class Rango(Celda):
         for i in range(self.total_filas):
             lst_fila = []            
             for j in range(self.total_columnas):
-                nombre_celda = SttS.celda_by_fc(fila = i, columna = j)
+                nombre_celda = SttS.celda_by_fc(fila = self.fila + i, columna = self.columna + j)
                 celda = self.get_celda_by_nombre(nombre_celda=nombre_celda)
                 if not celda: return None
                 lst_fila.append(celda)
@@ -789,10 +776,10 @@ class Rango(Celda):
         if b_print == False:
             return lst_matriz
         else:
-            for fila in lst_matriz:
-                for i, valor in enumerate(fila):
-                    print(f'{valor}' , end= '\t| ') if i != len(fila) - 1 else print(f'{valor}', end='\n')
-                # print('')
+            self.imprimir(sp_columna=3)            
+            # for fila in lst_matriz:
+            #     for i, valor in enumerate(fila):
+            #         print(f'{valor}' , end= '\t| ') if i != len(fila) - 1 else print(f'{valor}', end='\n')
     
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     def ver_matriz(self):
@@ -896,8 +883,9 @@ class Rango(Celda):
         """ >>> Obtiene la cadena de la celda fin (pej. 'D:3' ), no el objeto Celdt 
         """
         try:            
-            fila_fin    = self.get_fila() + total_filas - 1         
-            columna_fin = self.get_columna() + total_columnas - 1 
+            fila_fin    = self.fila     + total_filas    - 1         
+            columna_fin = self.columna  + total_columnas - 1 
+
             letra_columna_fin = SttS._may_nl[columna_fin]
             celda_fin = f'{letra_columna_fin}:{fila_fin}'
         except Exception as e:
@@ -929,7 +917,7 @@ class Rango(Celda):
             return None
 
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-    def set_data_plana(self, data, relleno:str = ''):
+    def set_data_plana(self, data, relleno:str = Celda.VALOR_INICIAL):
         """ >>> establece un dato en el rango.
         Aplana la lista dada, ajusta su longitud para que coincida con la lista interna `self.lst_celdas` rellenando con un valor predeterminado,
         y establece los valores de las celdas en `self.lst_celdas` a los valores correspondientes en la lista ajustada o no dependiendo de b_relleno.
@@ -953,35 +941,44 @@ class Rango(Celda):
         # Esto hace que el rango (las celdas del rango) cambien de valor
         for celda, valor in zip(self.lst_celdas, lista_plana):
             celda.set_valor(valor=valor)      
-        
 
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     def set_data_matriz(self, matriz:list, celda_inicio:str='A:0'):
-        """ Pasa los valores de una matriz a un rango creado """
+        """ >>> FROM MATRIZ TO RANGO SELF. 
+        ... o FROM RANGO TO RANGO  """
+        # VALIDACION INICIAL
         retorno = SttS.es_lista_de_listas( matriz = matriz )
         if not retorno: return False
-
+        
+        # SOBRE LA MATRIZ
         matriz_cuadrada = SttS.encuadrar_matriz(matriz = matriz)
 
         filas = len(matriz_cuadrada)
         columnas = len(matriz_cuadrada[0])
         dimension = f'{filas}X{columnas}'
 
-        if self.total_filas < filas:
+        # SOBRE LA CELDA DE INICIO
+        celda = Celda(celda=celda_inicio)
+        if not celda: return None
+
+        if self.total_filas < filas + celda.fila:
             """ Mas filas que el rango contenedor"""
-        if self.total_columnas < columnas:
+        if self.total_columnas < columnas + celda.columna:
             """ Mas columnas que el rango contenedor """
         
         nombre_rango = 'rango_aux'        
         try:
-            rango_aux = Rango( nombre = nombre_rango , celda_inicio = celda_inicio, dimension = dimension , valor_inicial = matriz_cuadrada )
+            rango_aux = Rango( nombre_rango = nombre_rango , celda_inicio = celda_inicio, dimension = dimension , valor_inicial = matriz_cuadrada )
             if not rango_aux: return False
-            self.set_data_plana(data=rango_aux.get)
+            self.set_data_plana(data=rango_aux.get_values(b_print=False))
             
-            
+            # ▓▓▓▓▓▓▓▓▓ WIP ▓▓▓▓▓▓▓▓▓
+
         except Exception as e:
+            print(f'Error ::: Tablero ::: set_data_matriz ::: {e}')
             return False
     
+        print(f'\n\nLast Fila Used: {self.__last_fila_used()}')    
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     def get_filas(self, fila_from:int, fila_to:int):
         """ >>> Obtiene las filas consecutivas de un rango en una lista. """
@@ -1156,7 +1153,7 @@ class Rango(Celda):
             print(f'Error __formato_to_prango_maxcol ::: {e}')
 
         for i in range (self.total_columnas): 
-            maximo = self.__get_max_columna( columna = i )
+            maximo = self.__get_len_max_columna( columna = i )
             # maximo += sp_columna
             strformato += "{:<" + str(maximo) + "}" + "{:<" + str(sp_columna) + '}'
             # strformato += "{:<" + str(maximo + sp_columna) + "}"  
@@ -1209,7 +1206,7 @@ class Rango(Celda):
         return strformato
 
     # LONGITUD MAXIMA DEL CONTENIDO DE UNA COLUMNA DEL RANGO.
-    def __get_max_columna(self, columna):
+    def __get_len_max_columna(self, columna):
         lst_columna = self.get_columnas(columna_from = columna , columna_to= columna)
         longitudes = [len(str(celda.valor)) for celda in lst_columna]
         return max(longitudes) if longitudes else 0                
@@ -1244,12 +1241,12 @@ class Rango(Celda):
     def __last_fila_used(self):
         """ Devuelve la última fila usada de la matriz.
         """        
-        b_match:bool = False
         for i, fila in enumerate(self.matriz):
-            for celda in fila():
+            b_match = 0
+            for celda in fila:
                 if celda.valor == Celda.VALOR_INICIAL:
-                    b_match == True
-            if b_match == True:
+                    b_match += 1
+            if b_match == self.total_columnas:
                 return i-1
         return None
 
@@ -1300,8 +1297,8 @@ class Tablero(Rango):
         """
         super().__init__(nombre_rango = 'main_tablero' , 
                         celda_inicio = 'A:0' , 
-                        dimension = dimension ,
-                        valor_inicial = valor_inicial , 
+                        dimension = self.dimension ,
+                        valor_inicial = self.valor_inicial , 
                         b_oculto = False , 
                         b_ghost = False)
         
@@ -1316,74 +1313,55 @@ class Tablero(Rango):
         pass        
 
 
-        # Diccionario creado para montar el tablero
-        dicc_numcol_value = { c:self.valor_inicial for c in range(self.total_columnas)}
-        """ >>> dicc (key):numero_columna (value): '-'   X   numero_columnas (...de 0 a numero_columnas) """
+        # # Diccionario creado para montar el tablero
+        # dicc_numcol_value = { c:self.valor_inicial for c in range(self.total_columnas)}
+        # """ >>> dicc (key):numero_columna (value): '-'   X   numero_columnas (...de 0 a numero_columnas) """
         
-        # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-        self.tablero = [copy.deepcopy(dicc_numcol_value) for f in range(self.total_filas)]
-        """ >>> Por cada fila hace una copia profunda del diccionario (numero_columna:valor), que almacena en tablero.
-        El resultado final es una lista de diccionarios numero_columna:valor  y se puede acceder a tablero por 
-        acceso_1: self.tablero[numero fila][numero de columna]              ==> acceso por indice
-        acceso_2: self.tablero[numero fila][SttS._may_nl[numero columna]]   ==> 
-        """
-        # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        if not self.tablero: return
-        """ >>> tablero: Es una lista de diccionarios que conforman una fila. 
-        self.tablero[2][3] => fila 2, columna 3 |  self.tablero[2][self.dicc_may_letr_num['C']] => fila 2, columna 3
-        self.tablero[1]['3']='dato_1'
-        """
+        # # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+        # self.tablero = [copy.deepcopy(dicc_numcol_value) for f in range(self.total_filas)]
+        # """ >>> Por cada fila hace una copia profunda del diccionario (numero_columna:valor), que almacena en tablero.
+        # El resultado final es una lista de diccionarios numero_columna:valor  y se puede acceder a tablero por 
+        # acceso_1: self.tablero[numero fila][numero de columna]              ==> acceso por indice
+        # acceso_2: self.tablero[numero fila][SttS._may_nl[numero columna]]   ==> 
+        # """
+        # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        # if not self.tablero: return
+        # """ >>> tablero: Es una lista de diccionarios que conforman una fila. 
+        # self.tablero[2][3] => fila 2, columna 3 |  self.tablero[2][self.dicc_may_letr_num['C']] => fila 2, columna 3
+        # self.tablero[1]['3']='dato_1'
+        # """
         self.init_tablero(value=self.valor_inicial)
         pass
-    
+
+        # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+        # L I S T A   D E   R A N G O S   D E   T A B L E R O        
+        self.lst_rangos=[]   
+        """ Cada Tablero pueda tener su coleccion de rangos """
     # _________________________________str__
     def __str__(self):
         for dicc_fila in self.tablero:
             print(*dicc_fila)
         pass
-    
-    # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    # G E T T E R ' S  / S E T T E R ' S   
-    # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    # _____________________________________________
-    # Devuelve el numero de filas del self.tablero
-    def get_numero_filas_tablero(self):
-        return len(self.tablero) if self.tablero else 0    
-    def get_numero_columnas_tablero(self):
-        return self.total_columnas if self.total_columnas else 0    
-    def ultima_fila(self):
-        return len(self.tablero) - 1 if self.tablero else 0
-    def ultima_columna(self, b_formato_letra = False):
-        if b_formato_letra == False:
-            return self.total_columnas - 1 if self.total_columnas else 0
-        else:
-            letra = SttS._may_nl(self.total_columnas - 1)
-            return letra if self.total_columnas else 0
-    def get_valor_inicial(self):
-        if self.valor_inicial:
-            return self.valor_inicial  
-        else:
-            self.valor_inicial = Celda.VALOR_INICIAL
-    def set_valor_inicial(self, valor_inicial):        
-        self.valor_inicial=valor_inicial
-    # Puede devolver una copia de tablero o una copia profunda(elClon=True)
+        
     def get_tablero(self, es_X2=False):
         if not self.tablero: return None
         return self.tablero if esX2==False else copy.deepcopy(self.tablero)
       
-    # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+    # ?????????????????????????????
     # INICIALIZA LOS VALORES DEL TABLERO CON UN VALOR DE ENTRADA O '-'  - over tablero - 
-    def init_tablero(self, value=''):
+    def init_tablero(self, value=Celda.VALOR_INICIAL):
         try:
-            for i, lst_fila in enumerate(self.tablero):
-                for j in range(self.total_columnas):
-                    self.tablero[i][j] = value
-                    # self.xy(i, j, value)    # la otra posibilidad.  
+            for i, fila in enumerate(self.matriz):
+                for celda in fila:
+                    celda.valor = value
+            
+            # self.lst_celdas
+            # pass
         except Exception as e:
             print(f'Error init_tablero :::: {e}')
             return 
         
-    # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    # ?????????????????????????????
     # G E T / S E T   U N   V A L O R   E N   T A B L E R O  - over tablero - 
     def xy(self, fila, columna, valor='<<<out>>>'):
         """ >>> xy(3, 5, valor='hola') : pone el valor 'hola' en la posicion fila=3, columna=5
@@ -1431,10 +1409,73 @@ class Tablero(Rango):
         retorno = self.xy(fila=fila, columna=columna, valor=self.valor_inicial)
         print('Borrar :( ') if retorno == None else ('Borrar ;)')
 
+    # ███████████████████████████████████████████████████████████████████████████████████
+    # - C R E A R   R A N G O  - 
+    def crear_rango(self, nombre:str, celda_inicio:str='A:0', dimension:str='1x1', b_ghost:bool=False):
+        """
+        Crea un nuevo rango si no existe un rango con el mismo nombre o propiedades.
+            [nombre] (str): Nombre único para identificar el rango.
+            [celda_inicio] (str): Celda inicial del rango (e.g., 'A:0').
+            [dimension] (str): Dimensión del rango en formato 'FilasxColumnas' (e.g., '3x2').
+            [b_ghost](bool):True (by Def), crea un rango y se carga desde tablero. 
+                            False, para que un rango sea cargado desde tablero.
+        Retorno:
+            Rango: El rango creado si es válido y único.
+            None: Si el rango ya existe o hay un error.
+        Ejemplo:
+            >>> tablero.crear_rango("MiRango", "A:0", "3x2")
+            >>> tablero.crear_rango("MiRango", "A:0", "B:2")
+        """
+        if not self.tablero: return None
+                
+        rango = None
+        try:
+            rango = Rango(nombre_rango = nombre, celda_inicio = celda_inicio, dimension = dimension, b_ghost=b_ghost)
+            if rango:
+                # No admite rangos  o u t   o f   t a b l e r o 
+                if self.valida_limites_rango(rango = rango) == False:       return None
+                
+                # No admite rangos  r e p e t i d o s  de nombre
+                if self.b_existe_nombre_rango(nombre_a_buscar = rango.nombre) == True:  return None
+
+                # L o s   f a n t a s m a s   no   se   cargan  de   tablero .... luego self.tablero_to_rango()
+                if rango.b_ghost == False:
+                    # self.tablero_to_rango(nombre_rango=rango.nombre)
+                    for celda in rango.dicc.keys():
+                        valor_celda_en_tablero = self.celda(celda=celda)
+                        """ >>> cruzo cada celda con el tablero 
+                        """
+                        if valor_celda_en_tablero != False and valor_celda_en_tablero != None:
+                            rango.dicc[celda] = valor_celda_en_tablero
+                        else:
+                            rango.dicc[celda] = self.valor_inicial
+                        """ >>> Y asigno el valor de la celda en el tablero al valor del rango. 
+                        """
+                    pass
+                    rango.dicc_to_matriz()
+                    """ .... y  siempre que se hacen operaciones sobre rango.dicc, tengo que espejarlas en la matriz. """
+                
+
+                #  e s _ n u m e r i c o .... luego llamar a self.es_rango_numerico()
+                """ >>> posibilita hacer operaciones a través del rango"""                
+                try:
+                    for valores in rango.dicc.values():
+                        valores = int(valores)                    
+                    rango.es_numerico = True
+                except Exception as e:
+                    rango.es_numerico = False
+
+                # O t r o   p a r a   l a   s a c a  :)
+                self.lst_rangos.append(rango)
+                return rango
+        except Exception as e:
+            print(e)
+            return None
+
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     #                  -  O V E R   F I L A S   Y   C O L U M N A S    - 
 
-    #  ESTABLECE UN VALOR EN UNA FILA  - over tablero - 
+    #  ESTABLECE UN VALOR EN UNA FILA  
     def set_valor_over_fila(self , fila_to_set=0, valor=''):        
         fila = self.get_lst_filas(filaFrom=fila_to_set, filaTo=fila_to_set)
         if not fila: return
@@ -1452,7 +1493,7 @@ class Tablero(Rango):
             print(f'Error::: set_valor_over_fila {e}')
             return False
     
-    # ESTABLECE UN VALOR EN UNA COLUMNA ENTERA DE TABLERO - over tablero - 
+    # ESTABLECE UN VALOR EN UNA COLUMNA ENTERA DE TABLERO 
     def set_valor_over_columna(self, columna, valor):
         numero_columna = SttS.letra_to_numcol(letra=columna)           
         if numero_columna == None:
@@ -1470,15 +1511,14 @@ class Tablero(Rango):
 
         return lst_columna if lst_columna else False
 
-
-    # DEVUELVE 1 FILA (DICC DE TABLERO)  - over tablero - 
+    # DEVUELVE 1 FILA (DICC DE TABLERO)  
     def __get_dicc_fila(self, fila):
         """ >>> Devuelve el dicc que se corresponde con una fila en la list self.tablero """
         for f , dicc_cols in enumerate(self.tablero):
             if f == fila:
                 return dicc_cols
     
-    # DEVUELVE UN RANGO DE FILAS CONSECUTIVAS - over tablero - 
+    # DEVUELVE UN RANGO DE FILAS CONSECUTIVAS 
     def get_lst_filas(self, filaFrom, filaTo):
         """ >>> Devuelve una list de filas de  self.tablero """
         # Validacion fisica
@@ -1501,7 +1541,7 @@ class Tablero(Rango):
         # print(lst_retorno)
         return lst_retorno
 
-    #  F R O M   F I L A ( i n t  )   T O     L I S T _ S T R   - over tablero - 
+    # FROM FILA(int) TO LIST_STR  
     def get_fila(self, filaBusca):
         """ >>> Obtiene una lista de str de values de self.tablero 
         """
@@ -1512,8 +1552,7 @@ class Tablero(Rango):
             if  f == filaBusca:
                 return dicc_cols.values()      
     
-    # 
-    # F R O M   C O L U M N A ( i n t )  T O     L I S T   V A L O R E S . - over tablero - 
+    # FROM COLUMNA(int) TO LIST VALORES . 
     def get_columna(self, columna):     
 
         numero_columna = SttS.letra_to_numcol(letra=columna)
@@ -1530,13 +1569,13 @@ class Tablero(Rango):
         # rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr            
         return lst_columna if lst_columna else None    
     
-    # L E N   M A X   D E   U N A   C O L U M N A 
-    def get_max_columna(self, columna):
+    # LEN MAX DE UNA COLUMNA 
+    def get_len_max_columna(self, columna):
         lst_columna = self.get_columna(columna=columna)
         longitudes = [len(str(item)) for item in lst_columna]
         return max(longitudes) if longitudes else 0                
     
-    # ____ L o n g i t u d   d e l   c o n t e n i d o   d e   l a   f i l a  (el total) maxima de toda la matriz self.tablero    - over tablero -   
+    # LONGITUD MAXIMA DE TODAS LAS FILAS   
     def get_max_filas(self):
         """ Para imprimir marco horizontal """
         lst_fila    = []
@@ -1550,7 +1589,7 @@ class Tablero(Rango):
                 
         return max(lst_fila) if lst_fila else 0
     
-    # ____ L i s t a   c o n   l a s   l o n g i t u d e s   d e l   c o n t e n i d o   d e   c a d a   f i l a  (el total) maxima  
+    # LISTA CON EL LEN MAXIMO DE CADA FILA 
     def get_lst_max_filas(self):
         """ Para imprimir marco horizontal """
         lst_fila    = []
@@ -1646,12 +1685,12 @@ class Tablero(Rango):
             if pad_x >= 0:
                 """ Ajustado y con PadX -> calcula el maximo de la columna y le añade un margen de pad_x """
                 for i in range (self.total_columnas):
-                    maximo = self.get_max_columna(columna=i)
+                    maximo = self.get_len_max_columna(columna=i)
                     maximo += pad_x
                     strformato += "{:<" + str(maximo) + "}"
             else:
                 for i in range (self.total_columnas):
-                    maximo = self.get_max_columna(columna=i)
+                    maximo = self.get_len_max_columna(columna=i)
                     strformato += "{:<" + str(maximo) + "}"
         # print(strformato)
         return strformato
@@ -1790,7 +1829,7 @@ class Rangutan(Tablero):
                         total_filas_tablero = total_filas_tablero , 
                         valor_inicial = valor_inicial)
 
-         # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+        # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
         # L I S T A   D E   R A N G O S   D E   T A B L E R O        
         self.lst_rangos=[]   
         """ Cada Tablero pueda tener su coleccion de rangos y por lo tanto hacer operaciones complejas con los datos en su ambito"""
@@ -2141,7 +2180,6 @@ class Rangutan(Tablero):
     # Verificar si ya existe un rango con el mismo nombre en lst_rangos
     def b_existe_nombre_rango(self, nombre_a_buscar:str):
         if any(rango.nombre == nombre_a_buscar for rango in self.lst_rangos):
-            # print(f"Error: Ya existe un rango con el nombre '{nombre_a_buscar}'.")
             return True
         return False
 
@@ -2384,12 +2422,12 @@ class Rangutan(Tablero):
         if pad_x >= 0:
             """ Ajustado y con PadX -> calcula el maximo de la columna y le añade un margen de pad_x """
             for i in range (rango.total_columnas): 
-                maximo = self.get_max_columna(columna=i)
+                maximo = self.get_len_max_columna(columna=i)
                 maximo += pad_x
                 strformato += "{:<" + str(maximo) + "}"
         else:
             for i in range (rango.total_columnas):
-                maximo = self.get_max_columna(columna=i)
+                maximo = self.get_len_max_columna(columna=i)
                 strformato += "{:<" + str(maximo) + "}"
 
         # print(strformato)

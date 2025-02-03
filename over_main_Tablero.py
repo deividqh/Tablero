@@ -11,9 +11,9 @@ import time
 
 # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 # El objeto de estas pruebas xxxxxxxxxxxxxxxxxxxxxxxxxx
-# from classMenuDvd.Tablero_X_Men import Tablero
 # from classMenuDvd.Tablero_X_Men import Rangutan as Rangutan
 from classMenuDvd.Tablero_X_Men import Rango as Rango
+from classMenuDvd.Tablero_X_Men import Tablero
 
 # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
 # El Menu de todo Esto mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
@@ -377,10 +377,10 @@ def prango_to():
 
 
 def prueba_recursiva():
-    v_ini=[[33, 55, '44', 12], 
-    [45 , '25', 12], 
-    [77, " " , '14', 66]]
-    rango = Rango(nombre_rango= "r2d2", celda_inicio="A:0", dimension="7X4" , valor_inicial = '-')
+    matriz_pruebas = [  ['wIP', None, '44', 12], 
+                        [45 , '25', 12], 
+                        [77, "WIP" , '14', 66]]
+    rango = Rango(nombre_rango= "r2d2", celda_inicio="B:0", dimension="5X5" , valor_inicial = '-')
     print()
     print(rango)
     print('\nV e r   V a l o r e s:\n')
@@ -409,6 +409,12 @@ def prueba_recursiva():
     
     print('\nI m p r i m i r   A m b i g u o u s   \n')    
     rango.imprimir( ancho = 15 , lista = [3] , sp_columna = 5 )
+
+    tablero = Tablero(total_columnas_tablero = 6, total_filas_tablero = 5, valor_inicial='')
+
+    tablero.set_data_matriz(matriz=matriz_pruebas, celda_inicio = 'B:1')
+
+    tablero.imprimir( sp_columna = 3)
 # ==============================================================================================
 # ==============================================================================================
 # ==============================================================================================
