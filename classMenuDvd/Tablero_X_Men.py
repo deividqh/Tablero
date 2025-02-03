@@ -197,30 +197,30 @@ class SttS():
 
     # IGUALA LAS LISTAS ____________________________________________________
     @staticmethod
-    def igualar_listas(listaKeys, listaToReLong, valor_relleno='Loren'):
+    def igualar_listas(lista_keys, lista_to_relong, valor_relleno='Loren'):
         """             
-        Trata las longitudes de las listas y las igualo según listaKeys como referencia.
-        La que se Re-dimensiona creciendo o decreciendo para igualarse con listaKeys.
-        [valor_relleno]: en caso de que listaKeys>listaToRelong, hay que rellenar con un nuevo valor. en caso de funciones, None(by Def)
+        Trata las longitudes de las listas y las igualo según lista_keys como referencia.
+        La que se Re-dimensiona creciendo o decreciendo para igualarse con lista_keys.
+        [valor_relleno]: en caso de que lista_keys>listaToRelong, hay que rellenar con un nuevo valor. en caso de funciones, None(by Def)
         [Ejemplo de uso]:
-        >>> listTOdict_byTcld_ToString.igualar_listas(listaKeys=listaKeys, listaToReLong=listaTipos)        
-        listaKeys y listaTipos son inmutables, se pasan por referencia y no hay que retornar valor. Aun así se retorna
+        >>> listTOdict_byTcld_ToString.igualar_listas(lista_keys=lista_keys, lista_to_relong=listaTipos)        
+        lista_keys y listaTipos son inmutables, se pasan por referencia y no hay que retornar valor. Aun así se retorna
         """
-        if len(listaKeys)==len(listaToReLong):
-            return listaToReLong
-        elif len(listaKeys)>len(listaToReLong):
+        if len(lista_keys)==len(lista_to_relong):
+            return lista_to_relong
+        elif len(lista_keys)>len(lista_to_relong):
             # print("long dicc > longTipo.....tipos hasta longTipo y luego Tipo=str y PERMITENULL=False")
-            listaNewTipos=[valor_relleno for i, (k) in enumerate(listaKeys) if i >= len(listaToReLong)]
-            listaToReLong = listaToReLong + listaNewTipos
-            # print(listaToReLong)
+            listaNewTipos=[valor_relleno for i, (k) in enumerate(lista_keys) if i >= len(lista_to_relong)]
+            lista_to_relong = lista_to_relong + listaNewTipos
+            # print(lista_to_relong)
         else:
-            # print("long dicc < longTipo.....vale hasta la long del dicc- hay que reducir la dimension del la listaToReLong")
-            longListaTipos = len(listaToReLong)
-            longListaKeys  = len(listaKeys)
+            # print("long dicc < longTipo.....vale hasta la long del dicc- hay que reducir la dimension del la lista_to_relong")
+            longListaTipos = len(lista_to_relong)
+            longListaKeys  = len(lista_keys)
             for i in range(longListaKeys , longListaTipos ):
-                listaToReLong.pop()
+                lista_to_relong.pop()
 
-        return listaToReLong
+        return lista_to_relong
         pass
      # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm (ia)         wip
 
@@ -328,70 +328,7 @@ class SttS():
 
 
 
-    # ██████████████████████  R E C U R S I V A S  █████████████████████████
-    @staticmethod
-    def getFormato(self, lista):
-        """ 
-        Establece el formato según la listaTitulo pasada, que es una lista de str tipo:
-        >>> listaTitulosPrint=["Item", "Level", "Contador", "Posicion", "FilaR", "ColumR"]        
-        -Puede ser un formato ajustado = True al tamaño maximo de CADA COUMNA o ajustado = False, se ajuta al tamaño del maximo str de la lista
-        
-        -Se Basa en saber cuantas columnas quieres(listaTitulos) y formatear cada linea al formato generado dinamicamente.
-        >>> strformato += "{:<" + str(num_espacios_columna) + "}"  pejem: {:<"+str(15)+"}"  
-        """
-        totalLen=0
-        strformato=''        
-        # if not isinstance(lista, list): return None
-        maximo = SttS.get_maximo(lista)        
-
-        for i in range (len(listaTitulo)):
-            strformato += "{:<" + str(maximo) + "}"
-
-        totalLen = maximo
-
-        # print(strformato)
-        return strformato, totalLen
-
-    @staticmethod
-    def get_maximo(lista=None):
-        """ Se trata de conseguir saber cual es el maximo valor en una lista de datos """
-        # Funcion Recursiva para Recorrer listas y devolver el str mas largo
-        max_len_datos=SttS.max_len_rcrsv(iterator = lista)
-        # _____________________
-        # CALCULO EL MAXIMO DE ESPACIO 
-        
-        return max_len_datos
-
-    # encuentra la la longitud en un iterator 
-    @staticmethod
-    def max_len_rcrsv( iterator):
-        lst_cadenas = SttS.get_lista_rcrsv_item(iterator=iterator)
-        lst_levels  = SttS.get_lst_rcrsv_level(iterator=iterator)
-        """ Llama a la funcion recursiva para obtener una lista de str de cada fila de la matriz. """
-        
-        if lst_cadenas:
-
-            lst_len=[f'{len(str(cad))}' for cad in lst_cadenas]
-            return max(lst_len)
-
-    # Busqueda recursiva por un iterator lista
-    @staticmethod
-    def get_lista_rcrsv_item( iterator, retorno=None):
-        """ >>> Devuelve los valores que se va encontrando en una estructura de listas de izquierda a derecha. Retorna una lista.
-        Ejemplo: >>> lst_items = get_lst_rcrsv_level( [1,[2,3], 4, [5,6,7]], retorno=None)
-                >>> print(lst_items) ==> [1,2,3,4,5,6,7]
-        """
-        if retorno == None: 
-            retorno=[]        
-
-        if isinstance(iterator, list) or isinstance(iterator, tuple):
-            for subList in iterator:
-                SttS.get_lista_rcrsv_item(iterator=subList, retorno=retorno)
-        else:
-            retorno.append(iterator)
-        return retorno
-
-        pass
+    # ██████████████████████  R E C U R S I V A S  █████████████████████████    
 
     # Busqueda recursiva por un iterator lista
     @staticmethod
@@ -414,51 +351,6 @@ class SttS():
             retorno.append(level)
         # R e t o r n o 
         return retorno
-
-    # Busqueda recursiva por un iterator lista
-    @staticmethod
-    def get_lista_rcrsv_valor( iterator, retorno=None):
-        # p r i m e r a   v u e l t a  
-        if retorno == None : 
-            retorno = []
-        if isinstance(iterator, list) or isinstance(iterator, tuple):
-            for subList in iterator:
-                SttS.get_lst_rcrsv_level(iterator=subList, retorno=retorno)                                       
-
-        elif isinstance(iterator, dict): 
-            t_fila = [(key, *item) for key, item in iterator.items()][0]          
-            """ >>> Convierte el dicc en una list (key , valor en str)... con el primer elemento la key del diccionario 
-            """
-            fila_str = [str(item) for item in t_fila]
-            """ >>> Convierte a string cada elemento de la lista 
-            """
-            retorno.append(fila_str)
-        else:
-            retorno.append(iterator)
-
-        return retorno
-
-    # Entra una lista o diccionario de str y devuelve una lista en str.... para convertir una matriz en una lista de str.
-    @staticmethod
-    def convierteToString( lista):
-        lista_str_retorno=[]
-        if not isinstance(lista, list): 
-            return None
-        for iterator in lista:
-            if isinstance(iterator, list) or isinstance(iterator, tuple):
-                lista_str_retorno.append(*iterator)
-                """ se mete en str todo el contenido de la lista. 
-                """                                        
-            elif isinstance(iterator, dict): 
-                t_fila = [(key, *item) for key, item in iterator.items()][0]          
-                """ >>> Convierte el dicc en una list (key , valor en str)... con el primer elemento la key del diccionario 
-                """
-                fila_str = [str(item) for item in t_fila]
-                """ >>> Convierte a string cada elemento de la lista 
-                """
-                lista_str_retorno.append(fila_str)
-        
-        return lista_str_retorno
 
     @staticmethod
     def to_str_rcrsv(iterator , lst_retorno=None):
@@ -483,6 +375,73 @@ class SttS():
             lst_retorno.append(iterator)
         
         return lst_retorno
+    
+    # Entra una matriz o lista y la convierte recursivmente en una lista de elementos unicos. No contempla dict.
+    @staticmethod
+    def aplanar_matriz(matriz):
+        """ >>> Funcion recursiva que aplana matrices(listas de listas) o listas o datos. 
+        [data] es cualquier dato de entrada(menos diccionarios, que los añade como un valor.)
+        Retorno: lst de una sola dimension.
+        Ejemplo: SttS.aplanar_matriz( [3,4,[5,6,7],8,[9,10]] ) -> [3,4,5,6,7,8,9,10]
+        """
+        lista = []
+        try:
+            for elemento in matriz:
+                if isinstance(elemento, list) or isinstance(elemento, tuple)  or isinstance(elemento, set) :
+                    lista.extend(SttS.aplanar_matriz(matriz=elemento))
+                else:
+                    lista.append(elemento)
+        except Exception as e:
+            print(f'Error ::: aplanar_matriz ::: {e}')
+            return None
+        return lista
+
+    # lo contrario de SttS.aplanar_matriz(). 
+    @staticmethod
+    def encuadrar_matriz(matriz:list):
+        """ >>> Pasa los valores de una matriz a un rango creado a partir de una celda determinada del rango.
+        la diferencia con set_data_plana() es que set_data_plana lo mete lineal, valor por valor. 
+        push_matriz mete una matriz con su forma en el rango. Para ello tiene que ser menor que el rango.
+        en caso de ser mayor se puede crear un rango para tener acceso a su lst_celdas y verificar si coinciden.
+
+        entra [3, 2, [4, 6]] y devuelve => [ [3,''] , [2,''] , [4,6] ]      3 filas x 2 columnas.
+        entra [[3, 2] , [4, 6]] y devuelve => [ [3,2] , [4,6] ]             2 filas x 2 columnas.
+        entra [3, 2, 4, 6] y devuelve => [3,2,4,6]                          1 filas x 4 columnas ... o 1 columna x 4 filas ;)
+        entra [3, [2], 4, 6] y devuelve => [3,2,4,6]                        1 filas x 4 columnas ... o 1 columna x 4 filas ;)
+
+
+        """
+        # Validaciones previas con la dimension... la vuelvo plana por si acaso
+        matriz_plana = SttS.aplanar_matriz(matriz=matriz)
+        if not matriz_plana: return None 
+
+        b_valid = SttS.es_lista_de_listas( matriz = matriz )
+        if not b_valid: return None
+        """ 
+        >>> Calculo la longitud de la dimension de la matriz maxima(por si no es simetrica.) """
+        try:
+            filas = len(matriz)
+            lst_len_matriz = [len(item) for item in matriz]
+            columnas = max(lst_len_matriz) if lst_len_matriz else 0
+            
+            dimension = f'{filas}X{columnas}'       # Saco la dimension
+        except Exception as e:
+            return None
+
+        """ 
+        >>> Creo la nueva matriz uniforme """
+        try:        
+            # Creo una fila de columnas para rellenar los huecos
+            lst_max_columna = [i for i in range(columnas)]
+
+            # hago la matriz de entrada uniforme y relleno los vacios con el valor Inicial fila x fila 
+            for i  in range(len(matriz)):
+                matriz[i] = SttS.igualar_listas(lista_keys = lst_max_columna, lista_to_relong = matriz[i], valor_relleno = Celda.VALOR_INICIAL)
+        except Exception as e:
+            return None
+        
+        # Retorno ....la matriz recuadrada a su columna maxima
+        return matriz
 
 # ███████████████████████████████████████████████████████████████████████████████████████████████████████
 # ███████████████████████████████████████████████████████████████████████████████████████████████████████
@@ -566,8 +525,6 @@ class Celda():
         self.valor = valor
         # ▄▄▄▄▄▄▄▄▄▄  Celda en formato 'A:0' 
         self.celda = f"{self.letra}:{self.fila}"
-        # ▄▄▄▄▄▄▄▄▄▄  Diccionario celda:valor
-        self.c_v = {self.celda: self.valor}  
 
     def __str__(self):
         return f"{self.celda} = {self.valor}"
@@ -582,13 +539,13 @@ class Celda():
         return self.celda if self.celda else ''
     def get_valor(self):
         return self.valor 
-    def set_valor(self, valor, b_str:bool=True):
+    def set_valor(self, valor, b_iter_to_str:bool=True):
         """ >>> Establece el valor de la celda y lo guarda en el diccionario celda:valor.
         [valor]: El valor a establecer en la celda.
-        [b_str]: Si es True, convierte el valor a string antes de guardarlo... int, list, dict, objetos, ....
+        [b_iter_to_str]: Si es True, convierte el valor a string antes de guardarlo... int, list, dict, objetos, ....
         >>> Si quieres guardar un objeto(por ejemplo) debes poner False(guardarlo exactamente).
-        ej: celda.set_valor(10, b_str=False) => Guarda el 10 como int y no como str.
-        ej: celda.set_valor(10, b_str=True)  => Guarda el 10 como str.
+        ej: celda.set_valor(10, b_iter_to_str=False) => Guarda el 10 como int y no como str.
+        ej: celda.set_valor(10, b_iter_to_str=True)  => Guarda el 10 como str.
         ej: celda.set_valor(10) => Guarda el 10 como str ( '10' ).
         """
         # if isinstance(valor, iterator):
@@ -596,7 +553,7 @@ class Celda():
             if isinstance(valor, str):
                 self.valor = valor
             else:
-                if b_str == True:
+                if b_iter_to_str == True:
                     self.valor = str(valor)
                 else:
                     self.valor = valor
@@ -755,13 +712,23 @@ class Rango(Celda):
         
         # V A L O R   I N I C I O ... puede ser una lista, una matriz, un str, int, bool...
         if valor_inicial:
-            self.set_data(data = valor_inicial, b_relleno=True)
+            self.set_data_plana(data = valor_inicial, relleno = valor_inicial)
 
-        # imprime valores de las celdas del rango. 
-        print()
-        for celda in self.lst_celdas:
-            print(f'{celda.celda} = {celda.valor}', end=' | ')
-        print()
+        # imprime valores de las celdas del rango.... a capon
+        # print()
+        # for celda in self.lst_celdas:
+        #     print(f'{celda.celda} = {celda.valor}', end=' | ')
+        # print()
+
+        self.matriz = self.__get_matriz()
+        if not self.matriz: return None
+
+        print('\nV e r   M a t r i z:\n')
+        for fila in self.matriz:
+            for celda in fila:
+                print(celda.celda, end='  ')
+            print()
+
 
     # _____________________
     # Print de la clase
@@ -791,18 +758,63 @@ class Rango(Celda):
             return f"{cabeceras}\n{'-' * sum(tamanos_columnas)}\n{datos}"
         else:
             return f"\nDatos del Rango( {self.nombre} ): [ {self.get_celda()} ]  To [ {self.celda_fin.get_celda()} ] Total Celdas: {self.data['total_celdas']} => {self.total_filas} Filas y {self.total_columnas} Columnas .......es Oculto?: {self.b_oculto} ..... Ghost?: {self.b_ghost}"  
-
-    def show(self):
-        # Imprime un rango
+    
+    # self.lst_celdas lo mete en una matriz.
+    def __get_matriz(self):
+        """ >>> Devuelve un rango en forma de lista de listas. """
+        if not self.lst_celdas: return None
+        lst_matriz = [] 
         for i in range(self.total_filas):
+            lst_fila = []            
             for j in range(self.total_columnas):
                 nombre_celda = SttS.celda_by_fc(fila = i, columna = j)
                 celda = self.get_celda_by_nombre(nombre_celda=nombre_celda)
-                if celda: 
-                    # print(f'{nombre_celda}={celda.valor}' , end=' | ')
-                    print(f'{celda.valor}' , end='')
-            print()
+                if not celda: return None
+                lst_fila.append(celda)
+            pass
+            lst_matriz.append(lst_fila)
+        pass
+        return lst_matriz if lst_matriz else None
     
+    # Que Gran Oportunidaad para Prango pero ahora mas simple que nunca
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def get_values(self, b_print=True):
+        """ >>>  """
+        lst_matriz = []
+        for fila in self.matriz:
+            lst_fila   = []
+            for celda in fila: 
+                lst_fila.append(celda.valor)            
+            lst_matriz.append(lst_fila)
+        
+        if b_print == False:
+            return lst_matriz
+        else:
+            for fila in lst_matriz:
+                for valor in fila:
+                    print(f'{valor}' , end= ' ')
+                print()
+
+    
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def ver_matriz(self, b_valores:bool = False):
+        """ >>> Imprime en formato matriz .... Prango 
+        Muy basico, sirve para ver las celdas y posiciones implicadas.
+        Tb valores, pero no formatea con lo que puede haber desajustes."""
+        if not self.matriz: return None
+        if b_valores == True:
+            for fila in self.matriz:
+                for celda in fila:
+                    print(celda.valor, end=' ▓ ')
+                print()
+        else:
+            for fila in self.matriz:
+                for celda in fila:
+                    print(celda.celda, end='  ')
+                print()
+            pass
+
+    # From nombre celda('C:3') To objeto_celda 
     def get_celda_by_nombre(self, nombre_celda:str):
         """ Entra el nobmre de una celda y comprueba que está en la lista de celdas del rengo.
         [nombre_celda](str): nombre de la celda a buscar. pej: 'C:3'
@@ -926,9 +938,9 @@ class Rango(Celda):
             print(f'Error en __get_list_celdas :::: {e}')
             return None
 
-    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-    def set_data(self, data, b_relleno:bool=False):
-        """
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def set_data_plana(self, data, relleno:str = ''):
+        """ >>> establece un dato en el rango.
         Aplana la lista dada, ajusta su longitud para que coincida con la lista interna `self.lst_celdas` rellenando con un valor predeterminado,
         y establece los valores de las celdas en `self.lst_celdas` a los valores correspondientes en la lista ajustada o no dependiendo de b_relleno.
         [data] : el dato a procesar. Puede ser matriz, lista, int, bool, str, o cualquier objeto.
@@ -936,30 +948,283 @@ class Rango(Celda):
             None
         """
         # Aplanamos el dato: Si es matriz lo convierte en lista , si es lista lo deja como lista y si es str , int, bool, lo deja como está.
-        lista_plana = self.__aplanar_matriz(data)
+        lista_plana = SttS.aplanar_matriz(matriz = data)
         # Evaluamos si tenemos que rellenar el resto del rango con datos de inicio o lo dejamos como está.
-        if b_relleno == True:
-            lista_plana = SttS.igualar_listas(listaKeys=self.lst_celdas, listaToReLong=lista_plana, valor_relleno=Celda.VALOR_INICIAL)        
-            """ >>> lst len(self.lst_celdas) == len(lista_plana). lista_plana se rellena con Celda.VALOR_INICIAL  """
-        
+        if relleno == '':
+            lista_plana = SttS.igualar_listas(lista_keys=self.lst_celdas, lista_to_relong = lista_plana, valor_relleno=Celda.VALOR_INICIAL)        
+            """ >>> lst len(self.lst_celdas) == len(lista_plana). lista_plana se rellena con Celda.VALOR_INICIAL ( '' ) 
+            """
+        else:
+            lista_plana = SttS.igualar_listas(lista_keys = self.lst_celdas, lista_to_relong = lista_plana, valor_relleno = relleno)        
+            """ >>> lst len(self.lst_celdas) == len(lista_plana). lista_plana se rellena con cualquier valor 
+            """
+
         # En caso de que b_relleno = False, se emparejan hasta el mas corto :)
+        # Esto hace que el rango (las celdas del rango) cambien de valor
         for celda, valor in zip(self.lst_celdas, lista_plana):
-            celda.set_valor(valor)        
-    
-    def __aplanar_matriz(self, data):
-        """ >>> Funcion recursiva que aplana matrices(listas de listas) o listas o datos. 
-        [data] es cualquier dato de entrada(menos diccionarios, que los añade como un valor.)
-        Retorno: lst de una sola dimension.
-        Ejemplo: self.__aplanar_matriz( [3,4,[5,6,7],8,[9,10]] ) -> [3,4,5,6,7,8,9,10]
-        """
-        lista = []
-        for elemento in data:
-            if isinstance(elemento, list) or isinstance(elemento, tuple):
-                lista.extend(self.__aplanar_matriz(elemento))
-            else:
-                lista.append(elemento)
-        return lista
+            celda.set_valor(valor=valor)      
         
+
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def set_data_matriz(self, matriz:list, celda_inicio:str='A:0'):
+        """ Pasa los valores de una matriz a un rango creado """
+        retorno = SttS.es_lista_de_listas( matriz = matriz )
+        if not retorno: return False
+
+        matriz_cuadrada = SttS.encuadrar_matriz(matriz = matriz)
+
+        filas = len(matriz_cuadrada)
+        columnas = len(matriz_cuadrada[0])
+        dimension = f'{filas}X{columnas}'
+
+        if self.total_filas < filas:
+            """ Mas filas que el rango contenedor"""
+        if self.total_columnas < columnas:
+            """ Mas columnas que el rango contenedor """
+        
+        nombre_rango = 'rango_aux'        
+        try:
+            rango_aux = Rango( nombre = nombre_rango , celda_inicio = celda_inicio, dimension = dimension , valor_inicial = matriz_cuadrada )
+            if not rango_aux: return False
+            self.set_data_plana(data=rango_aux.get)
+            
+            
+        except Exception as e:
+            return False
+    
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def get_filas(self, fila_from:int, fila_to:int):
+        """ >>> Obtiene las filas consecutivas de un rango en una lista. """
+        if not self.matriz: return None
+        # lst_retorno = []
+        # for i, fila in enumerate(self.matriz):
+        #     if fila_from <= i <= fila_to:
+        #         lst_retorno.append(fila)
+        # return lst_retorno if lst_retorno else None
+        
+        return [ fila  for i, fila in enumerate(self.matriz) if (fila_from <= i <= fila_to) ]
+
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def get_columnas(self, columna_from:int, columna_to:int):
+        """ >>> Obtiene las columnas consecutivas de un rango en una lista. """
+        if not self.matriz: return None
+        # lst_ret = []
+        # for fila in self.matriz:
+        #     for j , celda in enumerate(fila):
+        #         if columna_from <= j <= columna_to:
+        #             lst_ret.append(celda)
+        # pass
+        # return lst_ret if lst_ret else None
+
+        return [celda for fila in self.matriz 
+                        for j , celda in enumerate(fila)
+                        if columna_from <= j <= columna_to ]
+
+
+    # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    #  I m p r i m e   u n   R a n g o . 
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def imprimir(self, sp_columna:int = 0 , **kwargs ):    
+        """ 
+        Imprime el Rango con configuracion. Es la base de impresion sobre todo. 
+        [sp_columna] (int): el espacio entre columnas
+        [**kwargs] (dict):  "ancho"(int)  = ancho de columna fixed or 
+                            "lista"(list) = lista de anchos para cada columna. 
+        
+        >>> ejemplo: imprimir( ) => ajusta al maximo de cada columna(mode tabla)
+        >>> ejemplo: imprimir( sp_columna = 2 ) => maximo de cada columna (mode tabla)        
+        >>> ejemplo: imprimir( ancho = 0 , sp_columna = 0 ) => L i t e r a l   P u r o ....XindeX
+        >>> ejemplo: imprimir( ancho = 1 , sp_columna = 0 ) => L i t e r a l   con espacio entre columnaas
+        >>> ejemplo: imprimir( ancho = 15 , sp_columna = 5 ) => columnas al 15 todas. no restrictivo. sp_columna = 5 . espacio entre columnas de 5 char
+        >>> ejemplo: imprimir( lista = [0,1,5,4,3,2] , sp_columna = 5 ) => cada columna a su ajuste y 5 entre columnas
+        >>> ejemplo: imprimir( ancho = 15 , lista = [0,1,5,4,3,2] , sp_columna = 3 ) => Prevalece la lista. y deja 3 entre columnas.
+        """
+        # C a c h o   LOS DATOS DE ENTRADA
+        ancho_columna = kwargs.get('ancho', None)  # Si no existe, usa 0
+        lista = kwargs.get('lista', None)  # Si no existe, usa 0
+
+        # V a l i d a c i o n   y asignacion a numero natural (por si se introducen numeros negativos)
+        try:
+            if ancho_columna: 
+                ancho_columna = abs(ancho_columna)
+            if lista:
+                if not isinstance(lista, list): 
+                    if isinstance(lista, int) or isdigit(lista):    # Aunque tiene que meter una lista pone list pero mete un 3 o '3' pejem.
+                        lista = abs(lista)
+                    else:
+                        return None
+        except Exception as e:
+            print(f'Error ::: imprimir ::: {e}')
+            return None
+        #  A N A L I S I S  DE LOS DATOS DE ENTRADA
+        if ancho_columna == None and lista == None:     # No mete ningún dato sobre el ancho de la columna ni en numero ni en lista. 
+            if sp_columna == 0:   
+                """ >>> M o d e   M a x L e n - C o l u m n a   P u r o.  
+                """
+                str_format = self.__formato_to_prango_maxcol( sp_columna = 0  )
+            else:
+                """ >>> M o d e   M a x L e n - C o l u m n a   ...con espacio entre columnas   
+                """
+                str_format = self.__formato_to_prango_maxcol(  sp_columna = sp_columna  )
+        
+        elif ancho_columna != None and lista == None:       # A n c h o   d e   C o l u m n a   F i x e d .
+            ancho_columna = abs(ancho_columna)
+            sp_columna = abs(sp_columna)
+
+            if ancho_columna == 0 and sp_columna == 0:                   
+                """ >>> l i t e r a l  |  Formato fixed | se mantienen las coordenadas | sin tamaño de columna | escribes literalmente 
+                """
+                str_format = self.__formato_to_prango_fixed(  len_columnas = 0, sp_columna = 0)
+                pass
+
+            elif ancho_columna == 0 and sp_columna > 0:                   
+                """ >>> M o d o   L i t e r a l   c o n   E s p a c i o s   E n t r e  C o l u m n a s 
+                """
+                str_format = self.__formato_to_prango_fixed(  len_columnas = 0, sp_columna = sp_columna)
+                lst_max_len = self.__get_lst_max_filas(rango = rango)
+            
+            elif ancho_columna > 0 and sp_columna == 0:                   
+                """ >>> M o d o  F i x e d   P u r o 
+                """
+                str_format = self.__formato_to_prango_fixed(  len_columnas = ancho_columna, sp_columna = 0)
+
+            elif ancho_columna > 0 and sp_columna > 0:                   
+                """ >>>  M o d o   F i x e d   c o n   E s p a c i o s 
+                """
+                str_format = self.__formato_to_prango_fixed(  len_columnas = ancho_columna, sp_columna = sp_columna)
+                lst_max_len = self.__get_lst_max_filas()
+            pass
+        
+        elif (  (ancho_columna != None and lista != None) or      # Lo escribo así por seguir la misma lógica, pero es mas sencillo elif lista!=None:
+                (ancho_columna == None and lista != None)):       # P r e v a l e c e   l i s t a  ;)
+            """ >>> Y o   E l i j o  d e s d e   f u e r a   < Modo  personalizado >"""            
+            try:
+                # Valida que son enteros lo que hay en la lista y si no, peta aquí.
+                lst_lens = [int(item) for item in lista]
+                # Crea el formato preparado con los datos de la lista
+                str_format = self.__formato_to_prango_list(rango=rango, lista=lst_lens , sp_columna=0)
+            except Exception:
+                return None
+            pass
+        
+        else:
+            return None
+        
+        """ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+        >>> I m p r i m e   v a l o r e s  
+        """                
+        # Recorro las filas
+        for i in range( len(self.matriz) ):
+            lst_fila = self.__get_fila_rango_prango(fila_a_buscar = i )
+            lst_values_fila = [celda.valor for celda in lst_fila]
+            print(str_format.format(*lst_values_fila))  # Cuando b_num_filas == False, no imprime los numeros de las Filas
+    
+    #  Devuelve los  v a l u e s   de   u n a   f i l a   d e   u n   r a n g o .
+    def __get_fila_rango_prango(self,  fila_a_buscar:int):
+        if SttS.b_fila_valida( fila = fila_a_buscar , from_incl=0, to_incl = self.total_filas ) == False: 
+            return None
+        for f, fila in enumerate(self.matriz):
+            if  f == fila_a_buscar:
+                return fila
+
+    # FORMATO IMPR _____________________________
+    def __formato_to_prango_maxcol(self,  sp_columna:int = 0 ):        
+        """ >>> Pone cada columna a su maximo 
+        strformato += "{:<" + str(num_espacios_columna) + "}"  pejem: {:<"+str(15)+"}" 
+        [len_columnas](int)(list) : Longitud de la columna fijo... cuando b_ajustado = False
+        [sp_columna](int): cuanndo b_ajustado = True -> es el espacio que tiene que haber entre el final de una columna y el siguiente.
+        """  
+        totalLen=0
+        strformato=''
+        try:
+            sp_columna = abs(sp_columna)
+        except Exception as e:
+            print(f'Error __formato_to_prango_maxcol ::: {e}')
+
+        for i in range (self.total_columnas): 
+            maximo = self.__get_max_columna( columna = i )
+            # maximo += sp_columna
+            strformato += "{:<" + str(maximo + sp_columna) + "}"  
+        # print(strformato)
+        return strformato
+    
+    # FORMATO IMPR _____________________________
+    def __formato_to_prango_fixed(self,  len_columnas = 0, sp_columna=0):        
+        """ >>> Imprime un Rango sin ajuste de ventanas.
+        [len_columnas](int) : Longitud de la columna fijo... cuando b_ajustado = False
+        [sp_columna](int): cuanndo b_ajustado = True -> es el espacio que tiene que haber entre el final de una columna y el siguiente.
+        """  
+        totalLen = 0
+        strformato = ''
+        """ >>> strformato +=  pejem: {:<"+str(15)+"}" {:<"+str(2)+"}"  """                
+
+        for i in range (self.total_columnas):
+            strformato += "{:<" + str(len_columnas) + "}" + "{:<" + str(sp_columna) + '}'
+        return strformato
+    
+    # FORMATO IMPR _____________________________
+    def __formato_to_prango_list(self, lista , sp_columna:int=0):        
+        """ >>> Imprime un Rango sin ajuste de ventanas.
+        [len_columnas](int) : Longitud de la columna fijo... cuando b_ajustado = False
+        [sp_columna](int): cuanndo b_ajustado = True -> es el espacio que tiene que haber entre el final de una columna y el siguiente.
+        """  
+        strformato = ''
+        """ >>> strformato += "{:<" + str(len(item)) + "}"  pejem: {:<"+str(15)+"}"  """                
+        
+        # iguala las listas
+        lista = SttS.igualar_listas(lista_keys = self.matriz[0], lista_to_relong = lista, valor_relleno=0)
+
+        # crea el formato
+        for item in lista:
+            strformato += "{:<" + str(item) + "}" + "{:<" + str(sp_columna) + "}"
+        return strformato
+
+    # LONGITUD MAXIMA DEL CONTENIDO DE UNA COLUMNA DEL RANGO.
+    def __get_max_columna(self, columna):
+        lst_columna = self.get_columnas(columna_from = columna , columna_to= columna)
+        longitudes = [len(str(celda.valor)) for celda in lst_columna]
+        return max(longitudes) if longitudes else 0                
+
+    # LONGITUD MAXIMA DE TODAS LAS FILAS    
+    def __get_max_filas(self):
+        """ >>> Devuelve el valor maximo de todas las filas """
+        lst_fila    = []
+        for fila in self.matriz:
+            long_fila=0
+            for celda in fila:
+                long_fila += len(str(celda.valor))
+            pass
+            lst_fila.append(long_fila)    
+                
+        return max(lst_fila) if lst_fila else 0
+    
+    # LISTA CON LA LONGITUD MAXIMA DE CADA FILA
+    def __get_lst_max_filas(self):
+        """ Para imprimir marco horizontal """
+        lst_retorno    = []
+        for fila in self.matriz:
+            longitud_total_fila=0
+            for celda in fila():
+                longitud_total_fila += len(celda.valor)
+
+            lst_retorno.append(longitud_total_fila)    
+                
+        return lst_retorno if lst_retorno else None
+
+    # ULTIMA FILA CON USO DE UN TABLERO
+    def last_fila_used(self):
+        """ Devuelve la última fila usada de la matriz.
+        """        
+        b_match:bool = False
+        for i, fila in enumerate(self.matriz):
+            for celda in fila():
+                if celda.valor == Celda.VALOR_INICIAL:
+                    b_match == True
+            if b_match == True:
+                return i-1
+        return None
+
+  
 
 # ███████████████████████████████████████████████████████████████████████████████████████████████████████████
 # ███████████████████████████████████████████████████████████████████████████████████████████████████████████
@@ -972,32 +1237,31 @@ class Rango(Celda):
 import copy             # Para realizar copia profunda de self.tablero
 
 class Tablero(Rango):
-    """ >>> Crea un MARCO para Imprimir Onda Excel....Usa un LIST DE DICCIONARIOS. a,b,c,d...az con valores 0,1,2,3,...702 que se usa para referenciar las columnas.
-    Cada diccionario tiene N columnas. de la A a la Z, y representa una FILA.    
-        Se pueden crear tantas filas como sea necesareo rellenando el valor con None o con '' 
-        acceder al tablero a una posicion self.xy(0,'A', valor] para escribir |  self.xy(0, 'A') pejemplo para leer """
+    """ >>> Crea un MARCO para Imprimir """
     # ______________________________________________________________________
     # C O N S T A N T E S   D E   C L A S E ....(Tablero.SP  ó Tablero.TAB)
     SP  = ' '
     TAB = f'{SP*4}'
     pass
     def __init__(self, total_columnas_tablero:int, total_filas_tablero:int = 10 , valor_inicial = Celda.VALOR_INICIAL):       
-        if isinstance(total_columas_tablero, int) or isinstance(total_columas_tablero, str):
-            try:
-                total_columnas_tablero = abs(int(total_columnas_tablero))
-            except Exception as e:
-                print(f'{e}')
-                return None
+        try:
+            total_columnas_tablero  = abs(int(total_columnas_tablero))
+            total_filas_tablero     = abs(int(total_filas_tablero))
+        except Exception as e:
+            print(f'{e}')
+            return None
         
         # Creamos la  d i m e n s i o n  para llamar al padre(Rango).
         self.dimension = f'{total_filas_tablero}X{total_columnas_tablero}'
+        """ 
+        >>> Después de esto, self es un Rango. CRUD. Mantiene una lista de rangos creados sobre el Rango Tablero. 
+        """
         super().__init__(nombre_rango = 'main_tablero' , 
                         celda_inicio = 'A:0' , 
                         dimension = dimension ,
                         valor_inicial = valor_inicial , 
                         b_oculto = False , 
                         b_ghost = False)
-
         
         # ╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬
         # M O N T O   L A   E S T R U C T U R A   D E   C O L U M N A S ..... (sobre la que voy a trabajar)       
@@ -1007,20 +1271,16 @@ class Tablero(Rango):
         # V A L I D A C I O N   D E   D A T O S   D E   E N T R A D A               
         if total_columnas_tablero >= len( SttS._may_ln ):                   
             total_columnas_tablero = len( SttS._may_ln.keys() )-1
-        pass
+        pass        
 
-        # ☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻☻
-        # C A R G O   L O S   D A T O S  D E  L A   C L A S E        
-        self.numero_columnas = total_columnas_tablero        
-        self.numero_filas = total_filas_tablero
         self.valor_inicial = valor_inicial
 
         # Diccionario creado para montar el tablero
-        dicc_numcol_value = { c:self.valor_inicial for c in range(self.numero_columnas)}
+        dicc_numcol_value = { c:self.valor_inicial for c in range(self.total_columnas)}
         """ >>> dicc (key):numero_columna (value): '-'   X   numero_columnas (...de 0 a numero_columnas) """
         
         # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-        self.tablero = [copy.deepcopy(dicc_numcol_value) for f in range(self.numero_filas)]
+        self.tablero = [copy.deepcopy(dicc_numcol_value) for f in range(self.total_filas)]
         """ >>> Por cada fila hace una copia profunda del diccionario (numero_columna:valor), que almacena en tablero.
         El resultado final es una lista de diccionarios numero_columna:valor  y se puede acceder a tablero por 
         acceso_1: self.tablero[numero fila][numero de columna]              ==> acceso por indice
@@ -1030,7 +1290,7 @@ class Tablero(Rango):
         if not self.tablero: return
         """ >>> tablero: Es una lista de diccionarios que conforman una fila. 
         self.tablero[2][3] => fila 2, columna 3 |  self.tablero[2][self.dicc_may_letr_num['C']] => fila 2, columna 3
-        self.tablero[1]['3']='jeje'
+        self.tablero[1]['3']='dato_1'
         """
         self.init_tablero(value=self.valor_inicial)
         pass
@@ -1049,15 +1309,15 @@ class Tablero(Rango):
     def get_numero_filas_tablero(self):
         return len(self.tablero) if self.tablero else 0    
     def get_numero_columnas_tablero(self):
-        return self.numero_columnas if self.numero_columnas else 0    
+        return self.total_columnas if self.total_columnas else 0    
     def ultima_fila(self):
         return len(self.tablero) - 1 if self.tablero else 0
     def ultima_columna(self, b_formato_letra = False):
         if b_formato_letra == False:
-            return self.numero_columnas - 1 if self.numero_columnas else 0
+            return self.total_columnas - 1 if self.total_columnas else 0
         else:
-            letra = SttS._may_nl(self.numero_columnas - 1)
-            return letra if self.numero_columnas else 0
+            letra = SttS._may_nl(self.total_columnas - 1)
+            return letra if self.total_columnas else 0
     def get_valor_inicial(self):
         if self.valor_inicial:
             return self.valor_inicial  
@@ -1075,7 +1335,7 @@ class Tablero(Rango):
     def init_tablero(self, value=''):
         try:
             for i, lst_fila in enumerate(self.tablero):
-                for j in range(self.numero_columnas):
+                for j in range(self.total_columnas):
                     self.tablero[i][j] = value
                     # self.xy(i, j, value)    # la otra posibilidad.  
         except Exception as e:
@@ -1106,7 +1366,7 @@ class Tablero(Rango):
             columna = SttS.letra_to_numcol(letra=columna)
             if columna == None: 
                 return None
-            # if  not (0 <= columna < self.numero_columnas) :
+            # if  not (0 <= columna < self.total_columnas) :
             if  not (0 <= columna < len(self.tablero[0].keys())) :
                 return None
             
@@ -1313,7 +1573,7 @@ class Tablero(Rango):
         str_format = self.__get_formato_to_print(len_columnas = numSP, b_ajustado=b_ajustado, pad_x=pad_x)        
         
         # >>> I m p r i m e   N u m e r o s   de cabecera de columa....si tal   
-        lst_columnas_tablero = [i for i in range(self.numero_columnas)]
+        lst_columnas_tablero = [i for i in range(self.total_columnas)]
         print(str_format.format(*lst_columnas_tablero)) if b_columnas_head==True else None
         
         """ >>>  I m p r i m e   L e t r a s   de cabecera de columna....si tal """
@@ -1339,17 +1599,17 @@ class Tablero(Rango):
         totalLen=0
         strformato=''
         if b_ajustado == False:
-            for i in range (self.numero_columnas):
+            for i in range (self.total_columnas):
                 strformato += "{:<" + str(len_columnas) + "}"
         else:
             if pad_x >= 0:
                 """ Ajustado y con PadX -> calcula el maximo de la columna y le añade un margen de pad_x """
-                for i in range (self.numero_columnas):
+                for i in range (self.total_columnas):
                     maximo = self.get_max_columna(columna=i)
                     maximo += pad_x
                     strformato += "{:<" + str(maximo) + "}"
             else:
-                for i in range (self.numero_columnas):
+                for i in range (self.total_columnas):
                     maximo = self.get_max_columna(columna=i)
                     strformato += "{:<" + str(maximo) + "}"
         # print(strformato)
@@ -2118,7 +2378,7 @@ class Rangutan(Tablero):
         """ >>> strformato += "{:<" + str(len(item)) + "}"  pejem: {:<"+str(15)+"}"  """                
         
         # iguala las listas
-        lista = SttS.igualar_listas(listaKeys = rango.matriz[0], listaToReLong = lista, valor_relleno=0)
+        lista = SttS.igualar_listas(lista_keys = rango.matriz[0], lista_to_relong = lista, valor_relleno=0)
 
         # crea el formato
         for item in lista:
@@ -2231,11 +2491,11 @@ class Rangutan(Tablero):
         columnas = max(lst_len_matriz) if lst_len_matriz else 0
         
         # Creo una fila de columnas para rellenar los huecos
-        lst_aux = [i for i in range(columnas)]
+        lst_max_columna = [i for i in range(columnas)]
 
         # hago la matriz de entrada uniforme y relleno los vacios con el valor Inicial.
         for i  in range(len(matriz)):
-            matriz[i] = SttS.igualar_listas(listaKeys = lst_aux, listaToReLong = matriz[i], valor_relleno = self.get_valor_inicial())
+            matriz[i] = SttS.igualar_listas(lista_keys = lst_max_columna, lista_to_relong = matriz[i], valor_relleno = self.get_valor_inicial())
 
         # Saco la dimension para crear su rango ghost
         dimension = f'{filas}x{columnas}'

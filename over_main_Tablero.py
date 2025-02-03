@@ -377,15 +377,38 @@ def prango_to():
 
 
 def prueba_recursiva():
-    v_ini=[[33, 55.5, 'Hola Flipy', 12], 
-    [45 , 'Adios', 112], 
-    [77, " " , 'hawai', 666]]
-    rango = Rango(nombre_rango= "r2d2", celda_inicio="A:0", dimension="7X4" , valor_inicial = v_ini)
+    v_ini=[[33, 55, '44', 12], 
+    [45 , '25', 12], 
+    [77, " " , '14', 66]]
+    rango = Rango(nombre_rango= "r2d2", celda_inicio="A:0", dimension="7X4" , valor_inicial = '-')
     print()
     print(rango)
-    print('ver rango:\n')
-    rango.show()
-
+    print('\nV e r   R a n g o:\n')
+    rango.get_values()
+    
+    print('\nV e r   V a l o r e s\n')
+    rango.ver_matriz(b_valores=True)
+    
+    print('\nV e r   R A N G O \n')
+    rango.ver_matriz(b_valores=False)
+    
+    print('\nI m p r i m i r  R a n g o   M a x  c/sp  \n')    
+    rango.imprimir(sp_columna=2)
+    
+    print('\nI m p r i m i r  R a n g o  L i t e r a l  P u r o \n')    
+    rango.imprimir( ancho = 0 , sp_columna = 0 )
+    
+    print('\nI m p r i m i r  R a n g o  F i x e d  s/sp  \n')    
+    rango.imprimir( ancho = 1 , sp_columna = 0 )
+    
+    print('\nI m p r i m i r  R a n g o  F i x e d  c/sp \n')    
+    rango.imprimir( ancho = 15 , sp_columna = 3 )
+    
+    print('\nI m p r i m i r  R a n g o  P e r s o n a l  c/sp \n')    
+    rango.imprimir( lista = [0,1,5,4,3,2] , sp_columna = 3 )
+    
+    print('\nI m p r i m i r  R a n g o  A m b i g u o u s   \n')    
+    rango.imprimir( ancho = 15 , lista = [0,1,5,4,3,2] , sp_columna = 3 )
 # ==============================================================================================
 # ==============================================================================================
 # ==============================================================================================
