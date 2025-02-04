@@ -377,9 +377,9 @@ def prango_to():
 
 
 def prueba_recursiva():
-    matriz_pruebas = [  ['wIP', None, '44', 12], 
-                        [45 , '25', 12], 
-                        [77, "WIP" , '14', 66]]
+    matriz_pruebas = [  ['wIP', 12, '14', 16], 
+                        [23 , '25', 27], 
+                        [37, "WIP" , '34' ]]
     rango = Rango(nombre_rango= "r2d2", celda_inicio="B:0", dimension="5X5" , valor_inicial = '-')
     print()
     print(rango)
@@ -410,11 +410,13 @@ def prueba_recursiva():
     print('\nI m p r i m i r   A m b i g u o u s   \n')    
     rango.imprimir( ancho = 15 , lista = [3] , sp_columna = 5 )
 
-    tablero = Tablero(total_columnas_tablero = 6, total_filas_tablero = 5, valor_inicial='')
+    tablero = Tablero(total_columnas_tablero = 15, total_filas_tablero = 10, valor_inicial='-')
 
-    tablero.set_data_matriz(matriz=matriz_pruebas, celda_inicio = 'B:1')
-
-    tablero.imprimir( sp_columna = 3)
+    tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
+    # tablero.push(data_push = [1,2,'3',4,[5,6]], celda_inicio = 'B:1' )
+    
+    print('\nI m p r i m i r   T a b l e r o   c o n   P u s h \n')
+    tablero.imprimir( sp_columna = 3 )
 # ==============================================================================================
 # ==============================================================================================
 # ==============================================================================================
