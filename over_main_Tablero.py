@@ -29,7 +29,8 @@ from classTeclado.validator import ValidReg as VAL
 # DEF: Desarrollo y memoria de la clase Tablero. 
 # ====================================================================================
 # TABLERO = Rangutan(total_columnas_tablero=50, total_filas_tablero=30, valor_inicial='-')
-TABLERO = None
+# TABLERO = None
+TABLERO = Tablero(total_columnas_tablero = 10, total_filas_tablero = 20, valor_inicial='-')
 
 # ######################################################################
 # ######################## xindex ######################################
@@ -40,14 +41,15 @@ def main():
     # 2- CREO LOS MENUS Y SUS FUNCIONES ASOCIADAS ╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬
     The_X_Men.addX(titulo='MenuPpal',  padre=None, ipadre=None,  
                     fraseHead="| - M A I N    O V E R   T A B L E R O - "  , 
-                    lst_items=[ ("TABLERO" , None),("GET" , None), ("SET" , None), ("DEL" , None), ("RANGOS" , None), ('MISCELANEA', None)] 
+                    lst_items=[ ("TABLERO" , None) , ('IMPRIMIR', None) , ("GET" , None) , ("PUSH" , None) , ("DEL" , None) , ("RANGOS" , None) , ('MISCELANEA', None)] 
                     )
-    The_X_Men.addX(     titulo='SUB_CREAR', padre='MenuPpal', ipadre="TABLERO" , lst_items=[("Crear Tablero",crear_tablero), ("Iniciar Tablero", iniciar_tablero), ("Imprimir Modo Literal",print_tablero), ("Imprimir Modo Tabla",print_ajustado), ("Set Marco",set_marco)])  
-    The_X_Men.addX(     titulo='SUB_GET'  , padre='MenuPpal', ipadre="GET"     , lst_items=[("Get Fila",get_fila), ("Get Column",get_columna), ("Get Valor By Fila-Columna", get_fila_columna), ("Get Valor By Celda(A:0)", get_celda)])
-    The_X_Men.addX(     titulo='SUB_SET'  , padre='MenuPpal', ipadre="SET"     , lst_items=[("Set Fila",set_valor_over_fila), ("Set Column",set_valor_over_columna), ("Set Valor By Fila-Columna", set_fila_columna), ('Set Valor By Celda(A:0)', set_celda)])
-    The_X_Men.addX(     titulo='SUB_DEL'  , padre='MenuPpal', ipadre="DEL"     , lst_items=[("Del Fila",del_fila), ("Del Column",del_columna), ("Del Celda", del_xy)])    
-    The_X_Men.addX(     titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS" , lst_items=[("Crear Rango",crear_rango), ("Buscar Rango",buscar_rango), ("Eliminar Rango",eliminar_rango), ("Ver Rango", ver_rango) , ("Tablero to Rango",tablero_to_rango), ("Rango To Tablero",rango_to_tablero),("Lista To Rango ['lista', 'de', 'ejemplo']",lista_to_rango) , ("Lista To Tablero",lista_to_tablero), ('Matriz To Tablero', matriz_to_tablero), ("Imprime Rango",imprime_prango), ('Imprime Rango From Fila / To Fila', prango_to)])  
-    The_X_Men.addX(     titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Recursiv",prueba_recursiva), ("T+ (Menu Simulation)",tablero_plus), ("-", None)])    
+    The_X_Men.addX( titulo='SUB_CREAR', padre='MenuPpal', ipadre="TABLERO" , lst_items=[("Crear Tablero",crear_tablero), ("Iniciar Tablero", iniciar_tablero)] )  
+    The_X_Men.addX( titulo='SUB_IMPR', padre='MenuPpal', ipadre="IMPRIMIR" , lst_items = [ ("Imprimir Modo Max sin/sp",print_max_ssp),("Imprimir Modo Max con/sp",print_max_csp) , ("Imprimir Modo Literal",print_literal) , ('Imprimir Modo Fixed sin/sp', print_fixed_ssp), ("Imprimir Modo Fixed con/sp",print_fixed_csp), ('Imprimir Modo Personal', print_personal), ('Imprimir Ambbigous', print_ambigous)] )
+    The_X_Men.addX( titulo='SUB_GET'  , padre='MenuPpal', ipadre="GET"     , lst_items=[("Get Fila",None), ("Get Columna",None), ("Get Valor By Fila-Columna", None), ("Get Valor By Celda(A:0)", None), ("Get Matriz Values", None)])
+    The_X_Men.addX( titulo='SUB_SET'  , padre='MenuPpal', ipadre="SET"     , lst_items=[("PUSH Matriz",None),("PUSH Fila",None), ("PUSH Column",None), ("PUSH Valor", None), ('PUSH Valor By Celda (C:3)', None), ('PUSH valor by fila / columna')] )
+    The_X_Men.addX( titulo='SUB_DEL'  , padre='MenuPpal', ipadre="DEL"     , lst_items=[("Del Fila",None), ("Del Column",None), ("Del Celda", None)] )    
+    The_X_Men.addX( titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS" , lst_items=[("Crear Rango",crear_rango), ("Buscar Rango",buscar_rango), ("Eliminar Rango",eliminar_rango), ("Ver Rango", ver_rango) ] )  
+    The_X_Men.addX( titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Recursiv" , prueba_recursiva), ("T+ (Menu Simulation)", None)] )    
 
     # 3- LLAMO A MYSTYCA PARA VISUALIZAR EL MENU ╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦
     retorno = The_X_Men.Mystyca(titulo='MenuPpal', configurado=True, execFunc=True, tipo_marcador='a', execAll=False, Loop=True , padX=50)
@@ -60,16 +62,14 @@ def main():
 def crear_tablero(): 
     global TABLERO
     print()
-    f_c = TeclD.byTcld( listaStrKeys=['fila', 'col'], listaDef=[(int, False), (int, False)])
+    f_c = TeclD.byTcld( listaStrKeys=['filas', 'columas'], listaDef=[(int, False), (int, False)])
     # _______________________
     # Pregunta de Seguridad
     continuar = TeclD.byTcld( listaStrKeys=['if'], listaDef=[(bool, True)], msgIntro=f'\nSeguro que Quieres Continuar?')    
     if continuar['if']==False: 
         print('Crear Anulado... Chaoooo')
         return
-    # _____________________
-    # Creamos el tablero
-    TABLERO = Rangutan(total_filas_tablero = f_c['fila'], total_columnas_tablero = f_c['col'] , valor_inicial='-')
+    TABLERO = Tablero(total_columnas_tablero = f_c['columnas'], total_filas_tablero = f_c['filas'], valor_inicial='+')
     print('\nCREAR TABLERO ;)\n')
 
 # PONE EL MISMO VALOR EN TODO EL TABLERO.
@@ -81,46 +81,52 @@ def iniciar_tablero():
     if continuar['if']==False: 
         print('Iniciar Anulado... Chaoooo\n')
         return
-    # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    TABLERO.init_tablero(value=val['val'])
-    print(f'Iniciar a {val['val']}  ;)\n')
-
-# IMPRIME UN TABLERO CON TAMAÑO FIJO DE COLUMNAS(SE PIDE POR TECLADO.)
-def print_tablero():
+    TABLERO.init_tablero(value = val['val'])
+# IMPRIME UN RANGO
+def print_max_ssp():
     global TABLERO
     print() 
     val = TeclD.byTcld( listaStrKeys=['val'], listaDef=[(int, True)], msgIntro='\nTamaño Columna (0 by def)... ')    
-    """ >>> Define el espacio reservado para cada columna/celda  """
-    if TABLERO:
-        print()
-        TABLERO.to_print(numSP=val['val'], b_columnas_head='A' , b_num_filas=True,  b_ajustado=False)
-        # TABLERO.to_print(numSP=val['val'], b_columnas_head='A' , b_num_filas=True)
-        # TABLERO.to_print(numSP=val['val'], b_columnas_head=False)
-        # TABLERO.to_print(numSP=val['val'], bHead=True)
-    print('\nPRINT TABLERO ;)') 
-
-# IMPRIME UN TABLERO AJUSTANDO EL TAMAÑO (PIDE MARGEN)
-def print_ajustado():
+    print('\nI m p r i m i r    M a x  s/sp  \n')    
+    TABLERO.imprimir()
+def print_max_csp():
     global TABLERO  
     pad_x = TeclD.byTcld( listaStrKeys=['p'], listaDef=[(int, True)], msgIntro='\npadX (0 by def)... ')        
-    if TABLERO:
-        print()
-        TABLERO.to_print( b_columnas_head='A', b_num_filas=True,  b_ajustado=True, pad_x=pad_x['p'])
-        # TABLERO.to_print(numSP=val['val'], bHead=True)
-    print('\nPRINT TABLERO AJUSTADO;)') 
+    print('\nI m p r i m i r    M a x  c/sp  \n')    
+    TABLERO.imprimir(sp_columna=pad_x['p'])    
+def print_literal():
+    global TABLERO  
+    print('\nI m p r i m i r   L i t e r a l  P u r o \n')    
+    TABLERO.imprimir( ancho = 0 , sp_columna = 0 )
+def print_fixed_ssp():
+    global TABLERO  
+    print('\nI m p r i m i r   F i x e d  s/sp  \n')    
+    TABLERO.imprimir( ancho = 2 , sp_columna = 0 )
+def print_fixed_csp():
+    global TABLERO  
+    print('\nI m p r i m i r   F i x e d  c/sp \n')    
+    TABLERO.imprimir( ancho = 5 , sp_columna = 1 )
+def print_personal():
+    global TABLERO  
+    print('\nI m p r i m i r   P e r s o n a l  c/sp \n')    
+    TABLERO.imprimir( lista = [5,3,4,1,3,2] , sp_columna = 3 )
+def print_ambigous():
+    global TABLERO  
+    print('\nI m p r i m i r   A m b i g u o u s   \n')    
+    TABLERO.imprimir( ancho = 3 , lista = [3, 4, 6] , sp_columna = 5 )
 
 # ESTABLECE UN VALOR EN UNA CELDA PIDIENDO FILA Y COLUMNA
 def set_fila_columna():      
     global TABLERO
     f_c_v = TeclD.byTcld( listaStrKeys=['fila', 'col','valor'], listaDef=[(int, False), (str, False), (str, True)])
-    set_v = TABLERO.xy(fila=f_c_v['fila'], col=f_c_v['col'], valor=f_c_v['valor'])
-    print('\nset_value :)') if set_v == True else 'set_fila_columna :('
+    
+    tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
 
 # ESTABLECE UN VALOR EN UNA CELDA (A:0)
 def set_celda():
     cel_v = TeclD.byTcld( listaStrKeys=['celda', 'valor'], listaDef=[(str, False), (str, True)])    
-    set_v = TABLERO.celda(celda=cel_v['celda'], valor=cel_v['valor'])
-    print('\nSet Value :)\n') if set_v == True else '\nSet Value :(\n'  
+    
+    tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
 
 # ESTABLECE UN VALOR EN UNA FILA
 def set_valor_over_fila():
@@ -130,35 +136,26 @@ def set_valor_over_fila():
     if not fila: return
     val = TeclD.byTcld( listaStrKeys=['v'], listaDef=[(str, True)], msgIntro=f'\nIntroduce Valor to Set en fila {f['f']}')    
     
-    # Cacho cada columna por su self.get_dicc_numcol_value
-    TABLERO.set_valor_over_fila(fila_to_set=f['f'], valor=val['v'])
-    # generic_cols = TABLERO.get_dicc_numcol_value()
-    # for i,columna in enumerate(generic_cols):
-    #     TABLERO.xy(fila=f['f'], col=columna, valor=val['v'])
-
+    tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
+    
 # ESTABLECE UNA COLUMNA
 def set_valor_over_columna():
     global TABLERO
     col = TeclD.byTcld( listaStrKeys=['c'], listaDef=[(str, False)], msgIntro='\nIntroduce Columna to Set  [0, "a", "A"]')    
     val = TeclD.byTcld( listaStrKeys=['v'], listaDef=[(str, True)], msgIntro=f'\nIntroduce el Valor a introducir en la Columna < {col['c']} > ')    
-    if TABLERO.set_valor_over_columna(columna=col['c'], valor=val['v']):
-        print('Set Columna ;)\n')
-    else:
-        print('Set Columna ;(\n')
+    
+    tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
 
 # RETORNA UN VALOR DEL TABLERO CUANDO INTRODUCES UNA Cimprime_a_caponELDA (A:0, C:3)
 def get_celda():
     cel_v = TeclD.byTcld( listaStrKeys=['celda'], listaDef=[(str, False)])
     valor = TABLERO.celda(celda=cel_v['celda'])
-    print(f'\nValor en [ {cel_v['celda']} ] =  {valor}\n')
 
 # OBTIENE UN VALOR DEL TABLERO x FILA Y COLUMNA
 def get_fila_columna(): 
     global TABLERO
     f = TeclD.byTcld( listaStrKeys=['f'], listaDef=[(int, False)], msgIntro='\nIntroduce Fila to Get Valor ')    
     c = TeclD.byTcld( listaStrKeys=['c'], listaDef=[(str, False)], msgIntro='\nIntroduce Columna to Get Valor [0, "a", "A"] ')    
-    valor_en_tablero = TABLERO.xy(fila=f['f'], col=c['c'])    
-    print(f'valor en Tablero: {valor_en_tablero}\n')
 
 # OBTIENE UNA FILA
 def get_fila():
@@ -166,28 +163,17 @@ def get_fila():
     print('OBTIENE UNA LISTA DE DICCIONARIO DE UNA FILA ENTERA')
     f_f = TeclD.byTcld( listaStrKeys=['ff'], listaDef=[(int, False)], msgIntro='\n(Get Fila) Introduce Fila Desde... ')    
     f_t = TeclD.byTcld( listaStrKeys=['ft'], listaDef=[(str, False)], msgIntro='\n(Get Fila) Introduce Fila Hasta... ')    
-    rng1=TABLERO.get_lst_filas(filaFrom=f_f['ff'], filaTo=f_t['ft'])
-    print()
-    TABLERO.imprime_a_capon(lst_rangos=rng1)
 
 # OBTIENE UNA COLUMNA
 def get_columna():
     global TABLERO
     col = TeclD.byTcld( listaStrKeys=['col'], listaDef=[(str, False)], msgIntro='\nIntroduce Columna to Get  [0, "a", "A"]')    
-    lst_columna = TABLERO.get_columna(columna=col['col'])    
-    if lst_columna: print(lst_columna)
 
 # PONE EL VALOR DE TABLERO.valor_inicial EN TODO EL TABLERO.
 def del_xy():
     global TABLERO
     f = TeclD.byTcld( listaStrKeys=['f'], listaDef=[(int, False)], msgIntro='\nIntroduce Fila to Borrar Valor ')    
     c = TeclD.byTcld( listaStrKeys=['c'], listaDef=[(str, False)], msgIntro='\nIntroduce Columna to Borrar Valor [0, "a", "A"] ')    
-    try:
-        TABLERO.del_xy(f['f'], c['c'])
-    except Exception as e:
-        print('Del Celda ;(\n')    
-    finally:
-        print('Del Celda :)\n')    
 
 # ELIMINA TODA UNA FILA Y DEJA EL VALOR INICIAL DE LA CLASE self.valor_inicial.
 def del_fila():
@@ -196,50 +182,23 @@ def del_fila():
     fila = TABLERO.get_lst_filas(filaFrom=f['f'], filaTo=f['f'])
     if not fila: return
     # _______________________
-    # Pregunta de Seguridad
     continuar = TeclD.byTcld( listaStrKeys=['if'], listaDef=[(bool, False)], msgIntro=f'\nSeguro que Quieres Continuar?')    
     if continuar['if']==False: print('Crear Anulado... Chaoooo') ; return 
-
-    TABLERO.set_valor_over_fila(fila_to_set=f['f'], valor=TABLERO.get_valor_inicial())
-
-    
 
 # __________________________________
 # ELIMINA TODA UNA COLUMNA Y DEJA EL VALOR INICIAL DE LA CLASE self.valor_inicial.
 def del_columna():
     global TABLERO
     c = TeclD.byTcld( listaStrKeys=['c'], listaDef=[(str, False)], msgIntro='\nIntroduce Columna to Borrar Valor [0, "a", "A"] ')    
-    try:
-        TABLERO.set_valor_over_columna(columna=c['c'], valor=TABLERO.get_valor_inicial())        
-    except Exception as e:
-        print('Del Columna ;(\n')
-    finally:
-        print('Del Columna ;)\n')
 
 
 def set_marco():
     global TABLERO
-    # if TABLERO.set_valor_over_columna(columna='0', valor='|')==True:
-    #     print('Set Columna 0 ;)')
-    # else:
-    #     print('Set Columna 0 ;(')
-
-    # if TABLERO.set_valor_over_columna(columna=TABLERO.data['int_cf'], valor='|')==True:
-    #     print('Set Columna 0 ;)')
-    # else:
-    #     print('Set Columna 0 ;(')
-    lst_retorno = TABLERO.get_lst_max_filas()
-    if lst_retorno:
-        print(lst_retorno)
-    print(f'\nmax len(filas) en self.tablero = {TABLERO.get_max_filas()}')
-    print('W.I.P.  :)\n')
 
 # __________________________________
 # Llama  a la clase Tablero_Plus que avanza la funcionalidad de Tablero y crea Estructura de Salida tipo Menu
 def tablero_plus():
-    from classMenuDvd.Tablero_X_Men import Monkey_Men
-    print('\nC l a s e   T a b l e r o   P l u s \n')
-    TPlus = Monkey_Men(dimension = "30x50", head = ['E n t r a d a','  d e   P r u e b a'] , pie = [['S a l i d a'], ['Fila 2 Salida']] , pad_x = 50 , x_pad = 5 , margen = 0)
+    pass
 
 # Crea un Rango
 def crear_rango():
@@ -248,24 +207,17 @@ def crear_rango():
     c = TeclD.byTcld( listaStrKeys=['cld'], listaDef=[(str, False)], msgIntro='C e l d a   d e   i n i c i o ( A:0 ) ')    
     d = TeclD.byTcld( listaStrKeys=['dim'], listaDef=[(str, False)], msgIntro='D i m e n s i o n ( 3x4 )  ó  C e l d a - F i n  ( M:8 )')  
 
-    rng = TABLERO.crear_rango( nombre = n['nm'] , celda_inicio = c['cld'] , dimension = d['dim'] )
-    if rng != None:
-        print(f'{rng}\nRango Creado :) \n')  if  rng  else   f'Rango {n['nm']} - {c['cld']} - {d['dim']}\n Crear Rango :(\n'
+    rango = Rango(nombre_rango= n['nm'], celda_inicio=c['cld'], dimension=d['dim'] , valor_inicial = '-')    
+    if rango: 
+        print('RANGO CREADO :)')
 
 def buscar_rango():
     global TABLERO
     n = TeclD.byTcld( listaStrKeys=['n'], listaDef=[(str, False)], msgIntro='\nNombre del Rango ')    
-    rango = TABLERO.buscar_rango(nombre_a_buscar=n['n'])
-
-    print(f'{rango}\n') if rango else f'Rango {n['n']} no encontrado :( \n'
 
 def eliminar_rango():
     global TABLERO
     n = TeclD.byTcld( listaStrKeys=['n'], listaDef=[(str, False)], msgIntro='\nNombre del  R a n g o  A Eliminar')    
-    rango=TABLERO.buscar_rango(nombre_a_buscar=n['n'])
-    if rango:
-        b_borrado = TABLERO.elimina_rango(nombre_a_borrar=rango.data['nombre'])    
-        print(f'Del Rango {n['n']} :( \n')   if  b_borrado == None    else    f'{rango.data['nombre']} Borrado :) \n'
 
 def ver_rango():
     global TABLERO
@@ -273,23 +225,18 @@ def ver_rango():
     v = TeclD.byTcld( listaStrKeys=['v'], listaDef=[(bool, True)], msgIntro='\nV e r   V a l o r e s ( v )(intro)  |   Ver Datos( f )')    
 
     if n['n'] == '':
-        TABLERO.ver_rango(b_valores=v['v'])
-    else:        
-        TABLERO.ver_rango(nombre_rango = n['n'], b_valores=v['v'])
-    print()
+        pass    
+    else:       
+        pass 
 
 def tablero_to_rango():
     global TABLERO
     n = TeclD.byTcld( listaStrKeys=['n'], listaDef=[(str, True)], msgIntro='\nNombre del  R a n g o  to Transfer ')    
-    rango = TABLERO.tablero_to_rango( nombre_rango = n['n'] )
-    print(f'Transferencia de {n['n']} completada :) \n') if rango == True else f'Transferencia de {n['n']} Error :( \n'
 
 
 def rango_to_tablero():
     global TABLERO
     n = TeclD.byTcld( listaStrKeys=['n'], listaDef=[(str, True)], msgIntro='\nNombre del  R a n g o  to Transfer ')    
-    retorno = TABLERO.rango_to_tablero( nombre_rango = n['n'] )
-    print(f'Transferencia de {n['n']} completada :) \n') if retorno != None else f'Transferencia de {n['n']} Error :( \n'
 
 
 def lista_to_rango():
@@ -302,12 +249,6 @@ def lista_to_rango():
     if not lst_to_tablero: return 
     lst_to_tablero = [str(item).strip() for item in lst_to_tablero if str(item) != '']
     
-    TABLERO.lista_to_rango(lista=lst_to_tablero, nombre_rango=n['n'])
-
-    b_tablero = TeclD.byTcld( listaStrKeys=['vf'], listaDef=[(bool, True)], msgIntro='Lo Quieres tambien en el tablero( V ) o sólo en el rango( F )?')    
-    if b_tablero['vf'] == True:
-        TABLERO.rango_to_tablero( nombre_rango = n['n'] )
-
 # Entra una lista en forma de lista o str separado por comas y lo introduce en el tablero 
 # No hace falta rango, lo crea la funcion lista_to_tablero() de forma auxiliar y luego lo elimina
 def lista_to_tablero():
@@ -318,14 +259,10 @@ def lista_to_tablero():
     
     pos = TeclD.byTcld( listaStrKeys=['pos'], listaDef=[(bool, True)], msgIntro='Lo Quieres Vertical( V ) o Horizontal( F )?')    
     if pos['pos'] == True:
-        retorno = TABLERO.lista_to_tablero(lista=str_lista['l'], celda_inicio = celda['ci'], pega_horizontal = False)    
+        pass
     else:
-        retorno = TABLERO.lista_to_tablero(lista=str_lista['l'], celda_inicio = celda['ci'], pega_horizontal = True)    
+        pass
 
-    if retorno == True: 
-        print('\nLista llevada al tablero con Exito :)')
-    else:
-        print('\nLista llevada al tablero con Error :(')
 
 def matriz_to_tablero():
     global TABLERO
@@ -335,46 +272,7 @@ def matriz_to_tablero():
         [7, 8, 9]
     ]
     celda = TeclD.byTcld( listaStrKeys=['ci'], listaDef=[(str, True)], msgIntro='\nIntroduce C e l d a  en Tablero (pejem: M:8 ) donde colocar la matriz ... ')
-    tablero = TABLERO.matriz_to_tablero(matriz=matriz, celda_inicio=celda['ci'])
-    if tablero == True:
-        print('\nMatriz llevada al tablero con Exito :)')
-    else:
-        print('\nMatriz llevada al tablero con Error :(')
-
-
-def imprime_prango():
-    global TABLERO
-    n = TeclD.byTcld( listaStrKeys=['n'], listaDef=[(str, True)], msgIntro='\nNombre del   R a n g o  a imprimir ..... ')    
     
-    adjust = TeclD.byTcld( listaStrKeys=['adjust'], listaDef=[(str, True)], msgIntro='Ajuste al  M a x i m o  de columna: (None) , F i x e d : (int) , P e r s o n a l (list) ') 
-
-    pad_x = TeclD.byTcld( listaStrKeys=['pad_x'], listaDef=[(int, False)], msgIntro='P a d X  ....')    
-
-    # Al pedir una cadena para que tenga varias posibilidades, cuando permito nulo devuelve cadena vacia ''
-    if adjust['adjust'] == '':
-
-        TABLERO.Prango(nombre_rango=n['n'], column_adjust = None , pad_x = pad_x['pad_x'] )
-    
-    elif adjust['adjust'].isdigit():
-        fixed_columna=abs(int(adjust['adjust']))
-        TABLERO.Prango(nombre_rango=n['n'], column_adjust = fixed_columna , pad_x = pad_x['pad_x'] )
-    
-    else:
-        if ',' in adjust['adjust']:
-            lst_cadena = TABLERO.SttS.cadena_to_lista(cadena = adjust['adjust'], char=',')
-            if lst_cadena: TABLERO.Prango(nombre_rango=n['n'], column_adjust= lst_cadena ,  pad_x = pad_x['pad_x'] )
-        else:
-            print('Dato/s de Entrada Error :( \n')
-
-def prango_to():
-    global TABLERO    
-    fila_desde = TeclD.byTcld( listaStrKeys=['desde'], listaDef=[(int, True)], msgIntro='\nFila Desde.... ')    
-    fila_hasta = TeclD.byTcld( listaStrKeys=['hasta'], listaDef=[(int, True)], msgIntro='\nFila Hasta.... ')    
-    
-    retorno = TABLERO.tablero_to_all_rango_fila()
-    TABLERO.Prango_rows(desde=fila_desde['desde'], hasta=fila_hasta['hasta'], column_adjust = None , pad_x = 2)
-    print('tablero to all rango fila  :) ') if retorno else f'tablero to all :( '
-
 
 def prueba_recursiva():
     matriz_pruebas = [  ['wIP', 12, '14', 16], 
@@ -412,11 +310,11 @@ def prueba_recursiva():
 
     tablero = Tablero(total_columnas_tablero = 15, total_filas_tablero = 10, valor_inicial='-')
 
-    tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
+    retorno = tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
     # tablero.push(data_push = [1,2,'3',4,[5,6]], celda_inicio = 'B:1' )
-    
-    print('\nI m p r i m i r   T a b l e r o   c o n   P u s h \n')
-    tablero.imprimir( sp_columna = 3 )
+    if retorno:    
+        print('\nI m p r i m i r   T a b l e r o   c o n   P u s h \n')
+        tablero.imprimir( sp_columna = 3 )
 # ==============================================================================================
 # ==============================================================================================
 # ==============================================================================================
