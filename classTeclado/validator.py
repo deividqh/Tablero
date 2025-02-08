@@ -77,17 +77,20 @@ class ValidReg(TiposValidReg):
         Args: [ip]: Una ip
         Return: return grupo_1, grupo_2, grupo_3, grupo_4 
         """
-        regIp = r'^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$'
-        if infoSocket.esIPValida():
-            match = re.match(regIp, ip)
-            if match:
-                grupo_1 = match.group(1)
-                grupo_2 = match.group(2)
-                grupo_3 = match.group(3)
-                grupo_4 = match.group(4)            
-                return grupo_1,grupo_2, grupo_3, grupo_4
-            else:
-                return None
+        try:
+            regIp = r'^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$'
+            if infoSocket.esIPValida():
+                match = re.match(regIp, ip)
+                if match:
+                    grupo_1 = match.group(1)
+                    grupo_2 = match.group(2)
+                    grupo_3 = match.group(3)
+                    grupo_4 = match.group(4)            
+                    return grupo_1,grupo_2, grupo_3, grupo_4
+                else:
+                    return None
+        except Exception as e:
+            return None
 
     @staticmethod
     def esIPValida(ip='127.0.0.1'):
@@ -96,23 +99,28 @@ class ValidReg(TiposValidReg):
         Retorno: True si ip buena
         False si ip mala.
         """
-        regIp = r'^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$'
-        if re.search(regIp, ip):
-            return True
-        else:
-            return False
+        try:
+            regIp = r'^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$'
+            if re.search(regIp, ip):
+                return True
+            else:
+                return False
+        except Exception as e:
+            return None
     @staticmethod
     def esMail(cad):
         """  
         Valida mail. Puede haber otras expresiones regulares mas adecuadas pero esta vale.
         cadena de caracteres @ cadena de caracteres
         """
-        cad=cad.strip()
-        patron = r'^(\w+)@(\w+)$'    
-        palabra=re.match(patron, cad)
-    
-        return palabra.group(1), palabra.group(2)
-    
+        try:
+            cad=cad.strip()
+            patron = r'^(\w+)@(\w+)$'    
+            palabra=re.match(patron, cad)
+        
+            return palabra.group(1), palabra.group(2)
+        except Exception as e:
+            return None
 
     @staticmethod
     def esDate(cadena, formato_entrada="%d/%m/%Y", formato_salida="%d/%m/%Y"):

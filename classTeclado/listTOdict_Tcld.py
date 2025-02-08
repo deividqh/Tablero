@@ -1,212 +1,212 @@
 import re
-from datetime import date as fecha
-from datetime import time as hora
+from datetime import date 
+from datetime import time 
 
-class listTOdict_byTcld():
+
+class SuData():
     """ 
     Def => entra una list de str y devuelve esa list como keys de un diccionario y los values son 
     pedidos por Teclado. Se pueden pasar el [tipoDato, PERMITENULL] en una lista de lista o lista de tupla
     [Ejemplo de uso]:
-    >>> from listTOdict_Tcld import listTOdict_byTcld as listToDict
+    >>> from listTOdict_Tcld import SuData as listToDict
     >>> oneDict=listToDict.byDef(
-                                    listaStrKeys=['Cuanto','Quieres','Entrar?'],
-                                    listaDef= [(int,True), (float,False), (str,False)],
-                                    permiteNulo=True,
+                                    key_dict=['Cuanto','Quieres','Entrar?'],
+                                    tipo= [(int,True), (float,False), (str,False)],
+                                    permite_nulo=True,
                                     esCapital=False)
     >>> print(oneDict)
         
         [Resultado] => {'Cuanto': 5, 'Quieres': 5.0, 'Entrar?': '5'}
     """
+    
+    TIPOS_VALIDOS = {
+        int: lambda v: int(v) if ValidReg.esInt(v) else None,
+        float: lambda v: float(v) if ValidReg.esFloat(v) else None,
+        str: lambda v: v  ,
+        bool: lambda v: v ,  # SOLO DEVUELVE VALOR, VALIDACION FUERA
+        list: lambda v: v ,  # SOLO DEVUELVE VALOR, VALIDACION FUERA
+        set: lambda v: v  ,  # SOLO DEVUELVE VALOR, VALIDACION FUERA
+        tuple: lambda v: v ,  # SOLO DEVUELVE VALOR, VALIDACION FUERA
+        date: lambda v: datetime.strptime(v, "%d/%m/%Y").date() if ValidReg.esDate(v) else None,
+        time: lambda v: datetime.strptime(v, "%H:%M").time() if re.match(r"^(2[0-3]|[01]?\d):([0-5]\d)$", v) else None,
+        "DNI": lambda v: v if ValidReg.partirDNI(v)[0] else None,
+        "Email": lambda v: v if ValidReg.esMail(v) else None,
+        "IP": lambda v: v if ValidReg.esIPValida(v) else None,
+        "between": lambda v: v  # SOLO DEVUELVE VALOR, VALIDACION FUERA
+    }
+
+    TIPOS_VALIDACION_EXTERNA = [bool, list, set, tuple, 'between']
+
+
+    VALORES_POR_DEFECTO = {
+        int: 0,
+        float: 0.0,
+        str: "",
+        bool: False,
+        list: [],
+        set: set(),
+        tuple: (),
+        date: date(1900, 1, 1),
+        time: time(0, 0),
+        "DNI": "00000000X",
+        "Email": "unknown@mail.com",
+        "IP": "0.0.0.0",
+        "between": None , 
+        "object": None
+    }
+
+
     def __init__(self):
-        """ 
-        Constructor: 
-        """
-        pass
-        self.estilo={'capital':False, 'may':False}
+        self.lst_tipos = []
 
     def __str__(self):
         pass
-    
-    # ********************
-    # From lista1 de str To Dict(k)valorLista1 (v)Intro Teclado. No Permite Nulo
-    # ********************
+   
     @staticmethod
-    def __introToString(strValor):
-        # permiteNulo=True
-        valorLista = str(strValor.group()).capitalize()
-        while True:
-            retorno = input(f'intro {valorLista}..... ')
-            # No Permite espacio vacio
-            if retorno == '': 
-                continue
-            else:   
-                break
-        
-        return retorno
-    @staticmethod
-    def toString(listaStrKeys=True):
-        """ 
-        Def => Devuelve un diccionario Segun una lista pasada como argumento pidiendo datos al usuario y almacenandolos en una lista. 
-        No permite Introducir Vacio ( '' )
-        listaStrKeys => [str] que son las keys del diccionario de retorno.
-        Retorno => diccionario (k) los valores de listaStrKeys (v)Los valores str de los datos pedidos x Teclado. 
-                None si algo va mal.
-        
-        Ejemplo => dict2 = listTOdict_byTcld.listTOdict_byTcld( ['nombre','dni' ,'tlf'] )
+    def get_valor_bydef(tipo):
+        """ Devuelve el valor por defecto de un tipo."""
+        return SuData.VALORES_POR_DEFECTO.get(tipo, None)
 
-        Mejora: Introducir tratamiento de errores y 
-                Introducir validacio de datos
-        """
-        if not isinstance(listaStrKeys, list): return None
-        # patron = r'^[\w#$%/()\s]+$'
+    @staticmethod
+    def set_valor_bydef(tipo, valor):
+        """ Modifica o agrega un nuevo tipo a los valores por defecto."""
+        SuData.VALORES_POR_DEFECTO[tipo] = valor
+
+    @staticmethod
+    def reset_valores_por_defecto():
+        """ Restaura los valores por defecto a sus valores iniciales."""
+        SuData.VALORES_POR_DEFECTO = {
+            int: 0,
+            float: 0.0,
+            str: "",
+            bool: False,
+            list: [],
+            set: set(),
+            tuple: (),
+            date: date(1900, 1, 1),
+            time: time(0, 0),
+            "DNI": "00000000X",
+            "Email": "unknown@mail.com",
+            "IP": "0.0.0.0",
+            "between": None
+        }
+
+    
+    # *******************************************
+    # OBLIGA A INTRODUCIR EL DATO CORRECTO.
+    # CON ( permite_nulo = True ) SI INTRODUCE ''(INTRO) SE BUSCA EL VALOR POR DEFECTO.
+    # Funcion Que hace Tipado del diccionario JUSTO DESPUÉS DE INTRODUCIR LOS DATOS.
+
+    # *******************************************
+    @staticmethod
+    # def get_data(listaStrKeys, tipo=None, msg_entrada='Intro', permite_nulo=False, esCapital=False):
+    def get_data(key_dict:str, tipo, msg_entrada:str='Intro... ', permite_nulo:bool=False):
+        """          
+        Convierte una lista de entrada en un diccionario (key): valor lista ; (values): introTeclado.
+        Te hace tipado si se introduce una lista de tipo(tipo),permiteNull(boolean) despues de introducir
+        el dato, por lo que te obliga a meter el dato correcto.
+
+        """        
+        
+        # CUALQUIER FRASE CON CUALQUIER CARACTER
         patron = r'^[\w!@#$%^&*()\-_=+{}\[\]:;"\'<>,.?/|\\~`\s]+$'
+        pass
+        if tipo == None: tipo = str                   # Tipo por defecto.
+        
+        # Diccionario de parametros         
+        options = { 'msg_entrada':msg_entrada , 'permite_nulo': permite_nulo  } 
+        
+        # Diccionario creado con la llamada a una funcion en base a un patron(cualquier cosa introducida) 
+        # para ejecutar una funcion que pregunta el dato al usuario y 
+        dictRetorno = {
+            key_dict:SuData.__introByTcld(str_key = key_dict, tipo = tipo , options = options )
+        }
+        pass
+        # ______________
+        # Retorno:
+        if dictRetorno:
+            return SuData.__tiparDiccionario( diccionario = dictRetorno, tipo = tipo )
+        else:
+            return None
 
-        dictRetorno={ strKey:re.sub(patron, listTOdict_byTcld.__introToString, strKey) 
-                      for strKey in listaStrKeys }
-        # print(dictRetorno)    
-        return dictRetorno
-    
+
     # ********************
     # From lista1 de str To Dict(k)valorLista1 (v)Intro Teclado. Permite elegir Nulo/noNulo y crecer
     # ********************
     @staticmethod
-    def __introByDef(strValor, options=None):
-        """ 
-        Llamada desde byDef. 
-        Se ejecuta para pedir datos al usuario y devolver el valor.
-        Se pueden crear distintas opciones 
-        [options] => diccionrio con pares clave:valor que se generan en la funcion byDef y aqui se obtienen y tratan
-
-        Ejemplo => dict2 = listTOdict_byTcld.byDef( ['nombre','dni' ,'tlf'] , permiteNulo=True )        
+    def __introByTcld(str_key, tipo, options=None):
+        """ Llamada desde get_data(): 
+        [tipo](list) pasa siempre tipo =>[(int, False), (int, False)] lista de tuplas tipo, b_Permite_Nulo
+        [options](dict)= { 'msg_entrada':msg_entrada , 'permite_nulo': permite_nulo , 'capital':esCapital } las opciones que se pasan 
+        Return: 
+        ejemplo:        
+        
         """
-        # _____________________
+        # EL DICT OPTIONS SE TIENE QUE DEFINIR ASÍ: Si tiene datos, se asignan , si no tiene datos se asigna diccionario vacio {}
         options = options or {}
-        # _____________________
-        permiteNulo = options.get('permiteNulo', False)  # Obtén 'permiteNulo' con un valor predeterminado de False
-        esCapital = options.get('capital', False)  # Obtén 'permiteNulo' con un valor predeterminado de False
-        msgIntro = options.get('msgIntro', False)  # Obtén 'permiteNulo' con un valor predeterminado de False
-
-        # _____________________
-        if esCapital:
-            valorLista = str(strValor.group()).capitalize()
+        
+        # RECOGE LOS DATOS DEL DICCIONARIO DE ENTRADA OPTIONS
+        permite_nulo = options.get('permite_nulo', False)  
+        msg_entrada  = options.get('msg_entrada', False)  
+        
+        # KEY DEL DICCIONARIO A CREAR ... INFO DEL MENSAJE INPUT
+        key_dict = str(str_key.group())
+        pass
+        
+        # .... INFORMACION DEL TIPO EN STR
+        str_tipo = tipo.__name__        
+        # .... INFO PERMITE NULL EN STR
+        if permite_nulo == True:
+            msg_nulo = 'NULL'
         else:
-            valorLista = str(strValor.group())
-        # _____________________
+            msg_nulo = 'NOT NULL'
+        pass
+        # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+        # PIDO DATOS POR TECLADO
         while True:
-            retorno = input(f'{msgIntro}-{valorLista} ..... ')
-            if retorno == '' and not permiteNulo:
-                continue
-            elif retorno == '' and permiteNulo:
-                break
-            else:
-                # Validación o transformación adicional aquí
-                break
-        
-        return retorno
-    # ***************************************************
-    # Funcion Que hace Tipado del diccionario una vez introducidos todos los datos.
-        # En caso de que no se ajusten a los datos de tipo mete los valores por defecto. 
-        # Lo mas importate es que el analisis se hace Después de introducir los datos.
-    # Sobre re.sub: 
-        # re.sub (pattern, repl, string, count=0, flags=0)
-        #  repl    => Cadena de texto o función con el valor que reemplazará las coincidencias del patrón en la cadena.
-        #  string  => La cadena en la que se realizará la búsqueda y el reemplazo
-        #  count (opcional) => Número máximo de reemplazos a realizar. Si se establece en 0, reemplazará todas las coincidencias
-        #  flags (opcional) => Modificadores de la expresión regular, como re.IGNORECASE para hacer la búsqueda sin diferenciar entre mayúsculas y minúsculas.
-            # >>> Ejemplo => 
-            # dictRetorno = {
-            # strKey : re.sub(patron, 
-            #             lambda match: listTOdict_byTcld.__introByDef(match, options), 
-            #             strKey) 
-            #             for strKey in listaStrKeys
-    # ***************************************************
-    @staticmethod
-    def byDef(listaStrKeys, listaDef=None, permiteNulo=True, msgIntro='Intro', esCapital=False):
-        """         
-        Devuelve un diccionario solicitando datos al usuario según las claves de 'listaStrKeys' pero con los datos tipados
-        
-        Es una version de toString() pero añadiendo los datos a pasar a la funcion con lambda.
-        ademas se permitenn mas datos en el dicicionario de entrada options y luego se reciben en la funcion dedicada
-        
-        >>> [listaStrKeys]  => lista de str que son las claves del diccionario de retorno.        
-        [listaDef] => lista de listas/tuplas: 
-                      (classType)[tipo] , (bool)[permiteNulo] => [(int, True), (float, False),...]         
-        [permiteNulo] => bool. =True Permite Nulo en Entrada por teclado.
-
-        [msgIntro] =>  str. Formato del menú de entrada. Es el mensaje antes de los valores de la lista.
-        
-        [esCapital] => bool. Formato del menú de entrada. Si quieres que las claves de la lista sean mostradas en may
-        
-        -Esto crea un diccionario de (key)'nombre','dni' ,'tlf' (values) str
-        >>>    from validator import listTOdict_byTcld as VReg
-        >>>    otherDict = VReg.byDef(listaStrKeys=['nombre','dni','tlf?'], permiteNulo=True, esCapital=False)
-        >>>    print(otherDict)
-        """
-        if not isinstance(listaStrKeys, list): 
-            return None
-        # ______________________
-        # Patron valido: todos los caracteres,  n caracteres 
-        patron = r'^[\w!@#$%^&*()\-_=+{}\[\]:;"\'<>,.?/|\\~`\s]+$'
-        # ______________________
-        # Opciones a pasar a la funcion __introByDef().
-        # Crear mas pares clave:valor para introducir mas parametros.
-        options = { 'msgIntro':msgIntro,                # msgIntro strKey.... + introTeclado 
-                    'permiteNulo': permiteNulo,         # =True Permite Nulo,
-                    'capital':esCapital                 #letra capital para el valor de la key en el menú.
-                    }
-        # ______________________
-        # Creo un diccionario con los argumentos opcionales que le quiero pasar a la 
-        # funcion __introByDef para que procese los datos introducidos.
-        dictRetorno = {
-            strKey:re.sub(patron, lambda match: listTOdict_byTcld.__introByDef(match, options), strKey) for strKey in listaStrKeys
-        }
-        # _____________________
-        # Esto hace que cuando se pasa una lista de Definicion [[int, True], [int, True], [int, True]] por Ejemplo
-        # te devuelva el diccionario tipado.
-        if dictRetorno:
-            if listaDef:
-                return listTOdict_byTcld.__tiparDiccionario(diccionario=dictRetorno,listaDef=listaDef)
-            else:
-                return dictRetorno                
-        else:
-            return None
-    
-    # Valida las listas de entrada 
-    def validaListasEntrada(listaKeys, listaDef):
-        """  
-        >>> listaKeys = ["key_1", "key_2" , "key_3" ]
-        >>> listaDef = [(int,True),(float, False),(str, False)]
-        >>> if not validaListaEntrada(listaKeys, listaDef):...
-        """
-        # Validamos listaKeys
-        try:
-            if isinstance(listaKeys, list) :
-                for unaKey in listaKeys:
-                    if isinstance(unaKey, str):
+            retorno = input(f'Key={key_dict} {msg_entrada}  - ( {str_tipo} - {msg_nulo} )..... ').strip()
+            try:
+                if retorno == '' and permite_nulo == True:
+                    """ Lo hago retornar con este key_dict a la funcion para que trate los tipos """
+                    break
+                elif retorno == '' and not permite_nulo:
+                    """ REPITE, NO ADMITE NULO """
+                    continue
+                else:                
+                    if SuData.TIPOS_VALIDOS[tipo](retorno) == SuData.VALORES_POR_DEFECTO[tipo]:
                         pass
                     else:
-                        return False
-        except:
-            return False
-        pass
-        # Ahora validamos listaDef
-        try:
-            if isinstance(listaDef, list) :
-                for unPar in listaDef:
-                    for unaKey, unValor in listaDef:
-                        if not isinstance(unaKey, type):
-                            return False
-                        if not isinstance(unValor, bool):
-                            return False
-            return True
-        except:
-            return False
-        pass
-    
+                        pass
 
-    def __tiparDiccionario(diccionario, listaDef):
+                    """ >>> ENTRA DATO, Se hace CASTING al tipo recogido. y se Re-CASTING a str para que no casque en re.sub al volover """
+                    try:
+                        if tipo is bool:
+                            retorno=SuData.__tratarBoolano(retorno)
+                            if retorno == None:
+                                continue
+                        elif tipo is list:
+                            retorno = SuData.__tratarListas(retorno)
+                            if not retorno: 
+                                continue
+                            else:
+                                retorno = tipo(retorno)                            
+                        else:
+                            retorno = tipo(retorno)
+
+                        retorno=str(retorno)
+                    except:
+                        continue
+                    else:
+                        break
+            except Exception as e:
+                print(f'ERROR: {e}')
+                return None
+        return retorno
+
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def __tiparDiccionario(diccionario, tipo):
         """ 
-        Quiero Tipar el diccionario creado en byDef proveniente de una lista de string
+        Quiero Tipar el diccionario creado en byDef/get_data proveniente de una lista de string
         donde todos los valores del diccionario son string.
         La idea que tengo es pasar una lista de listas [ [int, True] , [float, False] , [str, False] ]
                            
@@ -218,310 +218,138 @@ class listTOdict_byTcld():
         """
 
         # _________________
-        # IGUALA LA LONGITUD DE LAS LISTAS 
-        # En funcion de listaKeys. (cambia la longitud de listaDef)
-        listaKeys=dict(diccionario).keys()
-        listaDef=listTOdict_byTcld.__igualarListas(listaKeys=listaKeys, listaDef=listaDef)
+        # IGUALA LA LONGITUD DE LAS LISTAS (cambia la longitud de tipo)
+        lst_key = dict(diccionario).keys()
+        # tipo = SuData.__igualarListas(lst_key=lst_key, tipo=tipo)
         # _________________
         # Ahora se recorre la lista de valores y se re-tipan: 
-        listaVals=dict(diccionario).values()
-        listaValoresTipados=[]
-        TIPO=0
-        PERMITENULL=1       
-        for i, valor in enumerate(listaVals):            
+        lst_valores = dict(diccionario).values()
+        lst_valores_tipados = []
+        TIPO = 0
+        PERMITENULL = 1     
+
+        for i, valor in enumerate(lst_valores):            
             # if PERMITENULL==False:            
             # ________________
-            if listaDef[i][TIPO]==int:
+            if tipo[i]==int:
                 try:
-                    listaValoresTipados.append(int(valor))
+                    lst_valores_tipados.append(int(valor))
                 except Exception:
-                    # listTOdict_byTcld.__excepcionTipado(valor=valor, lista=listaValoresTipados, permiteNulo=listaDef[i][PERMITENULL], tipo=listaDef[i][TIPO])
-                    listTOdict_byTcld.__setValoresByDef(lista=listaValoresTipados, tipo=listaDef[i][TIPO])
+                    return SuData.__get_valor_bydef(lista=lst_valores_tipados, tipo=tipo[i][TIPO])
             # ________________
-            elif listaDef[i][TIPO]==float:
+            elif tipo[i][TIPO]==float:
                 try:
-                    listaValoresTipados.append(float(valor))                        
+                    lst_valores_tipados.append(float(valor))                        
                 except Exception:
-                    # listTOdict_byTcld.__excepcionTipado(valor=valor, lista=listaValoresTipados, permiteNulo=listaDef[i][PERMITENULL], tipo=listaDef[i][TIPO])
-                    listTOdict_byTcld.__setValoresByDef(lista=listaValoresTipados, tipo=listaDef[i][TIPO])
+                    return SuData.__get_valor_bydef(lista=lst_valores_tipados, tipo=tipo[i][TIPO])
             # ________________
-            elif listaDef[i][TIPO]==str:                    
-                listaValoresTipados.append(str(valor))
+            elif tipo[i][TIPO]==str:                    
+                lst_valores_tipados.append(str(valor))
             # ________________
-            elif listaDef[i][TIPO]==bool:
+            elif tipo[i][TIPO]==bool:
                 try:
-                    booleano=listTOdict_byTcld.__tratarBoolano(valor)
-                    # listaValoresTipados.append(bool(valor))
-                    listaValoresTipados.append(booleano)
+                    booleano=SuData.__tratarBoolano(valor)
+                    lst_valores_tipados.append(booleano)
                 except Exception:
-                    # listTOdict_byTcld.__excepcionTipado(valor=valor, lista=listaValoresTipados, permiteNulo=listaDef[i][PERMITENULL], tipo=listaDef[i][TIPO])
-                    listTOdict_byTcld.__setValoresByDef(lista=listaValoresTipados, tipo=listaDef[i][TIPO])
+                    return SuData.__get_valor_bydef(lista=lst_valores_tipados, tipo=tipo[i][TIPO])
             # ________________
             else:                    
                 try:
-                    listaValoresTipados.append(str(valor))
+                    lst_valores_tipados.append(str(valor))
                 except Exception:
-                    listaValoresTipados.append(valor)
-        # print(listaValoresTipados)
+                    lst_valores_tipados.append(valor)
         pass
-        # Ahora tengo una lista con los valores ya tipados.
-        # y Compongo el diccionario con la listaKeys y listaValoresTipados.
+        diccionarioRetorno = dict(zip(lst_key, lst_valores_tipados))
 
-        # =======================
-        # 2 Formas de hacer el diccionario: 1-listas Comprension 2-zip()
-        # _______________________
-        # diccionarioRetorno={
-        #     keyDicc:valorTipado for i, keyDicc in enumerate(diccionario)
-        #                         for j, valorTipado in enumerate(listaValoresTipados) 
-        #                             if i==j
-        # }
-        # print(diccionarioRetorno)        
-        # _______________________
-        diccionarioRetorno = dict(zip(listaKeys, listaValoresTipados))
-        # print(diccionarioRetorno)
         pass
         return diccionarioRetorno
 
-    def __igualarListas(listaKeys, listaDef):
-        """             
-        Trata las longitudes de las listas y las igualo según listaKeys como referencia.
-        La que se Re-dimensiona creciendo o decreciendo para igualarse con listaKeys.
-        
-        [Ejemplo de uso]:
-        >>> listTOdict_byTcld.__igualarListas(listaKeys=listaKeys, listaDef=listaDef)
-        
-        listaKeys y listaDef son mutables, se pasan por referencia y no hay que retornar valor.
-        """
-        if len(listaKeys)==len(listaDef):
-            # print("misma longitud")
-            pass
-        elif len(listaKeys)>len(listaDef):
-            # print("long dicc > longTipo.....tipos hasta longTipo y luego Tipo=str y PERMITENULL=False")
-            listaNewTipos=[[str,False] for i, (k) in enumerate(listaKeys) if i >= len(listaDef)]
-            listaDef=listaDef+listaNewTipos
-            # print(listaDef)
+    @staticmethod
+    def __validar_tipo(valor, tipo, opciones=None):
+        """ Valida y convierte el valor al tipo correcto """
+        if tipo == date:
+            return datetime.strptime(valor, "%d/%m/%Y").date() if ValidReg.esDate(valor) else None
+        elif tipo == time:
+            return datetime.strptime(valor, "%H:%M").time() if re.match(r"^(2[0-3]|[01]?\d):([0-5]\d)$", valor) else None
+        elif tipo == ValidReg.partirDNI:
+            return valor if ValidReg.partirDNI(valor)[0] else None
+        elif tipo == ValidReg.esMail:
+            return valor if ValidReg.esMail(valor) else None
+        elif tipo == ValidReg.esIPValida:
+            return valor if ValidReg.esIPValida(valor) else None
+        elif isinstance(tipo, tuple) or isinstance(tipo, list) and tipo == "between":
+            return valor if valor in tipo[1] else (tipo[1][0] if opciones and None in opciones else None)
         else:
-            # print("long dicc < longTipo.....vale hasta la long del dicc- hay que reducir la dimension del la listaDef")
-            longListaTipos = len(listaDef)
-            longListaKeys  = len(listaKeys)
-            for i in range(longListaKeys , longListaTipos ):
-                listaDef.pop()
+            return 
+        return valor
 
-        return listaDef
-        pass
-
-    def __excepcionTipado(permiteNulo, valor, tipo, lista):
+    def __get_valor_bydef( tipo ):
         """ 
-        Def => Pone los valores por defecto en la lista pasada, según el tipo que se pase.
-        Es llamada cuando se produce una excepcion.
+        >>> DEVUELVE EL VALOR POR DEFECTO DEL TIPO PASADO
         """
-        # _________________
-        # Valida que tipo es una variable type
-        if not isinstance(tipo, type): return
-
-        # ==========================
-        # SI permiteNulo , NO Valor => Hay que asignar un valor por defecto.
-        if permiteNulo==True and valor == '':
-            listTOdict_byTcld.__setValoresByDef(tipo=tipo, lista=lista)
-
-        # ==========================
-        # SI permiteNulo, SI Valor  
-        elif permiteNulo==True and valor != '':
-            try:
-                lista.append(tipo(valor))
-            except Exception:
-                listTOdict_byTcld.__setValoresByDef(tipo=tipo, lista=lista)
-
-        # ==========================
-        # NO permiteNulo, NO Valor. Acepta Nulo ('')
-        elif permiteNulo==False and valor == '':
-            lista.append(str(valor))
-
-        # ==========================
-        # NO permiteNulo, SI Valor
-        elif permiteNulo==False and valor != '':
-            if isinstance(valor, tipo):
-                lista.append(tipo(valor))
-            else:
-                listTOdict_byTcld.__setValoresByDef(tipo=tipo, lista=lista)           
-
-    def __validarTipo(valor, tipo_dato):
-        if isinstance(valor, tipo_dato):
-            print(f"{valor} es de tipo {tipo_dato.__name__}")
-            return True
-        else:
-            print(f"{valor} no es de tipo {tipo_dato.__name__}")
-            return False
-
-    def __setValoresByDef(tipo, lista):
-        """ 
-        Def: Asigna los valores por defecto de los tipos de datos.
-        Sig-Ver: se pueden añadir mas tipos de datos(date, time,...)
-        llamada desde __excepcionTipado()
-        """
-        FECHA_POR_DEFECTO = fecha(year=1900, month=1, day=1)  # Una fecha convencional como valor predeterminado
-        HORA_POR_DEFECTO = hora(hour=1, minute=1,second= 1)  # Una fecha convencional como valor predeterminado
+        FECHA_POR_DEFECTO = date(year=1900, month=1, day=1)  # Una fecha convencional como valor predeterminado
+        HORA_POR_DEFECTO = time(hour=0, minute=0,second= 0)  # Una fecha convencional como valor predeterminado
 
         if tipo is int:
-            lista.append(0)     #Valor por defecto
+            return 0                 # Valor por defecto
         elif tipo is float:
-            lista.append(0.0)   #Valor por defecto
+            return 0.0               # Valor por defecto
         elif tipo is str:
-            lista.append('')    #Valor por defecto de str
+            return ''                # Valor por defecto de str
         elif tipo is bool:
-            lista.append(False) #Valor por defecto de bool(es engañoso)
-        elif tipo is fecha:
-            lista.append(FECHA_POR_DEFECTO) #Valor por defecto de bool(es engañoso)
-        elif tipo is hora:
-            lista.append(HORA_POR_DEFECTO) #Valor por defecto de bool(es engañoso)
-        else:
-            lista.append(None)  #Valor por defecto
-        pass
-    
-    # *******************************************
-    # Igual que byDef() pero obliga (permiteNulo=True) a introducir el dato buenoo DESDE EL TECLADO
-    # Funcion Que hace Tipado del diccionario JUSTO DESPUÉS DE INTRODUCIR LOS DATOS.
-        # OBLIGA A INTRODUCIR EL DATO CORRECTO.
-        # En caso de que no se ajusten a los datos de tipo mete los valores por defecto. 
-        # Lo mas importate es que el analisis se hace en el momento de Introducir los datos.
-    # *******************************************
-    @staticmethod
-    def byTcld(listaStrKeys, listaDef=None, msgIntro='Intro', permiteNulo=False, esCapital=False):
-        """          
-        Convierte una lista de entrada en un diccionario (key): valor lista ; (values): introTeclado.
-        Te hace tipado si se introduce una lista de tipo(tipo),permiteNull(boolean) despues de introducir
-        el dato, por lo que te obliga a meter el dato correcto.
-        """
-        # Validacion
-        if not isinstance(listaStrKeys, list): 
-            return None
-        pass
-        patron = r'^[\w!@#$%^&*()\-_=+{}\[\]:;"\'<>,.?/|\\~`\s]+$'
-        pass
-        # Diccionario de parametros         
-        options = { 'msgIntro':msgIntro ,                
-                    'permiteNulo': permiteNulo ,     
-                    'capital':esCapital }        
-        pass        
-        if listaDef:       
-            # _________________
-            # IGUALA LA LONGITUD DE LAS LISTAS 
-            # En funcion de listaKeys. (cambia la longitud de listaDef) 
-            if listTOdict_byTcld.validaListasEntrada(listaKeys=listaStrKeys, listaDef=listaDef)==False:
-                return None
-            listaDef=listTOdict_byTcld.__igualarListas(listaKeys=listaStrKeys, listaDef=listaDef)
-            # _________________
-            # CREA EL DICCIONARIO de retorno Generando un patron(cualquier frase) Para 
-            # Ejecutar una funcion(__introByTcld)
-            dictRetorno = {
-                strKey:re.sub(
-                    pattern=patron, 
-                    repl=lambda match: listTOdict_byTcld.__introByTcld(match, listaDef[index] , options),
-                    string=str(strKey)
-                    )
-                    for index, strKey in enumerate(listaStrKeys) }
-        pass
-        # ______________
-        # Retorno:
-        if dictRetorno:
-            if listaDef:
-                # lo tipa y lo retorna, pero los datos aunque vienen en str 
-                # Vienen con los valores buenos
-                return listTOdict_byTcld.__tiparDiccionario( diccionario = dictRetorno, listaDef = listaDef )
-            else:
-                # Si no hay definicion de tipos/Nulos se queda con diccionario de (k)str (v)str
-                return dictRetorno
-        else:
-            return None
-
-    # ********************
-    # From lista1 de str To Dict(k)valorLista1 (v)Intro Teclado. Permite elegir Nulo/noNulo y crecer
-    # ********************
-    @staticmethod
-    def __introByTcld(strValor, listaDefinicion, options=None):
-        """ 
-        Llamada desde byTcld()
+            return  False             # Valor por defecto de bool(es engañoso)
+        elif tipo is date:
+            return FECHA_POR_DEFECTO # Valor por defecto de bool(es engañoso)
+        elif tipo is time:
+            return HORA_POR_DEFECTO  # Valor por defecto de bool(es engañoso)
+        elif tipo == 'mail':
+            return ''                # Valor por defecto de bool(es engañoso)
+        elif tipo == 'dni':
+            return ''                # Valor por defecto de bool(es engañoso)            
+        elif tipo == 'ipv4':
+            return ''                # Valor por defecto de bool(es engañoso)
+        elif tipo == 'ipv6':
+            return ''                # Valor por defecto de bool(es engañoso)
+        elif tipo == 'route':
+            return ''                # Valor por defecto de bool(es engañoso)
         
+        else:
+            lista.append(None)  # Valor por defecto
+        pass
+
+
+    def __tratarBoolano(entrada_bool:str):
+        """ 
+        >>> ADMITE TODAS ESTAS FORMAS DE BOOLEANO
         """
-        # __________________
-        # Validacion
-        options = options or {}
-        # __________________
-        # Recogida de datos de entrada (se crean en la llamada)
-        # permiteNulo = options.get('permiteNulo', False)  
-        msgIntro  = options.get('msgIntro', False)  
-        esCapital = options.get('capital', False)  
-        # __________________
-        TIPO=0
-        PERMITENULL=1
-        pass
-        # print(listaDefinicion)
-        # print(listaDefinicion[TIPO])
-        # print(listaDefinicion[PERMITENULL])
-        pass
-        # __________________
-        # Formato del texto para preguntar por Teclado
-        if esCapital:
-            valorLista = str(strValor.group()).capitalize()
-        else:
-            valorLista = str(strValor.group())
-        pass
-        # _______________________
-        # Informe del tipo esperado y si permite nulo(N) o No Nulo(NN)
-        tipo=listaDefinicion[TIPO].__name__
-        permitenulo=listaDefinicion[PERMITENULL]
-        if permitenulo==True:
-            strnulo='N'
-        else:
-            strnulo='NN'
-        pass
-        # __________________
-        # Pedimos datos por Teclado
-        while True:
-            retorno = input(f'{msgIntro} {valorLista} - ( {listaDefinicion[TIPO].__name__} - {strnulo} )..... ').strip()
-            try:
-                if retorno == '' and listaDefinicion[PERMITENULL]:
-                    break
-                elif retorno == '' and not listaDefinicion[PERMITENULL]:
-                    continue
-                else:
-                    # Se hace CASTING al tipo recogido. y se Re-CASTING a str para que no casque en re.sub al volover
-                    try:
-                        if listaDefinicion[TIPO] is bool:
-                            retorno=listTOdict_byTcld.__tratarBoolano(retorno)
-                            if retorno == None:
-                                continue
-                        else:
-                            retorno=listaDefinicion[TIPO](retorno)
-                        retorno=str(retorno)
-                    except:
-                        continue
-                    else:
-                        break
-            except Exception as e:
-                print(f'ERROR: {e}')
-                return None
-        return retorno
-    
-    def __tratarBoolano(strValor):
-        strValor=str(strValor).strip().lower()
-        if (strValor=='v' or 
-            strValor=='verdad' or 
-            strValor=='verdadero' or 
-            strValor=='t' or 
-            strValor=='true' or 
-            strValor=='y' or 
-            strValor=='yes' or 
-            strValor=='si' or 
-            strValor=='s' 
+        entrada_bool=str(entrada_bool).strip().lower()
+        if (entrada_bool=='v' or 
+            entrada_bool=='verdad' or 
+            entrada_bool=='verdadero' or 
+            entrada_bool=='t' or 
+            entrada_bool=='true' or 
+            entrada_bool=='y' or 
+            entrada_bool=='yes' or 
+            entrada_bool=='si' or 
+            entrada_bool=='s' 
             ):
             return True
-        elif (strValor=='f' or 
-            strValor=='false' or 
-            strValor=='no' or 
-            strValor=='n' or 
-            strValor=='falso' 
+        elif (entrada_bool=='f' or 
+            entrada_bool=='false' or 
+            entrada_bool=='no' or 
+            entrada_bool=='n' or 
+            entrada_bool=='falso' 
             ):
             return False
         else:
             return None
+    
+    def __tratarListas(str_to_lista:str):
+        """ 
+        >>> CONVIERTE UN STRING SEPARADO POR , EN UNA LISTA Y LA RETORNA.
+        """
+        str_to_lista = str(lista['l']).strip()
+        lst_retorno = str_to_lista.split(sep=',')
+        if not lst_retorno: return 
+        lst_retorno = [str(item).strip() for item in lst_retorno if str(item) != '']
+        return lst_retorno

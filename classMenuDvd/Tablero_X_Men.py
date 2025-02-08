@@ -748,9 +748,17 @@ class Rango(Celda):
         else:
             return f"\nDatos del Rango( {self.nombre} ): [ {self.get_celda()} ]  To [ {self.celda_fin.get_celda()} ] Total Celdas: {self.data['total_celdas']} => {self.total_filas} Filas y {self.total_columnas} Columnas .......es Oculto?: {self.b_oculto} ..... Ghost?: {self.b_ghost}"  
     
+    
+    # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    # OBTIENE VALORES DEL RANGO
+    # ....................................................
+
+
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     # DEVUELVE LA MATRIZ DE self.lst_celdas
     def __get_matriz(self):
-        """ >>> Devuelve un rango en forma de lista de listas. """
+        """ >>> DEVUELVE UN RANGO EN FORMA DE LISTA DE LISTAS DONDE CADA ITEM ES UN OBJETO CELDA
+        """
         if not self.lst_celdas: return None
         lst_matriz = [] 
         for i in range(self.total_filas):
@@ -765,9 +773,38 @@ class Rango(Celda):
         pass
         return lst_matriz if lst_matriz else None
     
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def get_filas(self, fila_from:int, fila_to:int):
+        """ >>> Obtiene las filas consecutivas de un rango en una lista. """
+        if not self.matriz: return None
+        # lst_retorno = []
+        # for i, fila in enumerate(self.matriz):
+        #     if fila_from <= i <= fila_to:
+        #         lst_retorno.append(fila)
+        # return lst_retorno if lst_retorno else None
+        
+        return [ fila  for i, fila in enumerate(self.matriz) if (fila_from <= i <= fila_to) ]
+
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def get_columnas(self, columna_from:int, columna_to:int):
+        """ >>> Obtiene las columnas consecutivas de un rango en una lista. """
+        if not self.matriz: return None
+        # lst_ret = []
+        # for fila in self.matriz:
+        #     for j , celda in enumerate(fila):
+        #         if columna_from <= j <= columna_to:
+        #             lst_ret.append(celda)
+        # pass
+        # return lst_ret if lst_ret else None
+
+        return [celda for fila in self.matriz 
+                        for j , celda in enumerate(fila)
+                        if columna_from <= j <= columna_to ]
+
+
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     # DEVUELVE UNA LISTA DE LOS VALORES EN FORMATO MATRIZ O IMPRIME VALORES BASIC
-    def get_values(self, b_print=True):
+    def get_values(self, b_print=False):
         """ >>>  """
         lst_matriz = []
         for fila in self.matriz:
@@ -805,8 +842,21 @@ class Rango(Celda):
             if nombre_celda == celda.nombre_celda:
                 return celda
         return None
-
-    # ············································    
+    
+    def get_celda_by_fila_columna(self, fila:int, columna:int):
+        """ Entra una fila y columna y devuelve un objeto celda si se encuentra en el rango. 
+        [fila](int):
+        [columna](int)
+        Retorno: None, si no encuentra la celda en el rango independientemente de que pueda crear la celda.
+        ejemplo_1:
+        """
+        celda = Celda(fila=fila, columna=columna)
+        if celda:
+            return self.get_celda_by_nombre(nombre_celda = celda.nombre_celda)
+                # return celda
+        return None
+        pass
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     # G E T T E R ' S   A N D   S E T T E R ' S    
     def get_oculto(self):                               # oculto,   para ver. no para buscar.
         if isinstance(self.b_oculto, bool):
@@ -919,6 +969,9 @@ class Rango(Celda):
             print(f'Error en __get_list_celdas :::: {e}')
             return None
 
+    # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    #  DATOS TO RANGO
+    # •••••••••••••••••••••••••••••••••••••••••••••••••••••
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     def set_data_plana(self, data, relleno:str = Celda.VALOR_INICIAL):
         """ >>> establece un dato en el rango .
@@ -978,14 +1031,14 @@ class Rango(Celda):
                     dimension = f'{len(data_push)}X1'
                 rango = Rango( nombre_rango = "aux_iter" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = data_push )                
                 # 2- SE PASA EL RANGO AL RANGO CON SELF.SET_DATA_PLANA
-                # return self.cross(rango)
+                # return self.__cross(rango)
             
             elif isinstance(data_push, str):                
                 if b_lineal == False:
                     """ (By Def) METE LA CADENA ENTERA EN LA CELDA_INICIO 
                     """
                     rango = Rango( nombre_rango = "aux_str" , celda_inicio = celda_inicio , dimension = f'1X1' , valor_inicial = data_push )                
-                    # return self.cross(rango)
+                    # return self.__cross(rango)
                 else:   
                     """ METE LA CADENA COMO SI FUERA UNA LISTA A PARTIR DE LA CELDA DE INICIO PALABRA A PALABRA. 
                     """
@@ -994,11 +1047,11 @@ class Rango(Celda):
                     # AHORA ES TRATADA COMO LISTA HORIZONTAL
                     dimension = f'1x{len(lst_palabras)}'
                     rango = Rango( nombre_rango = "aux_iter" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = data_push )                
-                    # return self.cross(rango)            
+                    # return self.__cross(rango)            
             else:
                 if any(celda_inicio in celda.nombre_celda for celda in self.lst_celdas):
                     rango = Rango( nombre_rango = "aux_other" , celda_inicio = celda_inicio , dimension = '1x1' , valor_inicial = data_push )                                    
-                    # return self.cross(rango)
+                    # return self.__cross(rango)
         else:
             """ 
             >>> ES MATRIZ """
@@ -1019,7 +1072,7 @@ class Rango(Celda):
                     if not rango: return False
             
                     # VALIDO LIMITES DEL RANGO
-                    retorno = self.es_rango_in(rango=rango)
+                    retorno = self.__es_rango_in(rango=rango)
                     if not retorno: 
                         print("Error Logico ::: Limites ")
                         return False
@@ -1029,21 +1082,20 @@ class Rango(Celda):
             print()
             rango.ver_matriz()
             print()
-            rango.get_values()
+            rango.get_values(b_print = True)
             print()
             self.ver_matriz()
             print()
-            self.get_values()       
+            self.get_values( b_print = True )       
             print()
             print(f'\n\nLast Fila Used: {self.__last_fila_used()}')    
 
-            # ▄▄▄▄▄▄▄▄ W.I.P ▄▄▄▄▄▄▄▄▄▄
-            return self.cross(rango = rango)
+            # •••••••••••••••••••••••••••••••••
+            return self.__cross(rango = rango)
         
-
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     # CRUZO UN RANGO CON SELF. CELDA A CELDA COINCIDENTE
-    def cross(self, rango):
+    def __cross(self, rango , to_me:bool = True):
         """ Cruza Celda a Celda un Rango con otro y asigna su valor ....pej C:1 de self con C:1 de rango 
         [rango](class Rango): entra un rango y cruzo Celda a Celda(Las que coincidan) en self.
         Retorno: None, si hay algún fallo.
@@ -1057,18 +1109,21 @@ class Rango(Celda):
             print('Encontrado por Celdas')
         
         # ▄▄▄▄▄▄▄ VALIDACION DE TODO EL CONTENIDO.
-        if not self.es_rango_in(rango = rango): return False
+        if not self.__es_rango_in(rango = rango): return False
         
         # ▄▄▄▄▄▄▄ CRUZO CELDA A CELDA COMPARANDO SUS NOMBRES_CELDA.
         for celda in self.lst_celdas:
             for celda_rango in rango.lst_celdas:
                 if celda.nombre_celda == celda_rango.nombre_celda:
-                    celda.valor = celda_rango.valor
+                    if to_me == True:                       # Desde el Rango de entrada  a éste Rango
+                        celda.valor = celda_rango.valor
+                    else:                                   # Desde éste Rango a el Rango de entrada.
+                        celda_rango.valor = celda.valor
                     break
         return True
         
     # RANGO IN SELF?
-    def es_rango_in(self, rango):
+    def __es_rango_in(self, rango):
         """ VALIDA SI UN RANGO ESTÁ CONTENIDO EN EL RANGO SELF. 
         Compara el nombre de la celda de inicio y celda de fin en self.lst_celdas 
 
@@ -1087,41 +1142,16 @@ class Rango(Celda):
         if not any (rango.celda_fin.nombre_celda in celda.nombre_celda for celda in self.lst_celdas):
             return False
         
-        return True
+        return True            
 
-            
+    
 
-    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-    def get_filas(self, fila_from:int, fila_to:int):
-        """ >>> Obtiene las filas consecutivas de un rango en una lista. """
-        if not self.matriz: return None
-        # lst_retorno = []
-        # for i, fila in enumerate(self.matriz):
-        #     if fila_from <= i <= fila_to:
-        #         lst_retorno.append(fila)
-        # return lst_retorno if lst_retorno else None
-        
-        return [ fila  for i, fila in enumerate(self.matriz) if (fila_from <= i <= fila_to) ]
 
-    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-    def get_columnas(self, columna_from:int, columna_to:int):
-        """ >>> Obtiene las columnas consecutivas de un rango en una lista. """
-        if not self.matriz: return None
-        # lst_ret = []
-        # for fila in self.matriz:
-        #     for j , celda in enumerate(fila):
-        #         if columna_from <= j <= columna_to:
-        #             lst_ret.append(celda)
-        # pass
-        # return lst_ret if lst_ret else None
-
-        return [celda for fila in self.matriz 
-                        for j , celda in enumerate(fila)
-                        if columna_from <= j <= columna_to ]
 
 
     # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     #  I m p r i m e   u n   R a n g o . 
+    # •••••••••••••••••••••••••••••••••••••••••••••••••••••
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     def imprimir(self, sp_columna:int = 0 , **kwargs ):    
         """ 
@@ -1384,6 +1414,10 @@ class Tablero(Rango):
     # C O N S T A N T E S   D E   C L A S E ....(Tablero.SP  ó Tablero.TAB)
     SP  = ' '
     TAB = f'{SP*4}'
+    BASE_RANGO_TABLERO = 'rango_tablero'
+    BASE_RANGO_FILA = 'rango_fila_'
+    BASE_RANGO_COLUMNA = 'rango_columna_'
+
     pass
     def __init__(self, total_columnas_tablero:int, total_filas_tablero:int = 10 , valor_inicial = Celda.VALOR_INICIAL):       
         """ >>> Crea un Tablero(Rango), que empieza en A:0 y tiene la dimension establecida por total_filas_tablero y total_columnas_tablero 
@@ -1423,43 +1457,28 @@ class Tablero(Rango):
         if total_columnas_tablero >= len( SttS._may_ln ):                   
             total_columnas_tablero = len( SttS._may_ln.keys() )-1
         pass        
-
-
-        # # Diccionario creado para montar el tablero
-        # dicc_numcol_value = { c:self.valor_inicial for c in range(self.total_columnas)}
-        # """ >>> dicc (key):numero_columna (value): '-'   X   numero_columnas (...de 0 a numero_columnas) """
-        
-        # # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-        # self.tablero = [copy.deepcopy(dicc_numcol_value) for f in range(self.total_filas)]
-        # """ >>> Por cada fila hace una copia profunda del diccionario (numero_columna:valor), que almacena en tablero.
-        # El resultado final es una lista de diccionarios numero_columna:valor  y se puede acceder a tablero por 
-        # acceso_1: self.tablero[numero fila][numero de columna]              ==> acceso por indice
-        # acceso_2: self.tablero[numero fila][SttS._may_nl[numero columna]]   ==> 
-        # """
-        # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        # if not self.tablero: return
-        # """ >>> tablero: Es una lista de diccionarios que conforman una fila. 
-        # self.tablero[2][3] => fila 2, columna 3 |  self.tablero[2][self.dicc_may_letr_num['C']] => fila 2, columna 3
-        # self.tablero[1]['3']='dato_1'
-        # """
+       
         self.init_tablero(value=self.valor_inicial)
+
         pass
 
-        # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-        # L I S T A   D E   R A N G O S   D E   T A B L E R O        
-        self.lst_rangos=[]   
-        """ Cada Tablero pueda tener su coleccion de rangos """
+        # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+        # LISTA DE RANGOS DEL TABLERO
+        self.lst_rangos=[]           
+
+        # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+        # CREA UN RANGO X FILA
+        
+
+        # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+        # CREA UN RANGO X COLUMNA
+        
     # _________________________________str__
     def __str__(self):
-        for dicc_fila in self.tablero:
-            print(*dicc_fila)
+        self.imprimir(sp_columna = 3)
         pass
-        
-    def get_tablero(self, es_X2=False):
-        if not self.tablero: return None
-        return self.tablero if esX2==False else copy.deepcopy(self.tablero)
-      
-    # ?????????????????????????????
+    
+    # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
     # INICIALIZA LOS VALORES DEL TABLERO CON UN VALOR DE ENTRADA O '-'  - over tablero - 
     def init_tablero(self, value=Celda.VALOR_INICIAL):
         try:
@@ -1472,54 +1491,61 @@ class Tablero(Rango):
         except Exception as e:
             print(f'Error init_tablero :::: {e}')
             return 
-        
-    # ?????????????????????????????
-    # G E T / S E T   U N   V A L O R   E N   T A B L E R O  - over tablero - 
-    def xy(self, fila, columna, valor='<<<out>>>'):
-        """ >>> xy(3, 5, valor='hola') : pone el valor 'hola' en la posicion fila=3, columna=5
-                xy(3, 5) : obtiene el valor de la posicion fila=3, columna=5
+    
+    # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
+    # BUSCAR RANGO .... POR NOMBRE O POR INDICE
+    def get_rango(self, nombre_rango:str=None, b_index:bool=False):
+        """ Busca un rango en lst_rangos. 
+        [nombre_rango](str) = None, busca todos los ragos.
+        [b_index](bool) = False , devuelve el rango. | True, devuelve el indice en lst_rangos. Si nnombre_a_buscar == None, b_index no tiene efecto.
         """
-        if not self.tablero: return None
-        # Valida  FILA
-        # if not isinstance(fila, int): return None
-        try:
-            fila=abs(int(fila))
-            if not (0 <= fila < len(self.tablero)):  
-                return None
-        except Exception as e:
-            return None
+        # Validacion
+        if not self.lst_rangos: 
+            return None        
+        if nombre_rango == None:
+            """ Devuelve todos los rangos """
+            return [rango for rango in self.lst_rangos]
+        else:
+            """ Busca el x nombre """
+            for i, rango in enumerate(self.lst_rangos):
+                if rango.nombre == nombre_rango:
+                    if b_index == False:
+                        return rango
+                    else:
+                        return i
+        return None
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def pull(self, nombre_rango:str = None):
+        """ >>> TIRA LOS DATOS DEL TABLERO HACIA UN RANGO PASADO COMO ARGUMENTO. CRUZA CELDA A CELDA.
+        [nombre_rango](str): el nombre del rango que se quiere llenar de valores.
+        to_me: es el argumento de cross para que se cruzen datos hacia el rango pasado y no hacia el rango que llama(Tablero)
+
+        """
+        if not self.lst_rangos: return None
+        rango = self.get_rango(nombre_rango = nombre_rango)
+        if not rango: return None
+        self.__cross(rango, to_me=False)
+
+    # sssssssssssssssssssssssssssssssssssssssssssssssssss
+    # C r e a   u n   n o m b r e   s e c u e n c i a l 
+    def __new_nombre_secuencial(self, cadena:str, separador:str='_'):
+        """ Crea un nuevo nombre en lst.rangos a partir de una cadena de head. """
+        lst_nombres = [rango.nombre for rango in self.lst_rangos]
+        lst_match = [nombre for nombre in lst_nombres if cadena in nombre]
         
-        # VALIDACION COLUMNA
-        try:
-            columna=int(columna)
-            """ Se convierte a entero y si falla es que viene en formato letra y se trata en la excepcion. """
-        except Exception as e:
-            columna = SttS.letra_to_numcol(letra=columna)
-            if columna == None: 
-                return None
-            # if  not (0 <= columna < self.total_columnas) :
-            if  not (0 <= columna < len(self.tablero[0].keys())) :
-                return None
-            
-        """ 
-        RECORREMEOS EL TABLERO """
-        for i, dicc_fila in enumerate(self.tablero):
-            if i == fila:
-                if valor == '<<<out>>>':       # para get. le pongo uno imposible? para que solo cuando no tenga valor sea get. y en caso contrario, que coja el '' y el None
-                    return dicc_fila[columna]      # Devuelve un valor
-                else:
-                    if valor == None: 
-                        valor = self.valor_inicial
-
-                    dicc_fila[columna] = valor     # Pone un valor
-                    return True
-        pass
-
-    # ddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-    # E L I M I N A   U N   V A L O R   E N  TA B L E R O  - over tablero - 
-    def del_xy(self, fila, columna):
-        retorno = self.xy(fila=fila, columna=columna, valor=self.valor_inicial)
-        print('Borrar :( ') if retorno == None else ('Borrar ;)')
+        if lst_match:
+            # Extraer el número secuencial al final de cada nombre
+            lst_num = []
+            for match in lst_match:
+                partes = match.split(separador)
+                if partes[-1].isdigit():
+                    lst_num.append(int(partes[-1]))
+            # Generar el nuevo nombre con el siguiente número
+            nuevo_numero = max(lst_num) + 1 if lst_num else 0
+            return f'{cadena}{nuevo_numero}'
+        else:
+            # Si no hay coincidencias, se usa el primer número
+            return f'{cadena}0'
 
     # ███████████████████████████████████████████████████████████████████████████████████
     # - C R E A R   R A N G O  - 
@@ -1538,7 +1564,7 @@ class Tablero(Rango):
             >>> tablero.crear_rango("MiRango", "A:0", "3x2")
             >>> tablero.crear_rango("MiRango", "A:0", "B:2")
         """
-        if not self.tablero: return None
+        if not self.matriz: return None
                 
         rango = None
         try:
@@ -1583,6 +1609,57 @@ class Tablero(Rango):
         except Exception as e:
             print(e)
             return None
+
+    # ?????????????????????????????
+    # G E T / S E T   U N   V A L O R   E N   T A B L E R O  - over tablero - 
+    def xy(self, fila, columna, valor='<<<out>>>'):
+        """ >>> xy(3, 5, valor='hola') : pone el valor 'hola' en la posicion fila=3, columna=5
+                xy(3, 5) : obtiene el valor de la posicion fila=3, columna=5
+        """
+        if not self.matriz: return None
+        # Valida  FILA
+        # if not isinstance(fila, int): return None
+        try:
+            fila=abs(int(fila))
+            if not (0 <= fila < len(self.matriz)):  
+                return None
+        except Exception as e:
+            return None
+        
+        # VALIDACION COLUMNA
+        try:
+            columna=int(columna)
+            """ Se convierte a entero y si falla es que viene en formato letra y se trata en la excepcion. """
+        except Exception as e:
+            columna = SttS.letra_to_numcol(letra=columna)
+            if columna == None: 
+                return None
+            # if  not (0 <= columna < self.total_columnas) :
+            if  not (0 <= columna < len(self.matriz[0])) :
+                return None
+            
+        """ 
+        RECORREMEOS EL TABLERO """
+        matriz_valores = self.get_values()
+        for i, valor in enumerate(matriz_valores):
+            if i == fila:
+                if valor == '<<<out>>>':       # para get. le pongo uno imposible? para que solo cuando no tenga valor sea get. y en caso contrario, que coja el '' y el None
+                    return dicc_fila[columna]      # Devuelve un valor
+                else:
+                    if valor == None: 
+                        valor = self.valor_inicial
+
+                    dicc_fila[columna] = valor     # Pone un valor
+                    return True
+        pass
+
+    # ddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    # E L I M I N A   U N   V A L O R   E N  TA B L E R O  - over tablero - 
+    def del_xy(self, fila, columna):
+        retorno = self.xy(fila=fila, columna=columna, valor=self.valor_inicial)
+        print('Borrar :( ') if retorno == None else ('Borrar ;)')
+
+    
 
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     #                  -  O V E R   F I L A S   Y   C O L U M N A S    - 
@@ -1928,9 +2005,7 @@ class Tablero(Rango):
 class Rangutan(Tablero):
     """ >>> Determina los  R a n g o s   E N   E L   T A B L E R O (su papá).
     """
-    BASE_RANGO_TABLERO = 'rango_tablero'
-    BASE_RANGO_FILA = 'rango_fila_'
-    BASE_RANGO_COLUMNA = 'rango_columna_'
+    
 
 
     def __init__(self, total_columnas_tablero:int, total_filas_tablero:int = 10 , valor_inicial='' ):
@@ -1994,89 +2069,7 @@ class Rangutan(Tablero):
                 rango.flag = 'RNG_COL'
             
 
-    # sssssssssssssssssssssssssssssssssssssssssssssssssss
-    # C r e a   u n   n o m b r e   s e c u e n c i a l 
-    def __new_nombre_secuencial(self, cadena:str, separador:str='_'):
-        """ Crea un nuevo nombre en lst.rangos a partir de una cadena de head. """
-        lst_nombres = [rango.nombre for rango in self.lst_rangos]
-        lst_match = [nombre for nombre in lst_nombres if cadena in nombre]
-        
-        if lst_match:
-            # Extraer el número secuencial al final de cada nombre
-            lst_num = []
-            for match in lst_match:
-                partes = match.split(separador)
-                if partes[-1].isdigit():
-                    lst_num.append(int(partes[-1]))
-            # Generar el nuevo nombre con el siguiente número
-            nuevo_numero = max(lst_num) + 1 if lst_num else 0
-            return f'{cadena}{nuevo_numero}'
-        else:
-            # Si no hay coincidencias, se usa el primer número
-            return f'{cadena}0'
-
-    # ███████████████████████████████████████████████████████████████████████████████████
-    # - C R E A R   R A N G O  - 
-    def crear_rango(self, nombre:str, celda_inicio:str='A:0', dimension:str='1x1', b_ghost:bool=False):
-        """
-        Crea un nuevo rango si no existe un rango con el mismo nombre o propiedades.
-            [nombre] (str): Nombre único para identificar el rango.
-            [celda_inicio] (str): Celda inicial del rango (e.g., 'A:0').
-            [dimension] (str): Dimensión del rango en formato 'FilasxColumnas' (e.g., '3x2').
-            [b_ghost](bool):True (by Def), crea un rango y se carga desde tablero. 
-                            False, para que un rango sea cargado desde tablero.
-        Retorno:
-            Rango: El rango creado si es válido y único.
-            None: Si el rango ya existe o hay un error.
-        Ejemplo:
-            >>> tablero.crear_rango("MiRango", "A:0", "3x2")
-            >>> tablero.crear_rango("MiRango", "A:0", "B:2")
-        """
-        if not self.tablero: return None
-                
-        rango = None
-        try:
-            rango = Rango(nombre_rango = nombre, celda_inicio = celda_inicio, dimension = dimension, b_ghost=b_ghost)
-            if rango:
-                # No admite rangos  o u t   o f   t a b l e r o 
-                if self.valida_limites_rango(rango = rango) == False:       return None
-                
-                # No admite rangos  r e p e t i d o s  de nombre
-                if self.b_existe_nombre_rango(nombre_a_buscar = rango.nombre) == True:  return None
-
-                # L o s   f a n t a s m a s   no   se   cargan  de   tablero .... luego self.tablero_to_rango()
-                if rango.b_ghost == False:
-                    # self.tablero_to_rango(nombre_rango=rango.nombre)
-                    for celda in rango.dicc.keys():
-                        valor_celda_en_tablero = self.nombre_celda(celda=celda)
-                        """ >>> cruzo cada celda con el tablero 
-                        """
-                        if valor_celda_en_tablero != False and valor_celda_en_tablero != None:
-                            rango.dicc[celda] = valor_celda_en_tablero
-                        else:
-                            rango.dicc[celda] = self.valor_inicial
-                        """ >>> Y asigno el valor de la celda en el tablero al valor del rango. 
-                        """
-                    pass
-                    rango.dicc_to_matriz()
-                    """ .... y  siempre que se hacen operaciones sobre rango.dicc, tengo que espejarlas en la matriz. """
-                
-
-                #  e s _ n u m e r i c o .... luego llamar a self.es_rango_numerico()
-                """ >>> posibilita hacer operaciones a través del rango"""                
-                try:
-                    for valores in rango.dicc.values():
-                        valores = int(valores)                    
-                    rango.es_numerico = True
-                except Exception as e:
-                    rango.es_numerico = False
-
-                # O t r o   p a r a   l a   s a c a  :)
-                self.lst_rangos.append(rango)
-                return rango
-        except Exception as e:
-            print(e)
-            return None
+    
        
     # rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
     # D E V U E L V E   T y p e _ R n g 
@@ -2125,7 +2118,7 @@ class Rangutan(Tablero):
         pass
         return False
 
-    # # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
+    # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
     # BUSCAR RANGO .... POR NOMBRE O POR INDICE
     def buscar_rango(self, nombre_a_buscar:str=None, b_index:bool=False):
         """ Busca un rango en lst_rangos. 
