@@ -20,10 +20,10 @@ from classMenuDvd.Tablero_X_Men import Tablero
 from classMenuDvd.classXindeX import XindeX 
 # _____________________________________________________________________________
 # Cachar Datos Seguros por Teclado 
-from classTeclado.listTOdict_Tcld import SuData as TeclD
+from classTeclado.Sdata import Sdata as TeclD
 # ____________________________________________________________
 # Para validar: mail, valores entre, fechas... 
-from classTeclado.validator import ValidReg as VAL
+from classTeclado.validator import StringTo as VAL
 
 # ====================================================================================
 # DEF: Desarrollo y memoria de la clase Tablero. 
@@ -63,10 +63,11 @@ def main():
 def crear_tablero(): 
     global TABLERO
     print()
-    f_c = TeclD.get_data( key_dict=['filas', 'columas'], tipo=[(int, False), (int, False)])
+    f_c = TeclD.get_data( key_dict='filas', tipo=int, permite_nulo=False, msg_entrada='\nIntroduce numero de Filas')
+    f_c = TeclD.get_data( key_dict='columnas', tipo=int, permite_nulo=False, msg_entrada='\nIntroduce numero de columnas')
     # _______________________
     # Pregunta de Seguridad
-    continuar = TeclD.get_data( key_dict=['if'], tipo=[(bool, True)], msg_entrada=f'\nSeguro que Quieres Continuar?')    
+    continuar = TeclD.get_data( key_dict='if', tipo=bool, permite_nulo = True , msg_entrada=f'\nSeguro que Quieres Continuar?')    
     if continuar['if']==False: 
         print('Crear Anulado... Chaoooo')
         return
@@ -76,9 +77,9 @@ def crear_tablero():
 # PONE EL MISMO VALOR EN TODO EL TABLERO.
 def iniciar_tablero():
     global TABLERO 
-    val = TeclD.get_data( key_dict=['val'], tipo=str, permite_nulo = True , msg_entrada='\nValor Inicial (este Valor Se pondrá en toda la Tabla) ')    
+    val = TeclD.get_data( key_dict='val', tipo=str, permite_nulo = True , msg_entrada='\nValor Inicial (este Valor Se pondrá en toda la Tabla) ')    
     # Seguridad_____________
-    continuar = TeclD.get_data( key_dict=['if'], tipo=str, permite_nulo = True , msg_entrada=f'\nSeguro que Quieres Continuar?')    
+    continuar = TeclD.get_data( key_dict='if', tipo=str, permite_nulo = True , msg_entrada=f'\nSeguro que Quieres Continuar?')    
     if continuar['if']==False: 
         print('Iniciar Anulado... Chaoooo\n')
         return
@@ -89,12 +90,12 @@ def iniciar_tablero():
 def print_max_ssp():
     global TABLERO
     print() 
-    val = TeclD.get_data( key_dict=['val'], tipo=int, permite_nulo = True , msg_entrada='\nTamaño Columna (0 by def)')    
+    val = TeclD.get_data( key_dict='val', tipo=int, permite_nulo = True , msg_entrada='\nTamaño Columna (0 by def)')    
     print('\nI m p r i m i r    M a x  s/sp  \n')    
     TABLERO.imprimir()
 def print_max_csp():
     global TABLERO  
-    pad_x = TeclD.get_data( key_dict=['p'], tipo = int , permite_nulo = True , msg_entrada='\nINTRODUCE EL ESPACIO ENNTRE LAS COLUMNAS')        
+    pad_x = TeclD.get_data( key_dict='p', tipo = int , permite_nulo = True , msg_entrada='\nINTRODUCE EL ESPACIO ENNTRE LAS COLUMNAS')        
     print('\nI m p r i m i r    M a x  c/sp  \n')    
     TABLERO.imprimir(sp_columna = pad_x['p'])    
 def print_literal():
@@ -104,14 +105,14 @@ def print_literal():
 def print_fixed_ssp():
     global TABLERO  
     print('\nI m p r i m i r   F i x e d  s/sp  \n')    
-    x = TeclD.get_data( key_dict=['x'], tipo=int, permite_nulo = True , msg_entrada='\nINTRODUCE EL ANCHO DE  COLUMNA')
+    x = TeclD.get_data( key_dict='x', tipo=int, permite_nulo = True , msg_entrada='\nINTRODUCE EL ANCHO DE  COLUMNA')
     TABLERO.imprimir( ancho = x['x'] , sp_columna = 0 )
 def print_fixed_csp():
     global TABLERO  
     print('\nI m p r i m i r   F i x e d  c/sp \n')    
-    a = TeclD.get_data( key_dict=['a'], tipo=int, permite_nulo = True , msg_entrada='\nINTRODUCE EL ANCHO DE  COLUMNA ')
-    x = TeclD.get_data( key_dict=['x'], tipo=int, permite_nulo = True , msg_entrada='\nINTRODUCE EL ESPACIO ENNTRE LAS COLUMNAS ')
-    TABLERO.imprimir( ancho = a['a'] , sp_columna = x['x'] )
+    a = TeclD.get_data( key_dict='a', tipo=int, permite_nulo = True , msg_entrada='\nINTRODUCE EL ANCHO DE  COLUMNA ')
+    a = TeclD.get_data( dicc= a, key_dict='x', tipo=int, permite_nulo = True , msg_entrada='\nINTRODUCE EL ESPACIO ENNTRE LAS COLUMNAS ')
+    TABLERO.imprimir( ancho = a['a'] , sp_columna = a['x'] )
 def print_personal():
     global TABLERO  
     print('\nI m p r i m i r   P e r s o n a l  c/sp \n')    
@@ -124,74 +125,75 @@ def print_ambigous():
 # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄ PULL ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 # RETORNA UN VALOR DEL TABLERO CUANDO INTRODUCES UNA Cimprime_a_caponELDA (A:0, C:3)
 def get_celda():
-    cel_v = TeclD.get_data( key_dict=['celda'], tipo=[(str, False)])
+    cel_v = TeclD.get_data( key_dict='celda', tipo=str, permite_nulo = True , msg_entrada='\nINTRODUCE CELDA ')
     valor = TABLERO.celda(celda=cel_v['celda'])
 
 # OBTIENE UN VALOR DEL TABLERO x FILA Y COLUMNA
 def get_fila_columna(): 
     global TABLERO
-    f = TeclD.get_data( key_dict=['f'], tipo=[(int, False)], msg_entrada='\nIntroduce Fila to Get Valor ')    
-    c = TeclD.get_data( key_dict=['c'], tipo=[(str, False)], msg_entrada='\nIntroduce Columna to Get Valor [0, "a", "A"] ')    
+    f_c = TeclD.get_data( key_dict='f', tipo=int ,  permite_nulo=False, msg_entrada='\nINTRODUCE FILA TO GET VALOR ')    
+    f_c = TeclD.get_data( key_dict='c', tipo=int ,  permite_nulo=False, msg_entrada='\nINTRODUCE FILA TO GET VALOR [0, "a", "A"] ')    
 
 # OBTIENE UNA FILA
 def get_fila():
     global TABLERO
     print('OBTIENE UNA LISTA DE DICCIONARIO DE UNA FILA ENTERA')
-    f_f = TeclD.get_data( key_dict=['ff'], tipo=[(int, False)], msg_entrada='\n(Get Fila) Introduce Fila Desde... ')    
-    f_t = TeclD.get_data( key_dict=['ft'], tipo=[(str, False)], msg_entrada='\n(Get Fila) Introduce Fila Hasta... ')    
+    f_f = TeclD.get_data( key_dict='ff', tipo=int ,  permite_nulo=False, msg_entrada='\n(Get Fila) Introduce Fila Desde... ')    
+    
+    f_t = TeclD.get_data( key_dict='ft', tipo=int ,  permite_nulo=False, msg_entrada='\n(Get Fila) Introduce Fila Hasta... ')    
 
 # OBTIENE UNA COLUMNA
 def get_columna():
     global TABLERO
-    col = TeclD.get_data( key_dict=['col'], tipo=[(str, False)], msg_entrada='\nIntroduce Columna to Get  [0, "a", "A"]')    
+    col = TeclD.get_data( key_dict='col', tipo=[(str, False)], msg_entrada='\nIntroduce Columna to Get  [0, "a", "A"]')    
 
 # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄ DEL ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 # PONE EL VALOR DE TABLERO.valor_inicial EN TODO EL TABLERO.
 def del_xy():
     global TABLERO
-    f = TeclD.get_data( key_dict=['f'], tipo=[(int, False)], msg_entrada='\nIntroduce Fila to Borrar Valor ')    
-    c = TeclD.get_data( key_dict=['c'], tipo=[(str, False)], msg_entrada='\nIntroduce Columna to Borrar Valor [0, "a", "A"] ')    
+    f = TeclD.get_data( key_dict='f', tipo=[(int, False)], msg_entrada='\nIntroduce Fila to Borrar Valor ')    
+    c = TeclD.get_data( key_dict='c', tipo=[(str, False)], msg_entrada='\nIntroduce Columna to Borrar Valor [0, "a", "A"] ')    
 
 # ELIMINA TODA UNA FILA Y DEJA EL VALOR INICIAL DE LA CLASE self.valor_inicial.
 def del_fila():
     global TABLERO
-    f = TeclD.get_data( key_dict=['f'], tipo=[(int, False)], msg_entrada='\nIntroduce Fila to Del')        
+    f = TeclD.get_data( key_dict='f', tipo=[(int, False)], msg_entrada='\nIntroduce Fila to Del')        
     fila = TABLERO.get_lst_filas(filaFrom=f['f'], filaTo=f['f'])
     if not fila: return
     # _______________________
-    continuar = TeclD.get_data( key_dict=['if'], tipo=[(bool, False)], msg_entrada=f'\nSeguro que Quieres Continuar?')    
+    continuar = TeclD.get_data( key_dict='if', tipo=[(bool, False)], msg_entrada=f'\nSeguro que Quieres Continuar?')    
     if continuar['if']==False: print('Crear Anulado... Chaoooo') ; return 
 
 # __________________________________
 # ELIMINA TODA UNA COLUMNA Y DEJA EL VALOR INICIAL DE LA CLASE self.valor_inicial.
 def del_columna():
     global TABLERO
-    c = TeclD.get_data( key_dict=['c'], tipo=[(str, False)], msg_entrada='\nIntroduce Columna to Borrar Valor [0, "a", "A"] ')    
+    c = TeclD.get_data( key_dict='c', tipo=[(str, False)], msg_entrada='\nIntroduce Columna to Borrar Valor [0, "a", "A"] ')    
 
 # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄ RANGO ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 # Crea un Rango
 def crear_rango():
     global TABLERO
-    n = TeclD.get_data( key_dict=['nm'], tipo=[(str, False)], msg_entrada='\nN o m b r e   d e l   R a n g o  ')    
-    c = TeclD.get_data( key_dict=['cld'], tipo=[(str, False)], msg_entrada='C e l d a   d e   i n i c i o ( A:0 ) ')    
-    d = TeclD.get_data( key_dict=['dim'], tipo=[(str, False)], msg_entrada='D i m e n s i o n ( 3x4 )  ó  C e l d a - F i n  ( M:8 )')  
+    n = TeclD.get_data( key_dict='nm', tipo=str, msg_entrada='\nN o m b r e   d e l   R a n g o  ')    
+    c = TeclD.get_data( key_dict='cld', tipo=str, msg_entrada='C e l d a   d e   i n i c i o ( A:0 ) ')    
+    d = TeclD.get_data( key_dict='dim', tipo=str, msg_entrada='D i m e n s i o n ( 3x4 )  ó  C e l d a - F i n  ( M:8 )')  
 
     rango = Rango(nombre_rango= n['nm'], celda_inicio=c['cld'], dimension=d['dim'] , valor_inicial = '-')    
     print('RANGO CREADO :)') if rango else f'REVISA LOS DATOS DE ENTRADA, EL RANGO NO HA SIDO CREADO :('
         
 def buscar_rango():
     global TABLERO
-    n = TeclD.get_data( key_dict=['n'], tipo=[(str, False)], msg_entrada='\nNombre del Rango ')    
+    n = TeclD.get_data( key_dict='n', tipo=[(str, False)], msg_entrada='\nNombre del Rango ')    
     # TABLERO.
 
 def eliminar_rango():
     global TABLERO
-    n = TeclD.get_data( key_dict=['n'], tipo=[(str, False)], msg_entrada='\nNombre del  R a n g o  A Eliminar')    
+    n = TeclD.get_data( key_dict='n', tipo=[(str, False)], msg_entrada='\nNombre del  R a n g o  A Eliminar')    
 
 def ver_rango():
     global TABLERO
-    n = TeclD.get_data( key_dict=['n'], tipo=[(str, True)], msg_entrada='\nNombre del R a n g o  a Buscar(None = All)')    
-    v = TeclD.get_data( key_dict=['v'], tipo=[(bool, True)], msg_entrada='\nV e r   V a l o r e s ( v )(intro)  |   Ver Datos( f )')    
+    n = TeclD.get_data( key_dict='n', tipo=[(str, True)], msg_entrada='\nNombre del R a n g o  a Buscar(None = All)')    
+    v = TeclD.get_data( key_dict='v', tipo=[(bool, True)], msg_entrada='\nV e r   V a l o r e s ( v )(intro)  |   Ver Datos( f )')    
 
     if n['n'] == '':
         pass    
@@ -202,52 +204,55 @@ def ver_rango():
 # ESTABLECE UN VALOR EN UNA CELDA PIDIENDO FILA Y COLUMNA
 def set_fila_columna():      
     global TABLERO
-    f_c_v = TeclD.get_data( key_dict=['fila', 'col','valor'], tipo=[(int, False), (int, False), (str, True)])
+    f_c_v = TeclD.get_data( key_dict='fila', tipo=int, permite_nulo=False)
+    f_c_v = TeclD.get_data( key_dict='col' , tipo=int, permite_nulo=False)
+    f_c_v = TeclD.get_data( key_dict='valor', tipo=int, permite_nulo=False)
     
 
     tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
 
 # ESTABLECE UN VALOR EN UNA CELDA (A:0)
 def set_celda():
-    cel_v = TeclD.get_data( key_dict=['celda', 'valor'], tipo=[(str, False), (str, True)])    
+    cel_v = TeclD.get_data( key_dict='celda', tipo=str, permite_nulo=True)
+    cel_v = TeclD.get_data( key_dict='valor', tipo=str, permite_nulo=True)
     
     tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
 
 # ESTABLECE UN VALOR EN UNA FILA
 def set_valor_over_fila():
     global TABLERO
-    f = TeclD.get_data( key_dict=['f'], tipo=[(int, False)], msg_entrada='\nIntroduce Fila to Set')        
+    f = TeclD.get_data( key_dict='f', tipo=str, permite_nulo=True , msg_entrada='\nIntroduce Fila to Set')        
     
     fila = TABLERO.get_lst_filas(filaFrom=f['f'], filaTo=f['f'])
     if not fila: return
-    val = TeclD.get_data( key_dict=['v'], tipo=[(str, True)], msg_entrada=f'\nIntroduce Valor to Set en fila {f['f']}')    
+    val = TeclD.get_data( key_dict='v', tipo=str, permite_nulo=True, msg_entrada=f'\nIntroduce Valor to Set en fila {f['f']}')    
     
     tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
     
 # ESTABLECE UNA COLUMNA
 def set_valor_over_columna():
     global TABLERO
-    col = TeclD.get_data( key_dict=['c'], tipo=[(str, False)], msg_entrada='\nIntroduce Columna to Set  [0, "a", "A"]')    
-    val = TeclD.get_data( key_dict=['v'], tipo=[(str, True)], msg_entrada=f'\nIntroduce el Valor a introducir en la Columna < {col['c']} > ')    
+    col = TeclD.get_data( key_dict='c', tipo=str, permite_nulo=True, msg_entrada='\nIntroduce Columna to Set  [0, "a", "A"]')    
+    val = TeclD.get_data( key_dict='v', tipo=str, permite_nulo=True, msg_entrada=f'\nIntroduce el Valor a introducir en la Columna < {col['c']} > ')    
     
     tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
 
 
 def tablero_to_rango():
     global TABLERO
-    n = TeclD.get_data( key_dict=['n'], tipo=[(str, True)], msg_entrada='\nNombre del  R a n g o  to Transfer ')    
+    n = TeclD.get_data( key_dict='n', tipo=str, permite_nulo=True, msg_entrada='\nNombre del  R a n g o  to Transfer ')    
 
 
 def rango_to_tablero():
     global TABLERO
-    n = TeclD.get_data( key_dict=['n'], tipo=[(str, True)], msg_entrada='\nNombre del  R a n g o  to Transfer ')    
+    n = TeclD.get_data( key_dict='n', tipo=str, permite_nulo=True, msg_entrada='\nNombre del  R a n g o  to Transfer ')    
 
 
 def lista_to_rango():
     global TABLERO
     # lista = ['lista', 'de', 'ejemplo']
-    n = TeclD.get_data( key_dict=['n'], tipo=[(str, True)], msg_entrada='\nNombre del  R a n g o  sobre el que operar')    
-    lista = TeclD.get_data( key_dict=['l'], tipo=[(str, True)], msg_entrada='\nIntroduce los items de la lista separados por comas')    
+    n = TeclD.get_data( key_dict='n', tipo=str, permite_nulo=True, msg_entrada='\nNombre del  R a n g o  sobre el que operar')    
+    lista = TeclD.get_data( key_dict='l', tipo=str, permite_nulo=True, msg_entrada='\nIntroduce los items de la lista separados por comas')    
     cadena = str(lista['l']).strip()
     lst_to_tablero = cadena.split(sep=',')
     if not lst_to_tablero: return 
@@ -257,11 +262,11 @@ def lista_to_rango():
 # No hace falta rango, lo crea la funcion lista_to_tablero() de forma auxiliar y luego lo elimina
 def lista_to_tablero():
     global TABLERO
-    str_lista = TeclD.get_data( key_dict=['l'], tipo=[(str, True)], msg_entrada='\nIntroduce  L i s t a   separada por comas (1,2,3,...)')
+    str_lista = TeclD.get_data( key_dict='l',tipo=str, permite_nulo=True, msg_entrada='\nIntroduce  L i s t a   separada por comas (1,2,3,...)')
     
-    celda = TeclD.get_data( key_dict=['ci'], tipo=[(str, True)], msg_entrada='\nIntroduce C e l d a  en Tablero ( M:8 ) donde colocar la lista ... ')
+    celda = TeclD.get_data( key_dict='ci',tipo=str, permite_nulo=True, msg_entrada='\nIntroduce C e l d a  en Tablero ( M:8 ) donde colocar la lista ... ')
     
-    pos = TeclD.get_data( key_dict=['pos'], tipo=[(bool, True)], msg_entrada='Lo Quieres Vertical( V ) o Horizontal( F )?')    
+    pos = TeclD.get_data( key_dict='pos', tipo=str, permite_nulo=True, msg_entrada='Lo Quieres Vertical( V ) o Horizontal( F )?')    
     if pos['pos'] == True:
         pass
     else:
@@ -275,7 +280,7 @@ def matriz_to_tablero():
         [4, 5, 6],
         [7, 8, 9]
     ]
-    celda = TeclD.get_data( key_dict=['ci'], tipo=[(str, True)], msg_entrada='\nIntroduce C e l d a  en Tablero (pejem: M:8 ) donde colocar la matriz ... ')
+    celda = TeclD.get_data( key_dict='ci', tipo=str, permite_nulo=True, msg_entrada='\nIntroduce C e l d a  en Tablero (pejem: M:8 ) donde colocar la matriz ... ')
     
 # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 

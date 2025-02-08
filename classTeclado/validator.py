@@ -1,18 +1,6 @@
 import re
 
-class TiposValidReg():
-    """ 
-    Enumerador y padre de ValidReg......  lo primero fue la variable
-    """
-    VRG_ENTERO=0
-    VRG_FLOTANTE=1
-    VRG_FRASE=2
-    VRG_CHAR=3
-    VRG_IP=4
-    VRG_MAIL=5
-    VRG_TLF=6
-
-class ValidReg(TiposValidReg):
+class StringTo():
     """ 
     Clase Estática que usa expresiones regulares para validar patrones:
     Tb es convertidor de tipo int, float, str, date(aun no).
@@ -38,20 +26,7 @@ class ValidReg(TiposValidReg):
         """
         pass
     def __str__(self):
-        pass
-
-    @staticmethod
-    def esType(self, valor, tipo=TiposValidReg.VRG_ENTERO):
-        """ 
-        Valida el tipo de datos entre los tipos validables
-        Puedo ocultarlas todas y llamar sólo a esta funcion....pero no quiero.
-        """
-        if tipo == ValidReg.VRG_ENTERO:
-            return self.esInt(valor)
-        elif tipo == ValidReg.VRG_FLOTANTE:
-            return self.esFloat
-        elif tipo == ValidReg.VRG_FRASE:
-            return self.esFrase
+        pass    
             
     @staticmethod
     def partirDNI(dni):
@@ -137,17 +112,21 @@ class ValidReg(TiposValidReg):
             return fecha.strftime(formato_salida)
         except ValueError:
             return False
-
+    
     @staticmethod
-    def estaEnLista(valor, lista):
-        """ 
-        Valida un elemento entre unos dados en una lista. Tambien vale para los que no están en la lista.
-        """
-        if valor in lista:
-            return True
-        else:
+    def esHora(cadena, formato_entrada="%H:%M:%S", formato_salida="%H:%M:%S"):
+        """ Valida si una cadena se puede convertir a una hora con cualquier formato dado y devuelve la hora en el formato deseado.
+        [cadena] (str): La cadena que contiene la hora.
+        [formato_entrada] (str): El formato en que se espera recibir la hora (e.g., "%H:%M", "%I:%M %p").
+        [formato_salida] (str): El formato en que se quiere retornar la hora. Por defecto es "%H:%M:%S".
+        Returns:
+            str | None: La hora en el formato deseado si es válida, o None si no es válida. 
+        """   
+        try:
+            hora = datetime.strptime(cadena, formato_entrada)
+            return hora.strftime(formato_salida)
+        except ValueError:
             return False
-
 
     @staticmethod
     def esInt(strNum):
@@ -228,8 +207,8 @@ class ValidReg(TiposValidReg):
         \d+: Solo dígitos, por si deseas considerar números enteros como válidos (ej. 3)
 
         Ejemplo: 
-            peso = ValidReg.esFloat(peso)
-            if ValidReg.estaEnLista(sexo, ['H', 'M']): pass
+            peso = StringTo.esFloat(peso)
+            if StringTo.estaEnLista(sexo, ['H', 'M']): pass
 
                 
         """
@@ -237,36 +216,6 @@ class ValidReg(TiposValidReg):
         num = re.match(patron, cadena)
         return float(cadena) if num else False
     
-    # ____________________
-    # Copia superficial de un diccionario. Usar list() de los diccionarios mejor. 
-    # Me di cuenta tarde
-    # ********************
-    @staticmethod
-    def copy_list(lista):
-        """ 
-        Def => Devuelve una copia de una lista por valor
-        [lista] => lista a copiar
-        Retorno => una nueva lista.
-        Ejemplo => otraLista = ValidReg.copyList(lista_a_copiar)
-        """
-        if not isinstance(dicc, list): return None
-        listCopy=[n for n in lista]
-        return listCopy
-    # ____________________
-    # Copia superficial de un diccionario. Usar .copy() de los diccionarios mejor. 
-    # Me di cuenta tarde
-    # ********************
-    @staticmethod
-    def copy_dicc(dicc):
-        """ 
-        Def => Devuelve una copia por valor de un diccionario(superficial)
-        dicc => diccionario a copiar
-        Retorno => diccionario
-        None si no es un diccionario
-        Ejemplo => dict2=ValidReg.copyDict(dict_a_copiar)
-        """
-        if not isinstance(dicc, dict): return None
-        diccCopy={k:v for k,v in dicc.items()}
-        return diccCopy
+    
     
     
