@@ -2,22 +2,20 @@ import re
 from datetime import date, datetime
 from datetime import time 
 
-
-
 class Sdata():
-    """ 
-    Def => entra una list de str y devuelve esa list como keys de un diccionario y los values son 
-    pedidos por Teclado. Se pueden pasar el [tipoDato, PERMITENULL] en una lista de lista o lista de tupla
-    [Ejemplo de uso]:
-    >>> from Sdata import Sdata as listToDict
-    >>> oneDict=listToDict.byDef(
-                                    key_dict=['Cuanto','Quieres','Entrar?'],
-                                    tipo= [(int,True), (float,False), (str,False)],
-                                    permite_nulo=True,
-                                    esCapital=False)
-    >>> print(oneDict)
-        
-        [Resultado] => {'Cuanto': 5, 'Quieres': 5.0, 'Entrar?': '5'}
+    """ >>> CLASE ESTÁTICA ENTRA UNA KEY STR Y DEVUELVE UN DICCIONARIO CON VALUE LA ENTRADA X TECLADO 
+    CON EL TIPO CORRECTO O VALOR POR DEFECTO O NULO (DEPENDIENDO DE LA CONFIGURACION).
+
+    LOS TIPOS DE DATOS PUEDEN SER: str, int, float, bool, date, time, 'IP', 'DNI', 'EMAIL', 'BETWEEN', list, set, tuple.
+
+    EL DICCIONARIO SE PUEDE IR AUTO-INCREMETANDO... INTRODUCIENDO DICC COMO PARAMETRO OPCIONAL DE UN DICCIONARIO QUE EXISTA.
+
+    Ejemplo:
+    >>> dict_result = Sdata.get_data( key_dict='l', tipo=list , msg_entrada='INTRODUCE LISTA SEPARANDO POR COMAS (1,2,3,...)', permite_nulo=True)
+    >>> dict_result = Sdata.get_data( dicc=dict_result , key_dict='pos', tipo='between' , msg_entrada=['VERTICAL', 'HORIZONTAL'], permite_nulo=False)    
+    >>> dict_result = Sdata.get_data( dicc=dict_result , key_dict='dat', tipo = date , msg_entrada='INTRODUCE FECHA (dd/mm/yyyy)')    
+    >>> print(f'lista: {dict_result['l']} - fecha: {dict_result['dat']} - hora: {dict_result['pos']} ')
+    
     """
     
     # ■■■ Ejemplo de uso:   dato_tipado = Sdata.TIPOS_VALIDOS[tipo](entrada)
