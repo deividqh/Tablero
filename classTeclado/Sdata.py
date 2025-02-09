@@ -12,7 +12,7 @@ class Sdata():
 
     Ejemplo:
     >>> dict_result = Sdata.get_data( key_dict='l', tipo=list , msg_entrada='INTRODUCE LISTA SEPARANDO POR COMAS (1,2,3,...)', permite_nulo=True)
-    >>> dict_result = Sdata.get_data( dicc=dict_result , key_dict='pos', tipo='between' , msg_entrada=['VERTICAL', 'HORIZONTAL'], permite_nulo=False)    
+    >>> dict_result = Sdata.get_data( dicc=dict_result , key_dict='pos', tipo='BETWEEN' , msg_entrada=['VERTICAL', 'HORIZONTAL'], permite_nulo=False)    
     >>> dict_result = Sdata.get_data( dicc=dict_result , key_dict='dat', tipo = date , msg_entrada='INTRODUCE FECHA (dd/mm/yyyy)')    
     >>> print(f'lista: {dict_result['l']} - fecha: {dict_result['dat']} - hora: {dict_result['pos']} ')
     
@@ -32,10 +32,10 @@ class Sdata():
         "DNI": lambda v: v if StringTo.partirDNI(v)[0] else None,
         "Email": lambda v: v if StringTo.esMail(v) else None,
         "IP": lambda v: v if StringTo.esIPValida(v) else None,
-        "between": lambda v: v  # SOLO DEVUELVE VALOR, VALIDACION FUERA
+        "BETWEEN": lambda v: v  # SOLO DEVUELVE VALOR, VALIDACION FUERA
     }
 
-    TIPOS_VALIDACION_EXTERNA = [bool, list, set, tuple, 'between']
+    TIPOS_VALIDACION_EXTERNA = [bool, list, set, tuple, 'BETWEEN']
 
 
     VALORES_POR_DEFECTO = {
@@ -51,7 +51,7 @@ class Sdata():
         "DNI": "00000000X",
         "Email": "unknown@mail.com",
         "IP": "0.0.0.0",
-        "between": None 
+        "BETWEEN": None 
     }
 
     VALORES_NULOS = {
@@ -67,7 +67,7 @@ class Sdata():
         'DNI'   : None,
         'Email' : None,
         'IP'    : None,
-        "between" : None 
+        "BETWEEN" : None 
     }
 
 
@@ -101,9 +101,9 @@ class Sdata():
             date: date(1900, 1, 1),
             time: time(0, 0),
             "DNI": "00000000X",
-            "Email": "unknown@mail.com",
+            "EMAIL": "unknown@mail.com",
             "IP": "0.0.0.0",
-            "between": None
+            "BETWEEN": None
         }
 
     
@@ -126,14 +126,25 @@ class Sdata():
 
         Ejemplo:       
         >>> lista = Sdata.get_data( key_dict='l', tipo=list , msg_entrada='INTRODUCE LISTA SEPARANDO POR COMAS (1,2,3,...)', permite_nulo=True)
-        >>> lista = Sdata.get_data( dicc=lista , key_dict='pos', tipo='between' , msg_entrada=['VERTICAL', 'HORIZONTAL'], permite_nulo=False)    
+        >>> lista = Sdata.get_data( dicc=lista , key_dict='pos', tipo='BETWEEN' , msg_entrada=['VERTICAL', 'HORIZONTAL'], permite_nulo=False)    
         >>> lista = Sdata.get_data( dicc=lista , key_dict='dat', tipo = date , msg_entrada='INTRODUCE FECHA (dd/mm/yyyy)')    
         >>> print(f'lista: {lista['l']} - fecha: {lista['dat']} - hora: {lista['pos']} ')
 
+        entrada == ENTRADA_NULL and permite_nulo == True:   => obtiene el valor por defecto.
+        entrada == ENTRADA_NULL and permite_nulo == False:  => Repite entrada
+        entrada != ENTRADA_NULL                             => si valor valido => entrada
+                                                            => si valor no valido => Repite entrada
+
+         
+
         """        
-        
+        # VALIDA QUE EL TIPO ESTÉ REGISTRADO
         if not tipo in Sdata.TIPOS_VALIDOS: 
-            return None                   # Tipo por defecto.
+            if isinstance(tipo, str):
+                if not tipo.upper() in Sdata.TIPOS_VALIDOS:
+                    return None
+            else:
+                return None                   
         
         # Diccionario de parametros         
         options = { 'msg_entrada':msg_entrada , 'permite_nulo': permite_nulo  } 
@@ -186,8 +197,8 @@ class Sdata():
         else:  # Si es una instancia de otro tipo, devolvemos su tipo
             str_tipo = type(tipo).__name__.upper()
         
-        # EL TIPO CONDICIONA msg_entrada EN CASO DE SER between
-        if tipo == 'between' :
+        # EL TIPO CONDICIONA msg_entrada EN CASO DE SER BETWEEN
+        if tipo == 'BETWEEN' :
             str_entrada = f'Elige Entre: [ {msg_entrada} ]'
         else:
             str_entrada = msg_entrada
@@ -236,7 +247,7 @@ class Sdata():
                             else:
                                 entrada = tipo(entrada)
 
-                        elif tipo == 'between':
+                        elif str(tipo).upper() == 'BETWEEN':
                             """ ■ ENTRA UN STR Y TIENE QUE ESTAR ENTRE LOS VALORES INTRODUCIDOS EN msg_entrada Y PUEDE VENIR COMO LISTA O COMO CADENA 
                             """
                             if isinstance(msg_entrada, str):

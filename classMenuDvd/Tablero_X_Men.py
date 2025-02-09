@@ -226,17 +226,19 @@ class SttS():
 
     @staticmethod
     def es_lista_de_listas(matriz):
-        """ Usada por matriz_to_tablero para validar que es una lista de listas para imprimir. """
-        # Verificar si es una lista
-        if not isinstance(matriz, list):
+        """ >>> VALIDA QUE ES UNA LISTA DE LISTAS
+        True: Es una lista de listas tipo: [[1,2],[3,4],[5,6]]
+        False: No es una lista de listas o error
+        """
+        try:
+            if not isinstance(matriz, list):
+                return False                        
+            for elemento in matriz:
+                if not isinstance(elemento, list):
+                    return False            
+            return True
+        except Exception as e:
             return False
-        
-        # Verificar que cada elemento dentro de la lista principal sea también una lista
-        for elemento in matriz:
-            if not isinstance(elemento, list):
-                return False
-        
-        return True
 
     # Entra una cadena separada por un caracter (coma) y devuelve una l i s t a   c o n   c a d a   i t e m 
     @staticmethod
@@ -399,7 +401,7 @@ class SttS():
     @staticmethod
     def encuadrar_matriz(matriz:list):
         """ >>> Pasa los valores de una matriz a un rango creado a partir de una celda determinada del rango.
-        la diferencia con set_data_plana() es que set_data_plana lo mete lineal, valor por valor. 
+        la diferencia con __push_plana() es que __push_plana lo mete lineal, valor por valor. 
         push_matriz mete una matriz con su forma en el rango. Para ello tiene que ser menor que el rango.
         en caso de ser mayor se puede crear un rango para tener acceso a su lst_celdas y verificar si coinciden.
 
@@ -441,6 +443,31 @@ class SttS():
         
         # Retorno ....la matriz recuadrada a su columna maxima
         return matriz
+    
+    @staticmethod
+    def dimensiones_by_matriz(matriz):
+        try:
+            if isinstance(matriz, list):
+                if SttS.es_lista_de_listas(matriz=matriz):
+                    """ ES MATRIZ """
+                    matriz_cuadrada = SttS.encuadrar_matriz(matriz=matriz)
+                    filas = len(matriz_cuadrada)
+                    columnas = len(matriz_cuadrada[0])
+                    dimension = f'{filas}X{columnas}'
+                else:
+                    """ ES LISTA HORIZONTAL"""
+                    filas = 1
+                    columnas = len(matriz)
+                    dimension = f'{filas}X{columnas}'
+            else:
+                """ ES DATO """
+                filas = 1
+                columnas = 1
+                dimension = f'{1}X{1}'
+            return filas, columnas, dimension
+        except Exception as e:
+            return False
+
 
 # ███████████████████████████████████████████████████████████████████████████████████████████████████████
 # ███████████████████████████████████████████████████████████████████████████████████████████████████████
@@ -661,6 +688,10 @@ class Rango(Celda):
             >>> rango = Rango(nombre_rango="Ejemplo_2", celda_inicio="B:2", dimension="D:5")
             >>> print(rango.data)
             {'nombre': 'Ejemplo', 'fila_inicio': 1, 'columna_inicio': 1, ...}
+
+            
+            
+            >>> rango = Rango(nombre_rango='x',celda_inicio='A:0',dimension=None, valor_inicial='[[1,2][3,4][5,6]]'
         """  
         # VALIDACION INICIAL
         if not isinstance(dimension, str): return None
@@ -669,7 +700,7 @@ class Rango(Celda):
 
         super().__init__( celda = celda_inicio )
         """ >>> C e l d a   d e   i n i c i o  Rango se define como una celda de Inicio y a partir de ahora le sumamos cosas
-        """ 
+        """         
 
         # >>> DIMENSION  Puede venir como una celda de fin(AX:9) o como una dimension(3x4)  
         self.total_filas, self.total_columnas = self.__desempaqueta_dimension(dimension=dimension)  
@@ -677,7 +708,7 @@ class Rango(Celda):
             print(f"Error en dimension: {dimension}")
             return None        
         
-        """ >>> C e l d a   F I N  ... (a partir de celda_inicio y dimension) ...Esto define un rango. ahora hay que capturar las celdas implicadas y los valores de cada celda""" 
+        """ >>> CELDA FIN  ... (a partir de celda_inicio y dimension) ...Esto define un rango. ahora hay que capturar las celdas implicadas y los valores de cada celda""" 
         celda_fin = self.__get_str_celda_fin(total_filas = self.total_filas , total_columnas = self.total_columnas)        
         if not celda_fin: 
             print("Error en la creacion de la Celda Fin")
@@ -714,7 +745,7 @@ class Rango(Celda):
         
         # V A L O R   I N I C I O ... puede ser una lista, una matriz, un str, int, bool...
         if valor_inicial:
-            self.set_data_plana(data = valor_inicial, relleno = valor_inicial)
+            self.__push_plana(data_push = valor_inicial, relleno = valor_inicial)
             
         self.matriz = self.__get_matriz()
         if not self.matriz: return None
@@ -726,13 +757,16 @@ class Rango(Celda):
         """
         # Validacion
         if self.b_print_cabecera == True:
-            # Cabeceras de la tabla
+            # NOMBRES DE LAS COLUMNAS
             titulos = ["Rango", "Inicio", "Fin", "Total Celdas", "Filas", "Columnas", "Es Oculto", "Ghost"]
+            
+            # TAMAÑOS DE LAS COLUMNAS
             tamanos_columnas = [25, 10, 10, 15, 8, 10, 10, 10]
-            # Valores de los datos
+            
+            # VALORES DE LAS COLUMNAS
             valores = [
                 self.nombre ,
-                self.get_nombre_celda() ,
+                self.celda_inicio.get_nombre_celda() ,
                 self.celda_fin.get_nombre_celda() ,
                 self.total_celdas ,
                 self.total_filas ,
@@ -740,21 +774,21 @@ class Rango(Celda):
                 self.b_oculto ,
                 self.b_ghost                
             ]
-            # Formateo de cabeceras y datos
+            
+            # FORMATEO DE NOMBRES DE COLUMNA, TAMAÑOS Y VALORES 
             cabeceras = "".join([f"{titulo:<{ancho}}" for titulo, ancho in zip(titulos, tamanos_columnas)])
             datos = "".join([f"{str(valor):<{ancho}}" for valor, ancho in zip(valores, tamanos_columnas)])
-            # Resultado final
+            
+            # RESULTADO FINAL
             return f"{cabeceras}\n{'-' * sum(tamanos_columnas)}\n{datos}"
         else:
-            return f"\nDatos del Rango( {self.nombre} ): [ {self.get_celda()} ]  To [ {self.celda_fin.get_celda()} ] Total Celdas: {self.data['total_celdas']} => {self.total_filas} Filas y {self.total_columnas} Columnas .......es Oculto?: {self.b_oculto} ..... Ghost?: {self.b_ghost}"  
+            return f"\nDatos del Rango( {valores[0]} ): [ {valores[1]} ]  To [ {valores[2]} ] Total Celdas: {valores[3]} => {valores[4]} Filas y {valores[5]} Columnas .......es Oculto?: {valores[6]} ..... Ghost?: {valores[7]}"  
     
     
     # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     # OBTIENE VALORES DEL RANGO
-    # ....................................................
-
-
-    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    # ••••••••••••••••••••••••••••••••••••••••••••••••••••
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     # DEVUELVE LA MATRIZ DE self.lst_celdas
     def __get_matriz(self):
         """ >>> DEVUELVE UN RANGO EN FORMA DE LISTA DE LISTAS DONDE CADA ITEM ES UN OBJETO CELDA
@@ -764,8 +798,8 @@ class Rango(Celda):
         for i in range(self.total_filas):
             lst_fila = []            
             for j in range(self.total_columnas):
-                nombre_celda = SttS.celda_by_fc(fila = self.fila + i, columna = self.columna + j)
-                celda = self.get_celda_by_nombre(nombre_celda=nombre_celda)
+                nombre_celda = SttS.celda_by_fc( fila = self.fila + i, columna = self.columna + j )
+                celda = self.buscar_celda( nombre_celda = nombre_celda )
                 if not celda: return None
                 lst_fila.append(celda)
             pass
@@ -774,7 +808,7 @@ class Rango(Celda):
         return lst_matriz if lst_matriz else None
     
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-    def get_filas(self, fila_from:int, fila_to:int):
+    def get_filas(self, fila_from:int, fila_to:int , b_valor:bool=False):
         """ >>> Obtiene las filas consecutivas de un rango en una lista. """
         if not self.matriz: return None
         # lst_retorno = []
@@ -782,30 +816,60 @@ class Rango(Celda):
         #     if fila_from <= i <= fila_to:
         #         lst_retorno.append(fila)
         # return lst_retorno if lst_retorno else None
-        
-        return [ fila  for i, fila in enumerate(self.matriz) if (fila_from <= i <= fila_to) ]
+        if b_valor == False:
+            """ DEVUELVE LAS FILAS DE CELDAS """
+            return [ fila  for i, fila in enumerate(self.matriz) if (fila_from <= i <= fila_to) ]
+        else:
+            """ DEVUELVE LAS FILAS DE VALORES """
+            lst_valores_fila = []
+            matriz_valores = []
+            for i, fila in enumerate(self.matriz):      # BUSCA EN CADA FILA
+                b_match = False
+                if fila_from <= i <= fila_to:           # CUANDO ENCUENTRA UNA COINCIDENCIA:
+                    b_match = True
+                    for celda in fila:                  
+                        lst_valores_fila.append(celda.valor)    # METE TODOS LOS VALORES DE LA FILA EN UNA LISTA...
+                    
+                if b_match == True:
+                    matriz_valores.append(lst_valores_fila)        # Y LA FILA EN UNA LISTA...CON LO QUE SE CREA LA MATRIZ.
+            
+            # RETORNO
+            return matriz_valores if matriz_valores else None
+            pass
 
-    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-    def get_columnas(self, columna_from:int, columna_to:int):
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    def get_columnas(self, columna_from:int, columna_to:int, b_valor:bool=False):
         """ >>> Obtiene las columnas consecutivas de un rango en una lista. """
         if not self.matriz: return None
-        # lst_ret = []
-        # for fila in self.matriz:
-        #     for j , celda in enumerate(fila):
-        #         if columna_from <= j <= columna_to:
-        #             lst_ret.append(celda)
-        # pass
-        # return lst_ret if lst_ret else None
+        try:
+            columna_from = abs(int(columna_from))
+            columna_to = abs(int(columna_to))
+            if b_valor == False:
+                """ DEVUELVE LA COLUMNA DE CELDAS """
+                return [celda for fila in self.matriz 
+                                for j , celda in enumerate(fila) if columna_from <= j <= columna_to ]
+            else:
+                """ DEVUELVE LA COLUMNA DE VALORES. """
+                lst_valores_columna = []
+                matriz_valores = []
+                for fila in self.matriz:
+                    b_match = False
+                    for j , celda in enumerate(fila):
+                        if columna_from <= j <= columna_to:
+                            lst_valores_columna.append(celda.valor)
+                            b_match = True
+                    if b_match == True:
+                        matriz_valores.append(lst_valores_columna)
+                pass
+                return lst_valores if lst_valores else None
+                pass
+        except Exception as e:
+            return None
 
-        return [celda for fila in self.matriz 
-                        for j , celda in enumerate(fila)
-                        if columna_from <= j <= columna_to ]
-
-
-    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     # DEVUELVE UNA LISTA DE LOS VALORES EN FORMATO MATRIZ O IMPRIME VALORES BASIC
     def get_values(self, b_print=False):
-        """ >>>  """
+        """ >>> DEVUELVE UNA LISTA EN FORMATO DE MATRIZ CON LOS VALORES DEL RANGO """
         lst_matriz = []
         for fila in self.matriz:
             lst_fila   = []
@@ -821,7 +885,8 @@ class Rango(Celda):
             #     for i, valor in enumerate(fila):
             #         print(f'{valor}' , end= '\t| ') if i != len(fila) - 1 else print(f'{valor}', end='\n')
     
-    # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+
+    # VISUALIZA LOS NOMBRES DE LAS CELDAS EN FORMATO MATRIZ.
     def ver_matriz(self):
         """ >>> Muy basico, sirve para ver el nombre de las celdas en su posicion matricial. """
         if not self.matriz: return None
@@ -832,18 +897,44 @@ class Rango(Celda):
         pass
 
     # From nombre celda('C:3') To objeto_celda 
-    def get_celda_by_nombre(self, nombre_celda:str):
-        """ Entra el nobmre de una celda y comprueba que está en la lista de celdas del rengo.
-        [nombre_celda](str): nombre de la celda a buscar. pej: 'C:3'
-        Retorno: el objeto celda encontrado | None si no lo encuentra
+    def get_celda(self, b_valor=False , **kwargs):
+        """ >>> DEVUELVE UN OBJETO CELDA(b_valor=False) O EL VALOR DEL OBJETO CELDA(b_valor=True) 
+        [kwargs]: 'nombre_celda', 'fila' , 'columna'
+        ejemplo: >>> get_celda(fila=1, columna = 3 , b_valor=False)  => correcto , devuelve la celda de la fila 1 columna 3 (C:1)
+        ejemplo: >>> get_celda(nombre_celda='C:2' , b_valor=True)    => correcto , devuelve el valor de la celda (C:2)
+        Si no existe la celda, la fila o la columna dentro del rango devuelve None
+
         """
         if not self.lst_celdas: return None
-        for celda in self.lst_celdas:
-            if nombre_celda == celda.nombre_celda:
-                return celda
-        return None
+        # RECOGE LOS DATOS         
+        nombre_celda = kwargs.get('nombre_celda', None)
+        fila         = kwargs.get('fila', None)
+        columna      = kwargs.get('columna', None)
+
+        # OPERAMOS
+        try:
+            if nombre_celda == None:
+                if fila == None or columna == None: 
+                    return None
+                else:
+                    fila    = abs(int(fila))
+                    columna = abs(int(columna))
+                    return self.get_celda_by_fila_columna(fila=fila, columna=columna, b_valor=b_valor)
+            else:
+                celda = self.buscar_celda(nombre_celda = nombre_celda)
+                if not celda:
+                    return None
+                else:
+                    if b_valor == False:
+                        return celda
+                    else:
+                        return celda.valor
+        except Exception as e:
+            return None
     
-    def get_celda_by_fila_columna(self, fila:int, columna:int):
+    
+    
+    def get_celda_by_fila_columna(self, fila:int, columna:int, b_valor:bool=False):
         """ Entra una fila y columna y devuelve un objeto celda si se encuentra en el rango. 
         [fila](int):
         [columna](int)
@@ -852,10 +943,26 @@ class Rango(Celda):
         """
         celda = Celda(fila=fila, columna=columna)
         if celda:
-            return self.get_celda_by_nombre(nombre_celda = celda.nombre_celda)
+            if self.buscar_celda(nombre_celda=celda.nombre_celda) == False:
+                """ NO EXISTE EN EL RANGO """
+                return None
+            else:
+                """ SI EXISTE EN EL RANGO """
+                if b_valor == False:
+                    return celda
+                else:
+                    return celda.valor
                 # return celda
         return None
         pass
+    
+    # BUSCA UN OBJETO CELDA X SU NOMBRE EN LA LISTA DE CELDAS DEL RANGO
+    def buscar_celda(self, nombre_celda:str):
+        for celda in self.lst_celdas:
+            if nombre_celda == celda.nombre_celda:
+                return celda
+        return False
+        
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     # G E T T E R ' S   A N D   S E T T E R ' S    
     def get_oculto(self):                               # oculto,   para ver. no para buscar.
@@ -878,8 +985,13 @@ class Rango(Celda):
         return self.family
     def set_family(self, valor:str):
         self.family = valor
-
-    # D e s e m p a q u e t a   D i m e n s i o n   y  devuelve fila y columna
+    def get_dimension(self):
+        return f'{self.total_filas}X{self.total_columnas}'
+    def get_total_celdas(self):
+        return len(self.lst_celdas)
+    
+    
+    # DESEMPAQUETA DIMENSION y  devuelve fila y columna
     def __desempaqueta_dimension(self, dimension:str):
         """ 
         [dimension]  puede ser Celda o dimension
@@ -973,39 +1085,42 @@ class Rango(Celda):
     #  DATOS TO RANGO
     # •••••••••••••••••••••••••••••••••••••••••••••••••••••
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-    def set_data_plana(self, data, relleno:str = Celda.VALOR_INICIAL):
+    def __push_plana(self, data_push, relleno:str = Celda.VALOR_INICIAL):
         """ >>> establece un dato en el rango .
         Aplana la lista dada, ajusta su longitud para que coincida con la lista interna `self.lst_celdas` rellenando con un valor predeterminado,
         y establece los valores de las celdas en `self.lst_celdas` a los valores correspondientes en la lista ajustada o no dependiendo de b_relleno.
-        [data] : el dato a procesar. Puede ser matriz, lista, int, bool, str, o cualquier objeto.
+        [data_push] : el dato a procesar. Puede ser matriz, lista, int, bool, str, o cualquier objeto.
         Returns:
             None
+
+        Se llama desde __init__ , lo que provoca que se pueda crear un rango con las medidas de la matriz.
         """
         try:
             # APLANO EL DATO: ...Si es matriz lo convierte en lista , si es lista lo deja como lista y si es str , int, bool, lo deja como está.
-            lista_plana = SttS.aplanar_matriz(matriz = data)
+            lista_plana = SttS.aplanar_matriz(matriz = data_push)
             
             # EVALUO SI TENGO QUE RELLENAR EL RESTO DEL RANGO CON DATOS DE INICIO O LO DEJO COMO ESTÁ
             if relleno == '':
-                lista_plana = SttS.igualar_listas(lista_keys=self.lst_celdas, lista_to_relong = lista_plana, valor_relleno=Celda.VALOR_INICIAL)        
+                lista_plana = SttS.igualar_listas( lista_keys = self.lst_celdas , lista_to_relong = lista_plana , valor_relleno = Celda.VALOR_INICIAL )        
                 """ >>> lst len(self.lst_celdas) == len(lista_plana). lista_plana se rellena con Celda.VALOR_INICIAL ( '' ) 
                 """
             else:
-                lista_plana = SttS.igualar_listas(lista_keys = self.lst_celdas, lista_to_relong = lista_plana, valor_relleno = relleno)        
+                lista_plana = SttS.igualar_listas( lista_keys = self.lst_celdas , lista_to_relong = lista_plana , valor_relleno = relleno )        
                 """ >>> lst len(self.lst_celdas) == len(lista_plana). lista_plana se rellena con cualquier valor 
                 """
             # En caso de que b_relleno = False, se emparejan hasta el mas corto :)
             # El Rango (las celdas del rango) cambien de valor
             for celda, valor in zip(self.lst_celdas, lista_plana):
-                celda.set_valor(valor=valor)  
+                celda.set_valor( valor = valor )  
+
             return True    
         except Exception as e:
-            print(f'Error ::: Rango ::: set_data_plana ::: {e}')
+            print(f'Error ::: Rango ::: __push_plana ::: {e}')
             return None
 
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     def push(self, data_push, celda_inicio:str='A:0', b_lineal:bool=False):
-        """ >>> FROM MATRIZ, ITERATOR U OTRO TO RANGO SELF. 
+        """ >>> INSERTA EN TABLERO .... FROM MATRIZ, ITERATOR U OTRO TO RANGO SELF. 
         ... o FROM RANGO TO RANGO. DIFERENCIA ENTRE MATRIZ Y EL RESTO. SI ES EL RESTO, CREO UN RANGO CON LOS DATOS SEGÚN VIENEN EN LA CELDA_INICIO. 
         LUEGO LOS CRUZO CELDA A CELDA CON EL RANGO CON CROSS
         SI ES MATRIZ, SI B_LINEAL = TRUE, TB LOS CARGO SEGÚN VIENEN COMO EN LA TÉCNICA ANTERIOR.
@@ -1019,47 +1134,59 @@ class Rango(Celda):
         # EVALUAMOS EL TIPO        
         if not es_matriz: 
             
-            if isinstance(data_push, list) or isinstance(data_push, tuple) or isinstance(data_push, set):
-                """ >>> Es un iterador. Creo que tiene que entrar plano si o si. """
+            if isinstance(data_push, list) or isinstance(data_push, tuple) or isinstance(data_push, set):                
+                """ 
+                >>> ITERADOR. ENTRA PLANO SI O SI 
+                """
                 if b_lineal == False:
-                    """ >>> (By Def) METE LA LISTA HORIZONTAL 
-                    """
+                    """ >>> ■■■■ (By Def) METE LA LISTA HORIZONTAL   """
                     dimension = f'1x{len(data_push)}'
                 else:
-                    """ >>> METE LA LISTA VERTICAL 
-                    """                    
+                    """ >>> ■■■■ METE LA LISTA VERTICAL   """                    
                     dimension = f'{len(data_push)}X1'
+                
+                # SE CREA UN RANGO CON LA LISTA COMO VALOR INICIAL
                 rango = Rango( nombre_rango = "aux_iter" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = data_push )                
-                # 2- SE PASA EL RANGO AL RANGO CON SELF.SET_DATA_PLANA
                 # return self.__cross(rango)
             
             elif isinstance(data_push, str):                
                 if b_lineal == False:
-                    """ (By Def) METE LA CADENA ENTERA EN LA CELDA_INICIO 
+                    """ >>> ■■■■ (By Def) CADENA TO CELDA_INICIO 
                     """
                     rango = Rango( nombre_rango = "aux_str" , celda_inicio = celda_inicio , dimension = f'1X1' , valor_inicial = data_push )                
-                    # return self.__cross(rango)
                 else:   
-                    """ METE LA CADENA COMO SI FUERA UNA LISTA A PARTIR DE LA CELDA DE INICIO PALABRA A PALABRA. 
+                    """ >>> ■■■■ METE LA CADENA COMO SI FUERA UNA LISTA A PARTIR DE LA CELDA DE INICIO PALABRA A PALABRA. 
                     """
                     lst_palabras = ' '.join(data_push)
                     if not lst_palabras: return None
                     # AHORA ES TRATADA COMO LISTA HORIZONTAL
                     dimension = f'1x{len(lst_palabras)}'
                     rango = Rango( nombre_rango = "aux_iter" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = data_push )                
-                    # return self.__cross(rango)            
+            
+            elif isinstance(data_push, Rango):
+                """ >>> ■■■■ ENTRA UN RANGO!!
+                """                
+                dimension       = data_push.get_dimension()
+                valor_inicial   = data_push.get_valores()
+
+                rango = Rango( nombre_rango = "aux_rango" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = valor_inicial )
             else:
+                """ >>> ■■■■ EL RESTO: int, float, bool, objetos, date, time, ....
+                """
                 if any(celda_inicio in celda.nombre_celda for celda in self.lst_celdas):
                     rango = Rango( nombre_rango = "aux_other" , celda_inicio = celda_inicio , dimension = '1x1' , valor_inicial = data_push )                                    
-                    # return self.__cross(rango)
         else:
             """ 
-            >>> ES MATRIZ """
+            >>> ES MATRIZ 
+            """
             # QUIERO METER LOS DATOS A CAPÓN UNO DETRAS DE OTRO SIN ESTRUCTURA.
             if b_lineal == True:    
+                """ >>> ■■■■ METE LOS DATOS EN LA MATRIZ DE FORMA PLANA 
+                """
                 rango = Rango( nombre_rango = "aux_matriz_lineal" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = data_push )
             else:            
-                """ QUIERO METER LOS DATOS  CON LA ESTRUCTURA DE MATRIZ CON LA QUE ESTÁ LA MATRIZ... A PARTIR DE LA CELDA DE INICIO. """
+                """ >>> ■■■■ QUIERO METER LOS DATOS  CON LA ESTRUCTURA DE MATRIZ CON LA QUE ESTÁ. 
+                """
                 # CREO UNA MATRIZ CUADRADA DEPENDIENDO DEL MAXIMO NUMERO DE COLUMNAS QUE TENGA LA MATRIZ ENTRANTE
                 matriz_cuadrada = SttS.encuadrar_matriz(matriz = data_push)        
                 # SACO LOS DATOS QUE NECESITO DE LA MATRIZ RE-CREADA PARA CREAR UN RANGO CUADRADO
@@ -1079,6 +1206,9 @@ class Rango(Celda):
                 except Exception as e:
                     print(f'Error ::: Tablero ::: push ::: {e}')
                     return False
+
+            
+            # ESTO ES PARA PRUEBAS SOLO, HAY QUE BORRARLO
             print()
             rango.ver_matriz()
             print()
@@ -1091,7 +1221,7 @@ class Rango(Celda):
             print(f'\n\nLast Fila Used: {self.__last_fila_used()}')    
 
             # •••••••••••••••••••••••••••••••••
-            return self.__cross(rango = rango)
+            return self.__cross(rango = rango) if rango else None
         
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     # CRUZO UN RANGO CON SELF. CELDA A CELDA COINCIDENTE
@@ -1145,9 +1275,6 @@ class Rango(Celda):
         return True            
 
     
-
-
-
 
     # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     #  I m p r i m e   u n   R a n g o . 
@@ -1448,11 +1575,11 @@ class Tablero(Rango):
                         b_oculto = False , 
                         b_ghost = False)
         
-        # ╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬╚ ╔ ╩ ╦ ╠ ╬
-        # M O N T O   L A   E S T R U C T U R A   D E   C O L U M N A S ..... (sobre la que voy a trabajar)       
+        # ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+        # MONTO LA ESTRUCTURA DE COLUMNAS..... (sobre la que voy a trabajar)       
         SttS._inicializa_diccs_letra_numero()
 
-        # ╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔╔
+        # ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
         # V A L I D A C I O N   D E   D A T O S   D E   E N T R A D A               
         if total_columnas_tablero >= len( SttS._may_ln ):                   
             total_columnas_tablero = len( SttS._may_ln.keys() )-1
@@ -1494,7 +1621,7 @@ class Tablero(Rango):
     
     # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
     # BUSCAR RANGO .... POR NOMBRE O POR INDICE
-    def get_rango(self, nombre_rango:str=None, b_index:bool=False):
+    def buscar_rango(self, nombre_rango:str=None, b_index:bool=False):
         """ Busca un rango en lst_rangos. 
         [nombre_rango](str) = None, busca todos los ragos.
         [b_index](bool) = False , devuelve el rango. | True, devuelve el indice en lst_rangos. Si nnombre_a_buscar == None, b_index no tiene efecto.
@@ -1516,13 +1643,13 @@ class Tablero(Rango):
         return None
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     def pull(self, nombre_rango:str = None):
-        """ >>> TIRA LOS DATOS DEL TABLERO HACIA UN RANGO PASADO COMO ARGUMENTO. CRUZA CELDA A CELDA.
+        """ >>> TIRA LOS DATOS DEL TABLERO HACIA UN RANGO PASADO COMO ARGUMENTO(to_me=False). CRUZA CELDA A CELDA.
         [nombre_rango](str): el nombre del rango que se quiere llenar de valores.
         to_me: es el argumento de cross para que se cruzen datos hacia el rango pasado y no hacia el rango que llama(Tablero)
 
         """
         if not self.lst_rangos: return None
-        rango = self.get_rango(nombre_rango = nombre_rango)
+        rango = self.buscar_rango(nombre_rango = nombre_rango)
         if not rango: return None
         self.__cross(rango, to_me=False)
 
@@ -2096,7 +2223,7 @@ class Rangutan(Tablero):
         rango = self.buscar_rango(nombre_a_buscar = nombre_rango)    
         if not rango: return None        
         if self.valida_limites_rango(rango=rango) == False: return None
-        lst_ret = []
+        lst_valores_columna = []
         try:
             for valores in rango.dicc.values():
                 valores = int(valores)
@@ -2290,34 +2417,7 @@ class Rangutan(Tablero):
             return True
         return False
 
-    # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
-    # Verificar si ya existe un rango con las mismas propiedades ( no usado y util )            wip
-    def get_lst_compara_data_rango(self, rango_a_buscar):
-        """ Compara las propiedades de un rango pasado como argumento con la lista de rangos de Tablero.
-        [rango_a_buscar](Rango): objeto tipo rango. 
-        Retorno:True si existen las mismas propiedades....y que quien lo llame decida que hacer con esto.
-                False, si no existen esas mismas propiedades en el tablero.
-        >>> 
-        >>> Ejemplo: lst_rangos = b_compara_data_rango(rango_ejemplo) 
-                     if lst_rangos:
-                        for rango in lst_rangos:
-                            print(f'el Rango {rango.nombre} tiene las mismas propiedades que {rango_a_buscar.data.['nombre']}')        
-        """        
-        total_filas = rango_a_buscar.total_filas
-        total_columans = rango_a_buscar.total_columnas
-        lst_retorno = []
-        for rango in self.lst_rangos:
-            if (rango.get_celda() == rango_a_buscar.get_celda() and
-                    rango.total_filas == total_filas and
-                    rango.total_columnas == total_columnas):
-                # print(f"Error: Ya existe un rango con las mismas propiedades (celda_inicio: {celda_inicio}, dimension: {dimension}).")
-                # return rango
-                lst_retorno.append(rango) 
-        pass
-        if lst_retorno:
-            return lst_retorno
-        else:
-            return None
+    
             
     # # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
     def rango_to_tablero(self, nombre_rango:str):
