@@ -217,5 +217,28 @@ class StringTo():
         return float(cadena) if num else False
     
     
-    
+    # Entra una cadena separada por un caracter (coma) y devuelve una l i s t a   c o n   c a d a   i t e m 
+    @staticmethod
+    def cadena_to_lista(cadena:str, char:str=','):  
+        """ >>> Entra Una cadena separada por comaas, retorna una list de coma en coma 
+        Entra: 'cadena, de , ejemplo' |   Sale: ['cadena', 'de', 'ejemplo'] """      
+        try:            
+            if not isinstance(cadena, str): return None
+            cadena = cadena.strip()
+            # if not StringTo.esFrase(cadena): return None            
+
+            # ELIMINAR LAS COMAS AL INICIO Y AL FINAL 
+            if cadena.startswith(char) or cadena.endswith(char):
+                cadena = cadena.strip(char)
+            # CONVIERTE LA CADENA EN UNA LISTA
+            lst_str = cadena.split(sep=char)
+            if not lst_str: 
+                return None
+
+            # QUITA LOS ESPACIOS DELANTE Y DETRAS DE CADA ITEM
+            lst_retorno = [str(item).strip() for item in lst_str]
+
+            return lst_retorno
+        except Exception as e:
+            return None
     
