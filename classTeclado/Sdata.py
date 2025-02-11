@@ -41,7 +41,7 @@ class Sdata():
     VALORES_POR_DEFECTO = {
         int: 0,
         float: 0.0,
-        str: "",
+        str: '',
         bool: False,
         list: [],
         set: set(),
