@@ -48,8 +48,8 @@ def main():
     The_X_Men.addX( titulo='SUB_GET'  , padre='MenuPpal', ipadre="GET"     , lst_items=[("Get Fila",get_fila), ("Get Columna",get_columna), ("Get Valor By Fila-Columna", get_fila_columna), ("Get Valor By Celda(A:0)", get_celda), ("Get Matriz Values", get_matriz_values)])
     The_X_Men.addX( titulo='SUB_PUSH'  , padre='MenuPpal', ipadre="PUSH"   , lst_items=[("PUSH Matriz",matriz_to_tablero),("PUSH Fila",None), ("PUSH Column",None), ("PUSH Valor", None), ('PUSH Valor By Celda (C:3)', None), ('PUSH valor by fila / columna', None)] )
     The_X_Men.addX( titulo='SUB_DEL'  , padre='MenuPpal', ipadre="DEL"     , lst_items=[("Del Fila",None), ("Del Column",None), ("Del Celda", None)] )    
-    The_X_Men.addX( titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS" , lst_items=[("Crear Rango",crear_rango), ("Buscar Rango",buscar_rango), ("Eliminar Rango",eliminar_rango), ("Ver Rango", ver_rango) ] )  
-    The_X_Men.addX( titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Recursiv" , prueba_recursiva), ("prueba Sdata", puebas_Sdata)] )    
+    The_X_Men.addX( titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS" , lst_items=[("Crear Rango",crear_rango), ("Buscar Rango",buscar_rango), ("Eliminar Rango",None) ] )  
+    The_X_Men.addX( titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Impresion Masiva" , prueba_impresion_mas), ("prueba Sdata", puebas_Sdata)] )    
 
     # 3- LLAMO A MYSTYCA PARA VISUALIZAR EL MENU ╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦╔╦╦
     retorno = The_X_Men.Mystyca(titulo='MenuPpal', configurado=True, execFunc=True, tipo_marcador='a', execAll=False, Loop=True , padX=50)
@@ -126,16 +126,27 @@ def print_ambigous():
 # RETORNA UN VALOR DEL TABLERO CUANDO INTRODUCES UNA Cimprime_a_caponELDA (A:0, C:3)
 def get_celda():
     cel_v = Sdata.get_data( key_dict='celda', tipo=str, permite_nulo = True , msg_entrada='INTRODUCE CELDA ')
-    valor = TABLERO.get_celda( celda = cel_v['celda'] , b_valor=True )
-    print(valor) if valor else f'GET CELDA :('
+    cel_v = Sdata.get_data(dicc=cel_v , key_dict='elige', tipo='BETWEEN', permite_nulo = True , msg_entrada='Elige Entre: VALOR = 1 , CELDA = 2', valores_between=[1,2])
+    # getting = TABLERO.get_celda( celda = cel_v['celda'] , b_valor=True )
+    if cel_v['elige'] == 1:
+        getting = TABLERO.getting( celda = cel_v['celda'] , b_valor=True )
+    elif cel_v['elige'] == 2:
+        getting = TABLERO.getting( celda = cel_v['celda'] , b_valor=False )
+    else:
+        return None
+
+    print(getting) if getting else f'GET CELDA :('
 
 # OBTIENE UN VALOR DEL TABLERO x FILA Y COLUMNA
 def get_fila_columna(): 
     global TABLERO
-    f_c = Sdata.get_data( key_dict='f', tipo=int ,  permite_nulo=False, msg_entrada='INTRODUCE FILA  ')    
-    f_c = Sdata.get_data( dicc = f_c, key_dict='c', tipo=int ,  permite_nulo=False, msg_entrada='INTRODUCE COLUMNA  ')    
+    fc = Sdata.get_data( key_dict='f', tipo=int ,  permite_nulo=False, msg_entrada='INTRODUCE FILA ')    
+    fc = Sdata.get_data( dicc = fc, key_dict='c', tipo=int ,  permite_nulo=False, msg_entrada='INTRODUCE COLUMNA ')    
     # f_c = Sdata.get_data( key_dict='B', tipo='BETWEEN',  permite_nulo=False, msg_entrada=['CELDA', 'VALOR'])    
-    TABLERO.get_celda(fila=fc['f'], columna=fc['c'])
+    # valor = TABLERO.get_celda(fila=fc['f'], columna=fc['c'], b_valor=True )
+    # print(f'GET FILA/COLUMNA: {valor}') if valor else f'GET FILA/COLUMNA :( '
+    getting = TABLERO.getting( fila=fc['f'], columna=fc['c'], b_valor=False )
+    print(getting) if getting else f'GETTING :('
 
 # OBTIENE UNA FILA
 def get_fila():
@@ -143,18 +154,24 @@ def get_fila():
     print('OBTIENE UNA LISTA DE DICCIONARIO DE UNA FILA ENTERA')
     dh = Sdata.get_data( key_dict='fd', tipo=int ,  permite_nulo=False, msg_entrada ='(Get Fila) INTRODUCE FILA DESDE ')    
     dh = Sdata.get_data( dicc=dh , key_dict='fh', tipo=int ,  permite_nulo=False, msg_entrada='(Get Fila) INTRODUCE FILA HASTA ')    
-    lst_filas = TABLERO.get_filas(fila_from=dh['fd'], fila_to=dh['fh'], b_valor=True)
-    print (lst_filas) if lst_filas else None
+    # lst_filas = TABLERO.get_filas(fila_from=dh['fd'], fila_to=dh['fh'], b_valor=True)
+    # print (lst_filas) if lst_filas else None
 
 
+    getting = TABLERO.getting( fila=dh['fd'], fila_to=dh['fh'], b_valor=True )
+    print(getting) if getting else f'GETTING :('
 # OBTIENE UNA COLUMNA
 def get_columna():
     global TABLERO
     col = Sdata.get_data( key_dict='f', tipo=int, msg_entrada='(GET COLUMNA )INTRODUCE COLUMNA DESDE')    
     col = Sdata.get_data( dicc= col, key_dict='t', tipo=int, msg_entrada='(GET COLUMNA )INTRODUCE COLUMNA HASTA')    
 
-    lst_columnas = TABLERO.get_columnas(columna_from=col['f'], columna_to=col['t'], b_valor=True)
-    print (lst_columnas) if lst_columnas else f'GET COLUMNAS :('
+    # lst_columnas = TABLERO.get_columnas(columna_from=col['f'], columna_to=col['t'], b_valor=True)
+    getting = TABLERO.getting( columna=col['f'], columna_to=col['t'], b_valor=True )
+    print (getting) if getting else f'GET COLUMNAS :('
+    # for filas in lst_columnas:
+    #     for valor in filas:
+    #         print(valor, end = ' ')
 
 def get_matriz_values():
     global TABLERO
@@ -168,7 +185,8 @@ def del_xy():
     f = Sdata.get_data( key_dict='f', tipo=int, msg_entrada='\nIntroduce Fila to Borrar Valor ')    
     c = Sdata.get_data( key_dict='c', tipo=str, msg_entrada='\nIntroduce Columna to Borrar Valor [0, "a", "A"] ')    
 
-# ELIMINA TODA UNA FILA Y DEJA EL VALOR INICIAL DE LA CLASE self.valor_inicial.
+
+# ELIMINA LOS VALORES DE TODA UNA FILA Y DEJA EL VALOR INICIAL
 def del_fila():
     global TABLERO
     f = Sdata.get_data( key_dict='f', tipo=int, msg_entrada='\nIntroduce Fila to Del')        
@@ -178,14 +196,15 @@ def del_fila():
     continuar = Sdata.get_data( key_dict='if', tipo=bool, msg_entrada=f'\nSeguro que Quieres Continuar?')    
     if continuar['if']==False: print('Crear Anulado... Chaoooo') ; return 
 
-# __________________________________
-# ELIMINA TODA UNA COLUMNA Y DEJA EL VALOR INICIAL DE LA CLASE self.valor_inicial.
+
+# ELIMINA LOS VALORES DE TODA UNA COLUMNA Y DEJA EL VALOR INICIAL
 def del_columna():
     global TABLERO
     c = Sdata.get_data( key_dict='c', tipo=str, msg_entrada='\nIntroduce Columna to Borrar Valor [0, "a", "A"] ')    
 
 # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄ RANGO ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-# Crea un Rango
+
+#  CREACION DE UN RANGO DENTRO DE TABLERO
 def crear_rango():
     global TABLERO
     ran = Sdata.get_data( key_dict='nm', tipo=str, msg_entrada='NOMBRE DEL RANGO')    
@@ -199,25 +218,17 @@ def crear_rango():
     rango = TABLERO.crear_rango(nombre=ran['nm'], celda_inicio=ran['cld'], dimension=ran['dim'])
     print('RANGO CREADO :)') if rango else f'REVISA LOS DATOS DE ENTRADA, EL RANGO NO HA SIDO CREADO :('
 
-
+# BUSCAR UN RANGO POR NOMBRE
 def buscar_rango():
     global TABLERO
-    n = Sdata.get_data( key_dict='n', tipo=str, msg_entrada='\nNombre del Rango ')    
-    # TABLERO.
-
-def eliminar_rango():
-    global TABLERO
-    n = Sdata.get_data( key_dict='n', tipo=str, msg_entrada='\nNombre del  R a n g o  A Eliminar')    
-
-def ver_rango():
-    global TABLERO
-    n = Sdata.get_data( key_dict='n', tipo=str, msg_entrada='\nNombre del R a n g o  a Buscar(None = All)')    
-    v = Sdata.get_data( key_dict='v', tipo=bool, msg_entrada='\nV e r   V a l o r e s ( v )(intro)  |   Ver Datos( f )')    
-
+    n = Sdata.get_data( key_dict='n', tipo=str, msg_entrada='NOMBRE DEL RANGO A BUSCAR', permite_nulo=True)    
     if n['n'] == '':
-        pass    
-    else:       
-        pass 
+        print(TABLERO)
+    else:
+        rango = TABLERO.buscar_rango(nombre_rango=n['n'])
+        print (rango) if rango else f'BUSCAR RANGO :('
+
+
 # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄ PUSH ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
 # ESTABLECE UN VALOR EN UNA CELDA PIDIENDO FILA Y COLUMNA
@@ -228,7 +239,7 @@ def set_fila_columna():
     f_c_v = Sdata.get_data( key_dict='valor', tipo=int, permite_nulo=False, msg_entrada='INTRODUCE VALOR')
     
 
-    tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
+    TABLERO.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
 
 # ESTABLECE UN VALOR EN UNA CELDA (A:0)
 def set_celda():
@@ -255,26 +266,6 @@ def set_valor_over_columna():
     val = Sdata.get_data( key_dict='v', tipo=str, permite_nulo=True, msg_entrada=f'\nIntroduce el Valor a introducir en la Columna < {col['c']} > ')    
     
     tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
-
-
-def tablero_to_rango():
-    global TABLERO
-    n = Sdata.get_data( key_dict='n', tipo=str, permite_nulo=True, msg_entrada='\nPULL - NOMBRE DEL RANGO ')    
-
-
-def rango_to_tablero():
-    global TABLERO
-    n = Sdata.get_data( key_dict='n', tipo=str, permite_nulo=True, msg_entrada='\nPUSH - NOMBRE DEL RANGO ')    
-
-
-def lista_to_rango():
-    global TABLERO
-    n = Sdata.get_data( key_dict='n', tipo=str, permite_nulo=True, msg_entrada='\nPULL - NOMBRE DEL RANGO')    
-    l = Sdata.get_data( key_dict='l', tipo=list, permite_nulo=True, msg_entrada='\nINTRO ITEMS SEPARADOS POR COMAS')    
-    
-
-def lista_to_tablero():
-    global TABLERO
 
 def puebas_Sdata():
     from datetime import date 
@@ -311,7 +302,7 @@ def matriz_to_tablero():
     
 # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
-def prueba_recursiva():
+def prueba_impresion_mas():
     global TABLERO
     matriz_pruebas = [  ['wIP', 12, '14', 16], 
                         [23 , '25', 27], 

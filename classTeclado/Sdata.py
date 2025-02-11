@@ -114,7 +114,7 @@ class Sdata():
 
     # *******************************************
     @staticmethod
-    def get_data(key_dict:str, dicc:dict = None, tipo = str, msg_entrada:str='Intro... ', permite_nulo:bool=False  ):
+    def get_data(key_dict:str, dicc:dict = None, tipo = str, msg_entrada:str='Intro... ', permite_nulo:bool=False , valores_between:list=None ):
         """ >>> Convierte una key de entrada en un diccionario (key): Intro by Teclado
         [key_dict](str): la clave el dict resultante.
         [dicc](dict): si se introduce, y es un diccionario que existe, se añade la key a las keys del diccionario.
@@ -151,7 +151,7 @@ class Sdata():
 
         # DICCIONARIO QUE SE CREA CON LOS PARAMETROS PASADOS. LUEGO TIENE QUE PASAR POR DICC PARA EL RETORNO FINAL        
         dictRetorno = {
-            key_dict:Sdata.__introByTcld(key_dict = key_dict, tipo = tipo , options = options )
+            key_dict:Sdata.__introByTcld(key_dict = key_dict, tipo = tipo , options = options, valores_between = valores_between )
         }
 
         # ADD LA CLAVE AL DICCIONARIO PASADO COMO ARGUMENTO.
@@ -165,7 +165,7 @@ class Sdata():
     # From lista1 de str To Dict(k)valorLista1 (v)Intro Teclado. Permite elegir Nulo/noNulo y crecer
     # ********************
     @staticmethod
-    def __introByTcld(key_dict, tipo, options=None):
+    def __introByTcld(key_dict, tipo, options=None, valores_between:list=None):
         """ Llamada desde get_data(): 
         [tipo](list) pasa siempre tipo =>[(int, False), (int, False)] lista de tuplas tipo, b_Permite_Nulo
         [options](dict)= { 'msg_entrada':msg_entrada , 'permite_nulo': permite_nulo , 'capital':esCapital } las opciones que se pasan 
@@ -248,25 +248,57 @@ class Sdata():
                                 entrada = tipo(entrada)
 
                         elif str(tipo).upper() == 'BETWEEN':
-                            """ ■ ENTRA UN STR Y TIENE QUE ESTAR ENTRE LOS VALORES INTRODUCIDOS EN msg_entrada Y PUEDE VENIR COMO LISTA O COMO CADENA 
+                            """ ■ ENTRA BETWEEN. HAY VARIAS POSIBILIDADES.
+                            [valores_between](list, str): una lista de valores o un string que son una lista de valores separados por comas.
+                                No es obligatorio. Si no entra, Buscamos la lista de valores en msg_entrada
                             """
-                            if isinstance(msg_entrada, str):
-                                lst_between = StringTo.cadena_to_lista(cadena=msg_entrada)
-                                
-                                # CONVIERTE LOS ELEMENTOS A STRING
-                                lst_between = [str(item_between) for item_between in lst_between]
-                                if not entrada in lst_between:
-                                    continue
+                            if valores_between:
+                                if isinstance(valores_between, str):
+                                    """ >>> ENTRA COMO UNA CADENA ... vemos si tiene items separados por comas Y LO DEJAMOS COMO UNA LISTA
+                                    """
+                                    lst_between = StringTo.cadena_to_lista(cadena=valores_between if valores_between else msg_entrada)
 
-                            elif isinstance(msg_entrada, list):
-                                may_entrada = entrada.upper()
-                                msg_entrada = [str(item).upper() for item in msg_entrada]
-                                if not may_entrada in msg_entrada:
-                                    continue
-                                else: 
-                                    for item in msg_entrada:
-                                        if item == may_entrada:
-                                            entrada = item
+                                    # CONVIERTE LOS ELEMENTOS A STRING
+                                    lst_between = [str(item_between) for item_between in lst_between]
+                                    
+                                    # COMPARA:
+                                    if not entrada in lst_between:
+                                        continue
+
+                                elif isinstance(valores_between, list):
+                                    """ >>> ENTRA COMO UNA LISTA .... LO IDEAL
+                                    """
+                                    may_entrada = entrada.upper()
+                                    msg_between = [str(item).upper() for item in valores_between]
+                                    if not may_entrada in msg_between:
+                                        continue
+                                    else: 
+                                        # COMPARO LOS VALORES EN MAYUSCULAS CON EL ITEM DE ENTRADA EN MAYUSCULAS Y PASO EL VALOR BETWEEN(TYPO)
+                                        for valor in valores_between:    
+                                            if str(valor).upper() == may_entrada:
+                                                entrada = valor
+                                                break
+
+                            elif not valores_between and msg_entrada:
+                                """ >>> NO TIENES VALOR_BETWEEN, VAMOS A PROBAR CON MSG_ENTRADA, PERO NO DEBERÍA SER ASÍ. """
+                                if isinstance(msg_entrada, str):
+                                    lst_between = StringTo.cadena_to_lista(cadena=msg_entrada)                                    
+                                    # CONVIERTE LOS ELEMENTOS A STRING
+                                    lst_between = [str(item_between) for item_between in lst_between]
+                                    # COMPARA:
+                                    if not entrada in lst_between:
+                                        continue
+
+                                elif isinstance(msg_entrada, list):
+                                    # ENTRA COMO UNA LISTA
+                                    may_entrada = entrada.upper()
+                                    msg_entrada = [str(item).upper() for item in msg_entrada]
+                                    if not may_entrada in msg_entrada:
+                                        continue
+                                    else: 
+                                        for item in msg_entrada:
+                                            if item == may_entrada:
+                                                entrada = item
                             else:
                                 continue
                         else:
