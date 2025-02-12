@@ -707,6 +707,7 @@ class Rango(Celda):
             
             >>> rango = Rango(nombre_rango='x',celda_inicio='A:0',dimension=None, valor_inicial='[[1,2][3,4][5,6]]'
         """  
+
         # VALIDACION INICIAL
         if not isinstance(dimension, str): return None
         fila, columna = SttS.fc_by_celda( celda = celda_inicio )        # valida que celda se introduce con el formato correcto.
@@ -756,13 +757,19 @@ class Rango(Celda):
         self.b_print_cabecera = True
         """ >>> True(byDef) Indica que se tienen que imprimir las cabeceras en __str__  y False que se imprimen por fuera.
         """        
-        
-        # V A L O R   I N I C I O ... puede ser una lista, una matriz, un str, int, bool...
-        if valor_inicial:
-            self.__push_plana(data_push = valor_inicial, relleno = valor_inicial)
-            
+
+        # ESTABLECE LA MATRIZ:
         self.matriz = self.__get_matriz()
         if not self.matriz: return None
+        
+        # VALOR INICIO ... puede ser una lista, una matriz, un str, int, bool...
+        if isinstance(valor_inicial , list) or isinstance(valor_inicial, tuple) or isinstance(valor_inicial, set):
+            self.__push_plana(data_push = valor_inicial, relleno = valor_inicial)
+        else:
+            self.iniciar(valor=valor_inicial)
+        
+        pass
+            
 
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     # Info del Rango
@@ -807,6 +814,22 @@ class Rango(Celda):
                 print(celda.nombre_celda, end=' '*4)
             print()
         pass
+
+    # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
+    # INICIALIZA LOS VALORES DEL TABLERO CON UN VALOR DE ENTRADA O '-'  - over tablero - 
+    def iniciar(self, valor=Celda.VALOR_INICIAL):
+        try:
+            for celda in self.lst_celdas:
+                celda.valor = valor
+            # for i, fila in enumerate(self.matriz):
+            #     for celda in fila:
+            #         celda.valor = valor
+            
+            # self.lst_celdas
+            # pass
+        except Exception as e:
+            print(f'Error iniciar :::: {e}')
+            return 
 
     
     # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -901,6 +924,8 @@ class Rango(Celda):
                         fila_to = fila_aux
                 else:
                     fila_to = fila
+            else:
+                fila_to = self.celda_fin.fila
             matriz_fila = self.get_filas(fila_from = fila, fila_to = fila_to , b_valor = b_valor)
             # RETORNO
             return matriz_fila if matriz_fila else None
@@ -996,8 +1021,10 @@ class Rango(Celda):
         """ >>> DEVUELVE UN OBJETO CELDA(b_valor=False) O EL VALOR DEL OBJETO CELDA(b_valor=True) 
 
         [kwargs]: 'nombre_celda', 'fila' , 'columna'
-        >>> ejemplo: get_celda(fila = 1, columna = 3 , b_valor=False)  => correcto , devuelve la celda de la fila 1 columna 3 (C:1)
-        >>> ejemplo: get_celda(nombre_celda='C:2' , b_valor=True)      => correcto , devuelve el valor de la celda (C:2)
+        >>> ejemplo: get_celda(fila = 1, columna = 3 , b_valor=False)  => correcto , devuelve ■ la celda ■ de la fila 1 columna 3 (C:1)
+        >>> ejemplo: get_celda(nombre_celda='C:2' , b_valor=False)      => correcto , devuelve ■ la celda ■ de la celda (C:2)
+        >>> ejemplo: get_celda(nombre_celda='C:2' , b_valor=True)      => correcto , devuelve ■ el valor ■ de la celda (C:2)
+        >>> ejemplo: get_celda(nombre_celda='C:2' , b_valor=True)      => correcto , devuelve ■ el valor ■ de la celda (C:2)
         Si no existe la celda, la fila o la columna dentro del rango devuelve None
 
         """
@@ -1220,7 +1247,7 @@ class Rango(Celda):
             return None
 
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-    def push(self, data_push, celda_inicio:str='A:0', b_lineal:bool=False):
+    def push(self, data_push, celda_inicio:str='A:0', b_lineal:bool=False, **kwargs):
         """ >>> INSERTA DATOS EN TABLERO   
         Crea un Rango con data_push en celda_inicio, formateandolo según b_lineal o self.__cross()
         
@@ -1230,13 +1257,18 @@ class Rango(Celda):
                                False, Si el cruce Celda a Celda coincidente(self.__cross())
                                
                                En caso de que data_push sea un str, se puede introducir:
-                               'H' para repetir data_push horizontalmente celda_inicio hasta fin linea
-                               'V', para repetir data_push verticalmente  desde celda_inicio hasta fin columna.
+                               'H' para REPETIR data_push horizontalmente celda_inicio hasta fin linea
+                               'V', para REPETIR data_push verticalmente  desde celda_inicio hasta fin columna.
+        
+        [**kwargs](dict): ■■  'EJE' = 'X' o 'Y'  ■ solo en caso de que data_push sea list.
+                          ■■  'REPETIR' = True, False ■ solo en caso de que data_push sea str 
+
         CREO UN RANGO CON LOS DATOS SEGÚN VIENEN EN LA CELDA_INICIO. 
         LUEGO LOS CRUZO CELDA A CELDA CON EL RANGO CON CROSS
         
         SI ES MATRIZ, SI B_LINEAL = TRUE, TB LOS CARGO SEGÚN VIENEN COMO EN LA TÉCNICA ANTERIOR.        
         SI B_LINEAL = FASE, ENCUADRO LA MATRIZ Y CREO EL RANGO. LUEGO LO CRUZO CON CROSS COMO TODAS LAS ANTERIORES.
+
         >>> ejemplo: TABLERO.push([3,2,1], celda_inicio='B:5', b_lineal=False) ==> Introduce la List en B:5 HORIZONTAL (si entra una lista siempre entra plana, así que uso b_lineal para definir la direccion)
         >>> ejemplo: TABLERO.push([3,2,1], celda_inicio='B:5', b_lineal=True)  ==> Introduce la List en B:5 VERTICAL (si entra una lista siempre entra plana, así que uso b_lineal para definir la direccion)
 
@@ -1244,58 +1276,101 @@ class Rango(Celda):
         >>> ejemplo: TABLERO.push('Tres tristes tigres', celda_inicio='B:5', b_lineal=False)   ==> Introduce el texto en B:5
 
         """
+        # ■■ CACHO LAS VARIABLES OPCIONALES.... DEPENDE DE LOS DATOS DE ENTRADA SERÁN NECESAREAS O NO.
+        lst_ejes_validos = ['X', 'Y', 'x', 'y']
+
+        # KWARGS EJE
+        EJE = kwargs.get('eje', None)
+        if EJE != None: 
+            if not EJE in lst_ejes_validos:
+                EJE = None
+            else:
+                EJE = str(EJE).upper()
+
+        # KWARGS REPETIR
+        REPETIR = kwargs.get('repetir', None)
+        if REPETIR != None:
+            if not isinstance(REPETIR, bool):
+                REPETIR = False
+        else:
+            REPETIR = False
+
+        # INICIALIZO VARIABLES
         rango = None        
-        celda = self.get_celda(nombre_celda=celda_inicio)
+        
+        # ■■ CACHO LA CELDA DE INICIO COMO CELDA
+        celda = self.get_celda(nombre_celda=celda_inicio)        
         if not celda:
-            print(f'Error en Celda Inicio: {celda_inicio}')
+            print(f'Celda Inicio No existe en el Tablero: {celda_inicio}')
             return None
-        # PASAMOS A LA ACCION: VALIDACION DE TIPOS.
+        
+        # ■■ PASAMOS A LA ACCION: VALIDACION DE TIPOS.
         es_matriz = SttS.es_lista_de_listas( matriz = data_push )
         
-        # EVALUAMOS EL TIPO        
+        # ■■ EVALUAMOS EL TIPO        
         if not es_matriz: 
             
             if isinstance(data_push, list) or isinstance(data_push, tuple) or isinstance(data_push, set):                
                 """ 
                 >>> ITERADOR. ENTRA PLANO SI O SI 
                 """
-                if b_lineal == False:
-                    """ >>> ■■■■ (By Def) METE LA LISTA HORIZONTAL   """
+                if b_lineal == False or EJE == 'X':
+                    """ 
+                    ■■■■ (By Def) PERARA LA DIMENSION PARA LA ■ LISTA HORIZONTAL   """
                     dimension = f'1x{len(data_push)}'
-                else:
-                    """ >>> ■■■■ METE LA LISTA VERTICAL   """                    
+
+                elif b_lineal == True or EJE == 'Y':
+                    """ 
+                    ■■■■ PERARA LA DIMENSION PARA LA ■ LISTA VERTICAL   """                    
                     dimension = f'{len(data_push)}X1'
                 
                 # SE CREA UN RANGO CON LA LISTA COMO VALOR INICIAL
-                rango = Rango( nombre_rango = "aux_iter" , celda_inicio = celda.nombre_celda , dimension = dimension , valor_inicial = data_push )                
-                # return self.__cross(rango)
+                rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda.nombre_celda , dimension = dimension , valor_inicial = data_push )                
             
             elif isinstance(data_push, str):                
                 if b_lineal == False:
-                    """ >>> ■■■■ (By Def) CADENA TO CELDA_INICIO 
-                    """                    
-                    rango = Rango( nombre_rango = "aux_str" , celda_inicio = celda.nombre_celda , dimension = f'1X1' , valor_inicial = data_push )                
+
+                    if REPETIR == False:
+                        """ 
+                        ■■■■ (By Def) CADENA TO CELDA_INICIO """                    
+                        celda_aux = Celda(celda=celda.nombre_celda, valor=data_push)
+
+                        rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda.nombre_celda , dimension = f'1X1' , valor_inicial = data_push )                
+
+                    elif REPETIR == True:
+                        """ 
+                        ■■■■ REPETIR == True => ahora hay que preguntar por EJE para saber si vertical u horizontal 
+                        """
+                        if EJE != None:
+                            if str(EJE).upper() == 'X':                                
+                                """ 
+                                ■■■■■ CON EJE HORIZONTAL"""
+                                dimension = f'1x{self.total_columnas - celda.columna}'  # PREPARA LA DIMENSION PARA REPETIR DESDE CELDA_INICIO EN HORIZONTAL.
+                            elif str(EJE).upper() == 'Y':
+                                """ 
+                                ■■■■■ CON EJE VERTICAL"""
+                                dimension = f'{self.total_filas - celda.fila}X1'        # PREPARA LA DIMENSION PARA REPETIR DESDE CELDA_INICIO EN VERTICAL.
+
+                            rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda.nombre_celda , dimension = dimension , valor_inicial = data_push )                
+                        else:   
+                            """ 
+                            ■■■■■ SIN EJE """
+                            rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda.nombre_celda , dimension = f'1X1' , valor_inicial = data_push )                
+                
                 elif b_lineal == True:   
                     """ >>> ■■■■ METE LA CADENA COMO SI FUERA UNA LISTA A PARTIR DE LA CELDA DE INICIO PALABRA A PALABRA. 
-                    """
+                    """                    
                     lst_palabras = ' '.join(data_push)
                     if not lst_palabras: return None
-                    # AHORA ES TRATADA COMO LISTA HORIZONTAL
-                    dimension = f'1x{len(lst_palabras)}'
-                    rango = Rango( nombre_rango = "aux_iter" , celda_inicio = celda.nombre_celda , dimension = dimension , valor_inicial = data_push )                
-                
-                elif b_lineal == 'H':
-                    # REPITE EL data_push(normalmente 1 char) DESDE CELDA INICIO HASTA EL FIN DE FILA.
-                    dimension = f'1x{self.total_columnas - celda.columna}'
-                    rango = Rango( nombre_rango = "aux_iter" , celda_inicio = celda.nombre_celda , dimension = dimension , valor_inicial = data_push )                
-                    pass
-                elif b_lineal == 'V':
-                    # REPITE EL data_push(normalmente 1 char) DESDE CELDA INICIO HASTA EL FIN DE COLUMNA.
-                    dimension = f'{self.total_filas - celda.fila}X1'
-                    rango = Rango( nombre_rango = "aux_iter" , celda_inicio = celda.nombre_celda , dimension = dimension , valor_inicial = data_push )                
-                    pass
-                else:
-                    return 
+                    # POR SI ACASO HA EMPEZADO O TERMINADO CON ' '
+                    lst_palabras = [palabra for palabra in lst_palabras if palabra != ' ']
+                    
+                    # PREUNTO POR EL EJE PARA COLOCAR LA LISTA HORIZONTAL(EJE X) O VERTICAL(EJE Y)                    
+                    dimension = f'1x{len(lst_palabras)}'        # PONGO HORIZONTAL POR DEFECTO
+                    if EJE == 'Y':
+                        dimension = f'{len(lst_palabras)}X1'    # Y SI LO TENGO QUE CAMBIAR A VERTICAL PUES LO CAMBIO.                        
+
+                    rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda.nombre_celda , dimension = dimension , valor_inicial = data_push )                
             
             elif isinstance(data_push, Rango):
                 """ >>> ■■■■ ENTRA UN RANGO!!
@@ -1345,22 +1420,26 @@ class Rango(Celda):
             print(f'\n\nLast Fila Used: {self.__last_fila_used()}')    
         pass
         
-        return self.__cross(rango = rango) if rango else None
+
+        # CRUZO LOS DATOS CON EL RANGO QUE HACE PUSH CON EL RANGO CREADO 
+        if rango:
+            return self.__cross(rango = rango) if rango else None
+        else:
+            return None
         
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     # CRUZO UN RANGO CON SELF. CELDA A CELDA COINCIDENTE
     def __cross(self, rango , to_rango:bool = False):
         """ Cruza Celda a Celda un Rango con otro y asigna su valor ....pej C:1 de self con C:1 de rango 
         [rango](class Rango): entra un rango y cruzo Celda a Celda(Las que coincidan) en self.
-        Retorno: None, si hay algún fallo.
+        [to_rango](bool): True ::: From Tablero To Rango    ■■ PULL
+                          False::: From Rango   To Tablero  ■■ PUSH         (byDef)
+        Retorno: None, si hay algún fallo.        
         True en caso de que todo haya ido bien.
         """
         if not rango: return None
         if not isinstance(rango, Rango):
             return False
-        
-        if rango.celda_inicio in self.lst_celdas and rango.celda_fin in self.lst_celdas:
-            print('Encontrado por Celdas')
         
         # ▄▄▄▄▄▄▄ VALIDACION DE TODO EL CONTENIDO.
         if not self.es_rango_in(rango = rango): return False
@@ -1512,18 +1591,22 @@ class Rango(Celda):
         
         """ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
         >>> I m p r i m e   v a l o r e s  
-        """                
-        # Recorro las filas
-        for i in range( len(self.matriz) ):
-            
-            lst_fila = self.__get_fila_rango_prango(fila_a_buscar = i )
-            
-            lst_values_fila = [celda.valor for celda in lst_fila]
+        """
+        try:                
+            # Recorro las filas
+            for i in range( len(self.matriz) ):
+                
+                lst_fila = self.__get_fila_rango_prango(fila_a_buscar = i )
+                
+                lst_values_fila = [celda.valor for celda in lst_fila]
 
-            lst_format_to_print = self.__between_listas(lista=lst_values_fila)
-            
-            print(str_format.format(*lst_format_to_print))  # Cuando b_num_filas == False, no imprime los numeros de las Filas
-    
+                lst_format_to_print = self.__between_listas(lista=lst_values_fila)
+                
+                print(str_format.format(*lst_format_to_print))  # Cuando b_num_filas == False, no imprime los numeros de las Filas
+        except Exception as e:
+            print(f'{e}')
+            return None
+
     #  Devuelve los  v a l u e s   de   u n a   f i l a   d e   u n   r a n g o .
     def __get_fila_rango_prango(self,  fila_a_buscar:int):
         if SttS.b_fila_valida( fila = fila_a_buscar , from_incl=0, to_incl = self.total_filas ) == False: 
@@ -1708,7 +1791,7 @@ class Tablero(Rango):
         if total_columnas_tablero >= len( SttS._may_ln ):                   
             total_columnas_tablero = len( SttS._may_ln.keys() )-1
         pass        
-        self.init_tablero(value=self.valor_inicial)
+        self.iniciar(valor=self.valor_inicial)
         pass
         # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
         # LISTA DE RANGOS DEL TABLERO
@@ -1779,19 +1862,11 @@ class Tablero(Rango):
 
         pass
     
-    # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
-    # INICIALIZA LOS VALORES DEL TABLERO CON UN VALOR DE ENTRADA O '-'  - over tablero - 
-    def init_tablero(self, value=Celda.VALOR_INICIAL):
-        try:
-            for i, fila in enumerate(self.matriz):
-                for celda in fila:
-                    celda.valor = value
-            
-            # self.lst_celdas
-            # pass
-        except Exception as e:
-            print(f'Error init_tablero :::: {e}')
-            return 
+    def get_valor_inicial(self):
+        return self.valor_inicial
+    
+    def set_valor_inicial(self, valor:str):
+        self.valor_inicial = valor
     
     # ╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
     # BUSCAR RANGO .... POR NOMBRE O POR INDICE

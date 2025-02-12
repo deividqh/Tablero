@@ -42,23 +42,27 @@ def main():
     # 2 ■■■■■■■■■■ CREO LOS MENUS Y SUS FUNCIONES ASOCIADAS ╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬
     The_X_Men.addX(titulo='MenuPpal',  padre=None, ipadre=None,  
                     fraseHead="| - M A I N    O V E R   T A B L E R O - "  , 
-                    lst_items=[ ("TABLERO" , None) , ('IMPRIMIR', None) , ("GET" , None) , ("PUSH" , None) , ("DEL" , None) , ("RANGOS" , None) , ('MISCELANEA', None)] 
+                    lst_items=[ ("TABLERO" , None) , ('IMPRIMIR', None) , ("GET" , None) , ("PUSH" , info_push) , ("DEL" , None) , ("RANGOS" , None) , ('MISCELANEA', None)] 
                     )
-    The_X_Men.addX( titulo='SUB_CREAR', padre='MenuPpal', ipadre="TABLERO" , lst_items=[("Crear Tablero",crear_tablero), ("Iniciar Tablero", iniciar_tablero)] )  
-    The_X_Men.addX( titulo='SUB_IMPR', padre='MenuPpal', ipadre="IMPRIMIR" , lst_items=[("Imprimir Modo Max sin/sp",print_max_ssp),("Imprimir Modo Max con/sp",print_max_csp) , ("Imprimir Modo Literal",print_literal) , ('Imprimir Modo Fixed sin/sp', print_fixed_ssp), ("Imprimir Modo Fixed con/sp",print_fixed_csp), ('Imprimir Modo Personal', print_personal), ('Imprimir Ambbigous', print_ambigous)] )
-    The_X_Men.addX( titulo='SUB_GET'  , padre='MenuPpal', ipadre="GET"     , lst_items=[("GETTING Fila",get_fila), ("GETTING Columna",get_columna), ("GETTING Valor By Fila-Columna", get_fila_columna), ("GETTING Valor By Celda(A:0)", get_celda), ("GETTING Matriz Values", get_matriz_values)])
-    The_X_Men.addX( titulo='SUB_PUSH'  , padre='MenuPpal', ipadre="PUSH"   , lst_items=[("PUSH MATRIZ",matriz_to_tablero), ("PUSH LISTA", push_lista) ,("PUSH OVER Fila",push_valor_over_fila), ("PUSH OVER Column",push_valor_over_columna), ('PUSH Valor By Celda (C:3)', push_celda), ('PUSH valor by fila / columna', push_fila_columna)] )
-    The_X_Men.addX( titulo='SUB_DEL'  , padre='MenuPpal', ipadre="DEL"     , lst_items=[("Del Fila",None), ("Del Column",None), ("Del Celda", None)] )    
-    The_X_Men.addX( titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS" , lst_items=[("Crear Rango",crear_rango), ("Buscar Rango",buscar_rango), ("Eliminar Rango",delete_rango) , ('Ver Info Rangos Tablero', ver_info_rangos) ] )  
-    The_X_Men.addX( titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Impresion Masiva" , prueba_impresion_mas), ("prueba Sdata", puebas_Sdata)] )    
+    The_X_Men.addX( titulo='SUB_CREAR', padre='MenuPpal' , ipadre="TABLERO"  , lst_items = [("CREAR Tablero",crear_tablero), ("INICIAR Tablero", iniciar_tablero)] )  
+    The_X_Men.addX( titulo='SUB_IMPR' , padre='MenuPpal' , ipadre="IMPRIMIR" , lst_items = [("IMPRIMIR Modo Max sin/sp",print_max_ssp),("IMPRIMIR Modo Max con/sp",print_max_csp) , ("IMPRIMIR Modo Literal",print_literal) , ('IMPRIMIR Modo Fixed sin/sp', print_fixed_ssp), ("IMPRIMIR Modo Fixed con/sp",print_fixed_csp), ('IMPRIMIR Modo Personal', print_personal), ('IMPRIMIR Ambbigous', print_ambigous)] )
+    The_X_Men.addX( titulo='SUB_GET'  , padre='MenuPpal' , ipadre="GET"      , lst_items = [("GETTING Fila",get_fila), ("GETTING Columna",get_columna), ("GETTING Valor By Fila-Columna", get_fila_columna), ("GETTING Valor By Celda(A:0)", get_celda), ("GETTING Matriz Values", get_matriz_values)])
+    The_X_Men.addX( titulo='SUB_PUSH' , padre='MenuPpal' , ipadre="PUSH"     , lst_items = [("PUSH MATRIZ",matriz_to_tablero), ("PUSH LISTA", push_lista) ,("PUSH OVER Fila",push_valor_over_fila), ("PUSH OVER Column",push_valor_over_columna), ('PUSH Valor By Celda (C:3)', push_celda), ('PUSH valor by fila / columna', push_fila_columna)] )
+    The_X_Men.addX( titulo='SUB_DEL'  , padre='MenuPpal' , ipadre="DEL"      , lst_items = [("DEL Fila Over TABLERO",del_fila), ("Del Column",del_columna), ("Del Celda", del_celda)] )    
+    The_X_Men.addX( titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS"   , lst_items = [("CREAR Rango",crear_rango), ("BUSCAR Rango",buscar_rango), ("ELIMINAR Rango",delete_rango) , ('VER INFO Rangos Tablero', ver_info_rangos) ] )  
+    The_X_Men.addX( titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Impresion Masiva" , impresion_masiva), ("prueba Sdata", puebas_Sdata)] )    
 
     # 3 ■■■■■■■■■■ LLAMO A MYSTYCA PARA VISUALIZAR EL MENU 
-    retorno = The_X_Men.Mystyca(titulo='MenuPpal', configurado=True, execFunc=True, tipo_marcador='a', execAll=False, Loop=True , padX=50)
+    retorno = The_X_Men.Mystyca(titulo='MenuPpal', configurado=True, execFunc=True, tipo_marcador='a', execAll=True, Loop=True , padX=50)
     # 4 ■■■■■■■■■■ SALE DEL MENU ________________________________________________________________
     print(f"::: THE END en MAIN() ::: {retorno if retorno else 'no retorno'} ")    
     
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  TABLERO  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+def info_TABLERO():
+    print(""" 
+        ■■■■■■■■  I N F O R M E   T A B L E R O    ■■■■■■■■
+    """)
 
 # CREA UN TABLERO Y BORRA EL ANTERIOR.
 def crear_tablero(): 
@@ -84,10 +88,14 @@ def iniciar_tablero():
     if continuar['if']==False: 
         print('Iniciar Anulado... Chaoooo\n')
         return
-    TABLERO.init_tablero(value = val['val'])
+    TABLERO.iniciar(valor = val['val'])
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  IMPRIMIR  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-# IMPRIME UN RANGO
+def info_IMPRIMIR():
+    print(""" 
+        ■■■■■■■■  I N F O R M E   I M P R I M I R    ■■■■■■■■
+    """)
+
 def print_max_ssp():
     global TABLERO
     print() 
@@ -124,6 +132,10 @@ def print_ambigous():
     TABLERO.imprimir( ancho = 3 , lista = [3, 4, 6] , sp_columna = 5 )
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  GETTING  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+def info_GETTING():
+    print(""" 
+        ■■■■■■■■  I N F O R M E   G E T T I N G    ■■■■■■■■
+    """)
 # RETORNA UN VALOR DEL TABLERO CUANDO INTRODUCES UNA Cimprime_a_caponELDA (A:0, C:3)
 def get_celda():
     cel_v = Sdata.get_data( key_dict='celda', tipo=str, permite_nulo = True , msg_entrada='INTRODUCE CELDA ')
@@ -173,8 +185,12 @@ def get_matriz_values():
 
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  DEL  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+def info_DEL():
+    print(""" 
+        ■■■■■■■■  I N F O R M E   D E L E T E   ■■■■■■■■
+    """)
 # PONE EL VALOR DE TABLERO.valor_inicial EN TODO EL TABLERO.
-def del_xy():
+def del_celda():
     global TABLERO
     f = Sdata.get_data( key_dict='f', tipo=int, msg_entrada='\nIntroduce Fila to Borrar Valor ')    
     c = Sdata.get_data( key_dict='c', tipo=str, msg_entrada='\nIntroduce Columna to Borrar Valor [0, "a", "A"] ')    
@@ -183,62 +199,160 @@ def del_xy():
 # ELIMINA LOS VALORES DE TODA UNA FILA Y DEJA EL VALOR INICIAL
 def del_fila():
     global TABLERO
-    f = Sdata.get_data( key_dict='f', tipo=int, msg_entrada='\nIntroduce Fila to Del')        
-    fila = TABLERO.get_lst_filas(filaFrom=f['f'], filaTo=f['f'])
-    if not fila: return
-    # _______________________
-    continuar = Sdata.get_data( key_dict='if', tipo=bool, msg_entrada=f'\nSeguro que Quieres Continuar?')    
-    if continuar['if']==False: print('Crear Anulado... Chaoooo') ; return 
+    dat = Sdata.get_data( key_dict='F', tipo=int, msg_entrada='INTRODUCE FILA TO DEL')        
+    # OBTENGO LA FILA A BORRAR. AQUÍ SE PODRÍAN ELIMINAR VARIAS FILAS A LA VEZ.
+    matriz = TABLERO.getting(fila=dat['F'], fila_to=dat['F'] , b_valor = False )
+    if not matriz: return    
 
+    # UN AVISO AL ELIMINAR, ES CORTESÍA
+    dat = Sdata.get_data( dicc = dat, key_dict='IF', tipo=bool, msg_entrada=f'\nSeguro que Quieres Continuar?')        
+    if dat['IF']==False: 
+        print('Crear Anulado... Chaoooo') 
+        return 
+    
+    # OPERO. TB PUEDO HACER UN PUSH DEL VALOR INICIAL SOBRE LA FILA CON REPETIR = TRUE 
+    for fila in matriz:
+        for celda in fila:
+            celda.valor = TABLERO.get_valor_inicial()
 
 # ELIMINA LOS VALORES DE TODA UNA COLUMNA Y DEJA EL VALOR INICIAL
 def del_columna():
     global TABLERO
-    c = Sdata.get_data( key_dict='c', tipo=str, msg_entrada='\nIntroduce Columna to Borrar Valor [0, "a", "A"] ')    
+    dat = Sdata.get_data( key_dict='C', tipo=str, msg_entrada='INTRODUCE LA COLUMNA A BORRAR [0, "a", "A"] ')    
+    celda = TABLERO.get_celda(fila=0, columna=dat['C'])
+    if not celda: 
+        return
+    # UN AVISO AL ELIMINAR, ES CORTESÍA
+    dat = Sdata.get_data( dicc = dat, key_dict='IF', tipo=bool, msg_entrada=f'\nSeguro que Quieres Continuar?')        
+    if dat['IF']==False: 
+        print('Crear Anulado... Chaoooo') 
+        return 
+
+    TABLERO.push(data_push=TABLERO.get_valor_inicial, celda_inicio=f'{celda.letra}:0', b_lineal=True, repetir=True)
+
 
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  RANGO  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+def info_RANGO():
+    print(""" 
+        ■■■■■■■■  I N F O R M E   R A N G O   ■■■■■■■■
+    >>> GESTIONA LA LISTA lst_rangos
 
+    [crear_rango] Dentro del Objeto TABLERO se pueden creaar Objetos Rango() .... self.lst_rangos(list)
+                  Se necesita un nombre(str) y una dimension(str) que puede ser: celda_fin  ó  filasXcolumnas
+                  [valor_entrada] Se va a introducir siempre 'plano' si es un iterable y su valor si no es iterable. puede ser una matriz.
+    [buscar_rango] = Da informacion sobre el objeto rango. Si No se introduce el Nombre del rango, Da información sobre el Tablero.
+    [delet e_rango] = Elimina un Objeto Rango de self.lst_rangos. Devuelve el objeto Rango.
+    [ver_info_rangos] = Da información de los rangos de TABLERO. puedes filtrar X  like_name y X  flag   para el listado.
+
+
+    """)
 #  CREACION DE UN RANGO DENTRO DE TABLERO
 def crear_rango():
     global TABLERO
-    ran = Sdata.get_data( key_dict='nm', tipo=str, msg_entrada='NOMBRE DEL RANGO')    
-    ran = Sdata.get_data( dicc= ran, key_dict='cld', tipo=str, msg_entrada='CELDA DE INICIO ( A:0 ) ')    
-    ran = Sdata.get_data( dicc= ran, key_dict='dim', tipo=str, msg_entrada='DIMENSION ( 3x4 ) ó  CELDA-FIN ( M:8 )')  
+    dat = Sdata.get_data( key_dict='nm', tipo=str, msg_entrada='NOMBRE DEL RANGO')    
+    dat = Sdata.get_data( dicc= dat, key_dict='cld', tipo=str, msg_entrada='CELDA DE INICIO ( A:0 ) ')    
+    dat = Sdata.get_data( dicc= dat, key_dict='dim', tipo=str, msg_entrada='DIMENSION ( 3x4 ) ó  CELDA-FIN ( M:8 )')  
 
-    # rango = Rango(nombre_rango = ran['nm'], celda_inicio = ran['cld'], dimension = ran['dim'] , valor_inicial = '-') 
+    # rango = Rango(nombre_rango = dat['nm'], celda_inicio = dat['cld'], dimension = dat['dim'] , valor_inicial = '-') 
 
     # print('RANGO CREADO :)') if rango else f'REVISA LOS DATOS DE ENTRADA, EL RANGO NO HA SIDO CREADO :('
 
-    rango = TABLERO.crear_rango(nombre=ran['nm'], celda_inicio=ran['cld'], dimension=ran['dim'])
+    rango = TABLERO.crear_rango(nombre=dat['nm'], celda_inicio=dat['cld'], dimension=dat['dim'])
     print('RANGO CREADO :)') if rango else f'REVISA LOS DATOS DE ENTRADA, EL RANGO NO HA SIDO CREADO :('
 
 # BUSCAR UN RANGO POR NOMBRE
 def buscar_rango():
     global TABLERO
-    n = Sdata.get_data( key_dict='n', tipo=str, msg_entrada='NOMBRE DEL RANGO A BUSCAR', permite_nulo=True)    
-    if n['n'] == '':
+    dat = Sdata.get_data( key_dict='n', tipo=str, msg_entrada='NOMBRE DEL RANGO A BUSCAR', permite_nulo=True)    
+    if dat['n'] == '':
         print(TABLERO)
     else:
-        rango = TABLERO.buscar_rango(nombre_rango=n['n'])
+        rango = TABLERO.buscar_rango(nombre_rango=dat['n'])
         print (rango) if rango else f'BUSCAR RANGO :('
 
 def delete_rango():
     global TABLERO
-    r = Sdata.get_data( key_dict='r', tipo=str, msg_entrada='NOMBRE DEL RANGO A ELIMINAR')    
-    rango = TABLERO.delete_rango(nombre_rango = r['r'])
-    print(rango) if rango else f'BUSCAR RANGO :('
+    dat = Sdata.get_data( key_dict='r', tipo=str, msg_entrada='NOMBRE DEL RANGO A ELIMINAR')    
+    rango = TABLERO.delete_rango(nombre_rango = dat['r'])
+    print(rango) if rango else f'BORRAR RANGO :('
 
 def ver_info_rangos():
     global TABLERO
-    n = Sdata.get_data( key_dict='N', tipo=str, msg_entrada='NOMBRE DEL RANGO A BUSCAR', permite_nulo=True)    
-    n = Sdata.get_data( dicc = n, key_dict='L', tipo=str, msg_entrada='LIKE NAME', permite_nulo=True)    
-    n = Sdata.get_data( dicc = n, key_dict='F', tipo=str, msg_entrada='FLAG', permite_nulo=True)    
-    TABLERO.ver_rangos(nombre_rango = n['N'] , like_name = n['L'] , flag = n['F'])
+    dat = Sdata.get_data( key_dict='N', tipo=str, msg_entrada='NOMBRE DEL RANGO A BUSCAR', permite_nulo=True)    
+    dat = Sdata.get_data( dicc = dat, key_dict='L', tipo=str, msg_entrada='LIKE NAME', permite_nulo=True)    
+    dat = Sdata.get_data( dicc = dat, key_dict='F', tipo=str, msg_entrada='FLAG', permite_nulo=True)    
+    TABLERO.ver_rangos(nombre_rango = dat['N'] , like_name = dat['L'] , flag = dat['F'])
        
 
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  PUSH  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+def info_push():
+    print(""" 
+        ■■■■■■■■  I N F O R M E   P U S H  ■■■■■■■■
+        ■■■ TABLERO.push( data_push = '◙◙◙' )  ▓  celda_inicio = 'A:0' ▓ b_lineal = False ▓ repetir = False ▓ eje = None
+            SI MATRIZ ◙◙◙   Mete la matriz en 'A:0' de forma matricial. 
+            SI LIST ◙◙◙     Mete la lista de forma Horizontal.
+            SI STR ◙◙◙      Intro 'Loren Ipsum' desde A:0  ocupando una celda.
+            SI OTRO ◙◙◙     Intro X desde A:0 ocupando una celda.
+        
+        ■■■ TABLERO.push( data_push = '◙◙◙' , celda_inicio = 'A:0')   ▓ b_lineal = False  ▓ repetir = False ▓ eje = None
+            SI MATRIZ ◙◙◙   Mete la matriz en 'A:0' de forma matricial. 
+            SI LIST ◙◙◙     Mete la lista de forma Horizontal.
+            SI STR ◙◙◙      Intro 'Loren Ipsum' desde A:0  ocupando una celda.
+            SI OTRO ◙◙◙     Intro X desde A:0 ocupando una celda.
+        
+        ■■■ TABLERO.push( data_push = '◙◙◙', celda_inicio = 'C:3' , b_lineal = False )    ▓ repetir = False ▓ eje = None
+            SI MATRIZ ◙◙◙
+            SI LIST ◙◙◙
+            SI STR ◙◙◙
+            SI OTRO ◙◙◙
+        
+        ■■■ TABLERO.push( data_push = '◙◙◙', celda_inicio = 'C:3' , b_lineal = True)      ▓ repetir = False ▓ eje = None
+            SI MATRIZ ◙◙◙
+            SI LIST ◙◙◙
+            SI STR ◙◙◙
+            SI OTRO ◙◙◙
+        
+        ■■■ TABLERO.push( data_push = '◙◙◙', celda_inicio = 'C:3', b_lineal = True ,  eje = 'Y' , repetir = True  ) 
+            SI MATRIZ ◙◙◙
+            SI LIST ◙◙◙
+            SI STR ◙◙◙
+            SI OTRO ◙◙◙
+        
+        ■■■ TABLERO.push(data_push = '◙◙◙', celda_inicio = 'C:3', b_lineal = False, eje = 'X' , repetir = True )  
+            SI MATRIZ ◙◙◙
+            SI LIST ◙◙◙
+            SI STR ◙◙◙
+            SI OTRO ◙◙◙
+        
+        ■■■ TABLERO.push(data_push = '◙◙◙', celda_inicio = 'C:3', b_lineal = False, eje = 'X'   )           ▓ repetir = False
+            SI MATRIZ ◙◙◙
+            SI LIST ◙◙◙
+            SI STR ◙◙◙
+            SI OTRO ◙◙◙
+        
+        ■■■ TABLERO.push(data_push = '◙◙◙', celda_inicio = 'C:3', b_lineal = False, eje = 'Y'   )  ▓ repetir = False
+            SI MATRIZ ◙◙◙
+            SI LIST ◙◙◙
+            SI STR ◙◙◙
+            SI OTRO ◙◙◙
+    
+    """)
+
+# PUSH MATRIZ
+def matriz_to_tablero():
+    global TABLERO
+    matriz = [
+        [1, 2, 3],
+        [4, 5,6, 0],
+        [7, 8, 9]
+    ]
+    dat = Sdata.get_data( key_dict='C', tipo=str, permite_nulo=True, msg_entrada='INTRODUCE CELDA (pejem: M:8 ) Xa Posicionar la MATRIZ')
+    retorno = TABLERO.push(data_push = matriz , celda_inicio = dat['C'] )
+    if retorno:    
+        print('\nMATRIZ TO TABLERO\n')
+        TABLERO.imprimir( sp_columna = 3 )
 
 # ESTABLECE UN VALOR EN UNA CELDA PIDIENDO FILA Y COLUMNA
 def push_fila_columna():      
@@ -249,38 +363,45 @@ def push_fila_columna():
     
     celda_inicio = TABLERO.getting(fila=dat['F'], columna=['C'])
     if celda_inicio:
-        tablero.push(data_push = data['V'], celda_inicio = celda_inicio.nombre )
+        TABLERO.push(data_push = data['V'], celda_inicio = celda_inicio.nombre )
 
 # ESTABLECE UN VALOR EN UNA CELDA (A:0)
 def push_celda():
+    global TABLERO
     dat = Sdata.get_data( key_dict='C', tipo=str, permite_nulo=True, msg_entrada='INTRODUCE CELDA TO PUSH')
-    dat = Sdata.get_data(dicc=dat,  key_dict='V', tipo=str, permite_nulo=True, msg_entrada='INTRODUCE VALOR')
+    dat = Sdata.get_data( dicc=dat,  key_dict='V', tipo=str, permite_nulo=True, msg_entrada='INTRODUCE VALOR')
+    dat = Sdata.get_data( dicc=dat , key_dict='CL', tipo='between' , msg_entrada='Elige Entre: (L)ista ó (C)adena', permite_nulo=False, valores_between=['L','C'])    
     
-    tablero.push(data_push = data['V'], celda_inicio = dat['C'] , b_lineal = True)
+    b_lineal = False
+    if dat['CL'] == 'L':
+        b_lineal = True
+    elif dat['CL'] == 'C':
+        b_lineal = False
+
+    TABLERO.push(data_push = dat['V'], celda_inicio = dat['C'] , b_lineal = b_lineal)
 
 # ESTABLECE UN VALOR EN UNA FILA
 def push_valor_over_fila():
     global TABLERO
-    dat = Sdata.get_data( key_dict='F', tipo=int, permite_nulo=True , msg_entrada='INTRODUCE FILA TO PUSH')            
+    dat = Sdata.get_data( key_dict='F', tipo=int, permite_nulo=False , msg_entrada='INTRODUCE FILA TO PUSH')            
     dat = Sdata.get_data( dicc=dat,  key_dict='V', tipo=str, permite_nulo=True, msg_entrada=f'INTRODUCE VALOR')    
     
     # celda_inicio = f'{TABLERO.celda_inicio.letra}:{dat['F']}'
-    celda_inicio = TABLERO.getting(fila=dat['F'], columna=TABLERO.celda_inicio.letra)    
-    rango_fila = TABLERO.crear_
+    celda_inicio = TABLERO.getting(celda=f'{TABLERO.celda_inicio.letra}:{dat['F']}')    
+
     if celda_inicio:
-        TABLERO.push(data_push = [dat['V'],], celda_inicio = celda_inicio.nombre, b_lineal='H' )
+        TABLERO.push(data_push = dat['V'], celda_inicio = celda_inicio.nombre_celda, b_lineal=False, eje='X' , repetir = True )
     
 # ESTABLECE UNA COLUMNA
 def push_valor_over_columna():
     global TABLERO
     dat = Sdata.get_data( key_dict='C', tipo=int, permite_nulo=False, msg_entrada='INTRODUCE COLUMNA TO PUSH')    
     dat = Sdata.get_data( dicc=dat, key_dict='V', tipo=str, permite_nulo=False, msg_entrada=f'INTRODUCE VALOR')    
-    
-        
+            
     celda_inicio = TABLERO.getting(columna=dat['C'], fila=0)
 
     if celda_inicio:
-        TABLERO.push(data_push = dat['V'], celda_inicio = celda_inicio.nombre_celda, b_lineal='V' )
+        TABLERO.push(data_push = dat['V'], celda_inicio = celda_inicio.nombre_celda, b_lineal=False, eje='Y' , repetir = True  )
 
 def push_lista():
     global TABLERO
@@ -297,7 +418,7 @@ def push_lista():
 
 
 
-# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ ESTO NO CORRESPONDE AQUI, PERO REALMENNTE ES DONDE ESTOY HACIENDO LAS PRUEBAS ASÍ QUE EL BUEN SDATA ES ESTE ▓▓▓▓▓▓▓▓▓▓▓▓▓
 def puebas_Sdata():
     from datetime import date 
     from datetime import time 
@@ -316,24 +437,11 @@ def puebas_Sdata():
     else:
         pass
 
-# PUSH
-def matriz_to_tablero():
-    global TABLERO
-    matriz = [
-        [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 9]
-    ]
-    celda = Sdata.get_data( key_dict='ci', tipo=str, permite_nulo=True, msg_entrada='\nIntroduce C e l d a  en Tablero (pejem: M:8 ) donde colocar la matriz ... ')
 
-    retorno = TABLERO.push(data_push = matriz , celda_inicio = celda['ci'] )
-    if retorno:    
-        print('\nMATRIZ TO TABLERO\n')
-        TABLERO.imprimir( sp_columna = 3 )
     
 # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
-def prueba_impresion_mas():
+def impresion_masiva():
     global TABLERO
     matriz_pruebas = [  ['wIP', 12, '14', 16], 
                         [23 , '25', 27], 
@@ -371,7 +479,7 @@ def prueba_impresion_mas():
     tablero = Tablero(total_columnas_tablero = 15, total_filas_tablero = 10, valor_inicial='-')
 
     # retorno = tablero.push(data_push = matriz_pruebas, celda_inicio = 'C:3' )
-    retorno = TABLERO.push(data_push = matriz_pruebas, celda_inicio = 'A:1' )
+    retorno = tablero.push(data_push = matriz_pruebas, celda_inicio = 'A:1' )
     # tablero.push(data_push = [1,2,'3',4,[5,6]], celda_inicio = 'B:1' )
     if retorno:    
         print('\nI m p r i m i r   T a b l e r o   c o n   P u s h \n')

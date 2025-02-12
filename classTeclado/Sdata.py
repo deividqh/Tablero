@@ -20,8 +20,8 @@ class Sdata():
     
     # ■■■ Ejemplo de uso:   dato_tipado = Sdata.TIPOS_VALIDOS[tipo](entrada)
     TIPOS_VALIDOS = {
-        int: lambda v: int(v) if StringTo.esInt(v) else None,
-        float: lambda v: float(v) if StringTo.esFloat(v) else None,
+        int: lambda v: StringTo.esInt(v),
+        float: lambda v: StringTo.esFloat(v),
         str: lambda v: v  ,
         bool: lambda v: v ,  # SOLO DEVUELVE VALOR, VALIDACION FUERA
         list: lambda v: v ,  # SOLO DEVUELVE VALOR, VALIDACION FUERA
@@ -29,7 +29,7 @@ class Sdata():
         tuple: lambda v: v ,  # SOLO DEVUELVE VALOR, VALIDACION FUERA
         date: lambda v: datetime.strptime(v, "%d/%m/%Y").date() if StringTo.esDate(v) else None,
         time: lambda v: datetime.strptime(v, "%H:%M").time() if re.match(r"^(2[0-3]|[01]?\d):([0-5]\d)$", v) else None,
-        "DNI": lambda v: v if StringTo.partirDNI(v)[0] else None,
+        "DNI": lambda v: v if StringTo.esDNI(v) else None,
         "Email": lambda v: v if StringTo.esMail(v) else None,
         "IP": lambda v: v if StringTo.esIPValida(v) else None,
         "BETWEEN": lambda v: v  # SOLO DEVUELVE VALOR, VALIDACION FUERA
@@ -214,10 +214,11 @@ class Sdata():
         # PIDO DATOS POR TECLADO
         while True:
             entrada = input(f'\nK[ {key_dict} ] - {str_entrada}  - ( {str_tipo} - {msg_nulo} )..... ')
+
             entrada = entrada.strip()
             try:
                 if entrada == ENTRADA_NULL and permite_nulo == True:
-                    """ ■ RETORNA ESTE VALOR PARA QUE SE TRATE EL VALOR POR DEFECTO 
+                    """ ■ RETORNA ESTE VALOR PARA QUE SE TRATE EL ■■■ VALOR POR DEFECTO 
                     """
                     entrada = Sdata.get_valor_bydef(tipo=tipo)
                     break
@@ -299,6 +300,7 @@ class Sdata():
                                         for item in msg_entrada:
                                             if item == may_entrada:
                                                 entrada = item
+                                                break
                             else:
                                 continue
                         else:
@@ -308,11 +310,8 @@ class Sdata():
                             if entrada == None and permite_nulo == False:
                                 continue
                             elif entrada == None and permite_nulo == True:
-                                # entrada = Sdata.get_valor_bydef(tipo=tipo)
-                                # break
-                                continue
-                            else:
-                                pass
+                                entrada = Sdata.get_valor_bydef(tipo=tipo)
+                            pass  
                     except Exception as e:
                         print(f'{e}')
                         continue
@@ -383,7 +382,7 @@ class StringTo():
     @staticmethod
     def partirDNI(dni):
         """
-        Def: Valida un dni con expresiones regulares (8numeros['.','-',' ']letra) 
+        Def: Valida un dni con expresiones regulares [8 numeros + ['.','-',' ']letra]
         Retorno: El numero de dni , la letra del dni
         None si no es formato valido.
         """
@@ -396,6 +395,15 @@ class StringTo():
             return number, letter
         else:
             return None, None
+    
+    @staticmethod
+    def esDNI(dni):
+        """ Devuelve True o False si se introduce un DNI valido o Invalido. """
+        numero, letra = StringTo.partirDNI(dni) 
+        if numero == None or letra == None: 
+            return False
+        else:
+            return True
 
     @staticmethod
     def partirIP(ip):

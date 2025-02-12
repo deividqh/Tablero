@@ -1283,7 +1283,7 @@ class XindeX(MenuDvd):
             respuesta_extraida =''
             pre_respuesta =''
             pos_respuesta =''
-            respuesta=input(f"{menu_dvd.introData}").strip()
+            respuesta = input(f"{menu_dvd.introData}").strip()
             try:
                 if respuesta == SALIR:          # A PULSADO  '<<<' ....SALIR
                     """ RETORNO Y REPETICION DEL MENU :::: """
