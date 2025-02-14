@@ -844,13 +844,14 @@ class Rango(Celda):
     #                     GETTING
     # ••••••••••••••••••••••••••••••••••••••••••••••
 
-    def rangutan(self, data_push, celda_inicio:str='A:0', b_lineal:bool=False, EJE:str='X', REPETIR:bool=False):
+    def rangutan(self, data_push, celda_inicio, b_lineal:bool=False, EJE:str='X', REPETIR:bool=False):
         """
         ■■■■■■■■■ DESDE UN DATO CREO UN RANGO ■■■■■■■■■ 
         CREA UN RANGO CON data_push EN CELDA_INICIO, LO FORMATEA SEGUN  b_lineal, eje y repetir. 
         
         [data_push](any, matriz): LOS DATOS PUEDEN SER TIPOS PYTHON, ITERADORES(LIST, TUPLE, SET), MATRICES.
-        [celda_inicio](str) celda de inicio del rango donde introducir data_push
+        [celda_inicio](Objeto Celda) Celda de inicio del Rango donde se va a introducir data_push. 
+                                     Entra como objeto para tener acceso a filas y columnas para formar las dimensiones para el Rango.
         ■■  'EJE' = 'X' o 'Y'  ■ solo en caso de que data_push sea list.
         ■■  'REPETIR': True, False ■ solo en caso de que data_push sea str 
         ■■  b_lineal: True, si se hace el cruce lineal (como vengan las celdas en linea)(self.__push_plana)
@@ -860,11 +861,14 @@ class Rango(Celda):
                     'H' para REPETIR data_push horizontalmente celda_inicio hasta fin linea
                     'V', para REPETIR data_push verticalmente  desde celda_inicio hasta fin columna.
 
-
-        CREO UN ■ RANGO ■ CON LOS DATOS CON CELDA_INICIO COMO PRIMERA CELDA DEL RANGO.
-        EN EL RANGO SIEMPRE SE METEN LOS DATOS DE FORMA PLANA.
-        ENTONCES LO QUE HAGO ES JUGAR CON LAS DIMENSIONES PARA CONTROLAR COMO ENTRAN LOS DATOS. 
-        PARA MATRICES A VECES, HAY QUE HACER RELLENOS, QUE SE HACEN CON self.valor_inicial
+        • LOS ARGUMENTOS ( excepto data_push ) VIENEN VALIDADOS DE self.push().
+        • CREO UN OBJETO ■ Rango  CON ■ data_push CON ■ celda_inicio  COMO PRIMERA CELDA DEL RANGO.
+        • EN EL RANGO SIEMPRE SE METEN LOS DATOS DE FORMA PLANA.
+        ENTONCES LO QUE HAGO ES JUGAR CON LAS ■ DIMENSIONES  PARA CONTROLAR COMO ENTRAN LOS DATOS EN EL RANGO. 
+        • PARA MATRICES, A VECES, HAY QUE HACER RELLENOS, QUE SE HACEN CON self.valor_inicial
+        • HAY 10 TIPOS DE OBJETOS RANGOS DISTINTOS QUE SE PUEDEN FORMAR:
+         █ 1-MATRIZ_LINEAL  █ 2-MATRIZ_CUADRADA     █ 3-RANGO-RANGO             █ 4-LISTA_VERTICAL      █ 5-LISTA_HORIZONTAL 
+         █ 6-STR_CELDA      █ 7-STR_REPETIDO_FILA   █ 8-STR_REPETIDO_COLUMNA    █ 9-STR_TO_LISTAWORDS   █ 10-X_TO_CELDA (int, float, bool,...)
         """
         
         # ■■ PRIMERO BUSCAMOS SI ES UNA MATRIZ U OTRO TIPO DE DATO.
@@ -890,7 +894,7 @@ class Rango(Celda):
                     dimension = f'{len(data_push)}X1'
                 
                 # SE CREA UN RANGO CON LA LISTA COMO VALOR INICIAL
-                rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = data_push )                
+                rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio.nombre_celda , dimension = dimension , valor_inicial = data_push )                
             
             elif isinstance(data_push, str):                
                 """ 
@@ -904,7 +908,7 @@ class Rango(Celda):
                     if REPETIR == False:        # byDef
                         """ 
                         ■■■■ (By Def) CADENA TO CELDA_INICIO """
-                        rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio , dimension = f'1X1' , valor_inicial = data_push )                
+                        rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio.nombre_celda , dimension = f'1X1' , valor_inicial = data_push )                
 
                     elif REPETIR == True:       
                         """ 
@@ -914,19 +918,18 @@ class Rango(Celda):
                         if EJE != None:                            
                             if str(EJE).upper() == 'X':                                
                                 """ ■■■■■ CON EJE HORIZONTAL"""
-                                dimension = f'1x{self.total_columnas - celda_ini.columna}'  # PREPARA LA DIMENSION PARA REPETIR DESDE CELDA_INICIO EN HORIZONTAL.
+                                dimension = f'1x{self.total_columnas - celda_inicio.columna}'  # PREPARA LA DIMENSION PARA REPETIR DESDE CELDA_INICIO EN HORIZONTAL.
                             
                             elif str(EJE).upper() == 'Y':
                                 """ ■■■■■ CON EJE VERTICAL"""
-                                dimension = f'{self.total_filas - celda_ini.fila}X1'        # PREPARA LA DIMENSION PARA REPETIR DESDE CELDA_INICIO EN VERTICAL.
+                                dimension = f'{self.total_filas - celda_inicio.fila}X1'        # PREPARA LA DIMENSION PARA REPETIR DESDE CELDA_INICIO EN VERTICAL.
 
-                            rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = data_push )                
+                            rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio.nombre_celda , dimension = dimension , valor_inicial = data_push )                
                         else:   
                             """ 
                             ■■■■■ SIN EJE ==> Al no meter eje pero si Repetir toma el eje X por defecto """
                             dimension = f'1x{self.total_columnas - celda_ini.columna}'  # PREPARA LA DIMENSION PARA REPETIR DESDE CELDA_INICIO EN HORIZONTAL.
-                            rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = data_push )                
-                            # rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio , dimension = f'1X1' , valor_inicial = data_push )                
+                            rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio.nombre_celda , dimension = dimension , valor_inicial = data_push )                
                 
                 elif b_lineal == True:   
                     """  
@@ -942,7 +945,7 @@ class Rango(Celda):
                     if EJE == 'Y':
                         dimension = f'{len(lst_palabras)}X1'    # Y SI LO TENGO QUE CAMBIAR A VERTICAL PUES LO CAMBIO.                        
 
-                    rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = data_push )                
+                    rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio.nombre_celda , dimension = dimension , valor_inicial = data_push )                
             
             elif isinstance(data_push, Rango):
                 """ >>> ■■■■ ENTRA UN RANGO!!
@@ -950,17 +953,18 @@ class Rango(Celda):
                 dimension       = data_push.get_dimension()
                 valor_inicial   = data_push.get_valores()
 
-                rango = Rango( nombre_rango = "aux_rango" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = valor_inicial )
+                rango = Rango( nombre_rango = "aux_rango" , celda_inicio = celda_inicio.nombre_celda , dimension = dimension , valor_inicial = valor_inicial )
             else:
                 """ >>> ■■■■ EL RESTO: int, float, bool, objetos, date, time, ....
                 """
-                if any(celda_inicio in celda_lst.nombre_celda for celda_lst in self.lst_celdas):
-                    rango = Rango( nombre_rango = "aux_other" , celda_inicio = celda_inicio , dimension = '1x1' , valor_inicial = data_push )                                    
+                if any(celda_inicio.nombre_celda in celda_lst.nombre_celda for celda_lst in self.lst_celdas):
+                    rango = Rango( nombre_rango = "aux_other" , celda_inicio = celda_inicio.nombre_celda , dimension = '1x1' , valor_inicial = data_push )                                    
         else:
             """ 
             ■■■■ ES MATRIZ ■■■■
             """
             # QUIERO METER LOS DATOS A CAPÓN UNO DETRAS DE OTRO SIN ESTRUCTURA.
+            # datapush COMO MATRIZ, NI ■ REPETIR NI ■ EJE TIENEN EFECTO, solo ■ b_lineal
             if b_lineal == True:    
                 """ ■■■■ METE LOS DATOS EN LA MATRIZ DE FORMA PLANA 
                 """
@@ -974,7 +978,7 @@ class Rango(Celda):
                 dimension = f'{filas}X{columnas}'
 
                 # AQUÍ SE METE data_push DIRECTAMENTE
-                rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = data_push )
+                rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_inicio.nombre_celda , dimension = dimension , valor_inicial = data_push )
                 
                 # VALIDO LIMITES DEL RANGO
                 retorno = self.es_rango_in(rango=rango)
@@ -992,7 +996,7 @@ class Rango(Celda):
                 dimension = f'{filas}X{columnas}'
                 try:
                     # ▄▄▄▄▄ CREO EL RANGO CUADRADO
-                    rango = Rango( nombre_rango = 'rango_aux' , celda_inicio = celda_inicio , dimension = dimension , valor_inicial = matriz_cuadrada )            
+                    rango = Rango( nombre_rango = 'rango_aux' , celda_inicio = celda_inicio.nombre_celda , dimension = dimension , valor_inicial = matriz_cuadrada )            
                     if not rango: 
                         return None
 
@@ -1421,7 +1425,7 @@ class Rango(Celda):
 
     # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     def push(self, data_push, celda_inicio:str='A:0', b_lineal:bool=False, **kwargs):
-        """ >>> INSERTA DATOS EN TABLERO   
+        """ ■■■■■■■■■■■■  INSERTA DATOS EN TABLERO  ■■■■■■■■■■■■
         CREA UN RANGO CON data_push EN CELDA_INICIO, LO FORMATEA SEGUN  b_lineal, EJE Y REPETIR. 
         
         [data_push](any, matriz): LOS DATOS PUEDEN SER TIPOS PYTHON, ITERADORES(LIST, TUPLE, SET), MATRICES.
@@ -1430,8 +1434,8 @@ class Rango(Celda):
                                False, Si el cruce Celda a Celda coincidente(self.cross())
                                
                                En caso de que data_push sea un str, se puede introducir:
-                               'H' para REPETIR data_push horizontalmente celda_inicio hasta fin linea
-                               'V', para REPETIR data_push verticalmente  desde celda_inicio hasta fin columna.
+                               'X' para REPETIR data_push horizontalmente desde celda_inicio hasta fin linea
+                               'Y' para REPETIR data_push verticalmente   desde celda_inicio hasta fin columna.
         
         [**kwargs](dict): ■■  'EJE' = 'X' o 'Y'  ■ solo en caso de que data_push sea list.
                           ■■  'REPETIR' = True, False ■ solo en caso de que data_push sea str 
@@ -1442,29 +1446,27 @@ class Rango(Celda):
         SI ES MATRIZ, SI B_LINEAL = TRUE, TB LOS CARGO SEGÚN VIENEN COMO EN LA TÉCNICA ANTERIOR.        
         SI B_LINEAL = FASE, ENCUADRO LA MATRIZ Y CREO EL RANGO. LUEGO LO CRUZO CON CROSS COMO TODAS LAS ANTERIORES.
 
-        >>> ejemplo: TABLERO.push([3,2,1], celda_inicio='B:5', b_lineal=False) ==> Introduce la List en B:5 HORIZONTAL (si entra una lista siempre entra plana, así que uso b_lineal para definir la direccion)
-        >>> ejemplo: TABLERO.push([3,2,1], celda_inicio='B:5', b_lineal=True)  ==> Introduce la List en B:5 VERTICAL (si entra una lista siempre entra plana, así que uso b_lineal para definir la direccion)
+        >>> ejemplo: TABLERO.push([3,2,1], celda_inicio='B:5', eje='X') ==> Introduce la List en B:5 HORIZONTAL (si entra una lista siempre entra plana, así que uso b_lineal para definir la direccion)
+        >>> ejemplo: TABLERO.push([3,2,1], celda_inicio='B:5', eje='Y')  ==> Introduce la List en B:5 VERTICAL (si entra una lista siempre entra plana, así que uso b_lineal para definir la direccion)
 
         >>> ejemplo: TABLERO.push([[3,2,1],[4, 5,6]], celda_inicio='B:5', b_lineal=False)   ==> Introduce la matriz en B:5
         >>> ejemplo: TABLERO.push('Tres tristes tigres', celda_inicio='B:5', b_lineal=False)   ==> Introduce el texto en B:5
-
         """
 
-
-        # ■■ CACHO LAS VARIABLES OPCIONALES.... DEPENDE DE LOS DATOS DE ENTRADA SERÁN NECESAREAS O NO.
+        # ■■ CACHO LAS VARIABLES OPCIONALES
         lst_ejes_validos = ['X', 'Y', 'x', 'y']
 
-        # KWARGS EJE
-        EJE = kwargs.get('eje', 'X')        
-        if not EJE in lst_ejes_validos:
-            EJE = 'X'                           # Lo fuerzo al eje X en caso de que no entre un valor valido.
+        # ■■  KWARGS EJE
+        eje = kwargs.get('eje', 'X')            
+        if not eje in lst_ejes_validos:
+            eje = 'X'                           # Lo fuerzo al eje X en caso de que no entre un valor valido.
         else:
-            EJE = str(EJE).upper()
+            eje = str(eje).upper()
 
-        # KWARGS REPETIR
-        REPETIR = kwargs.get('repetir', False)
-        if not isinstance(REPETIR, bool):
-            REPETIR = False
+        # ■■  KWARGS REPETIR
+        repetir = kwargs.get('repetir', False)
+        if not isinstance(repetir, bool):
+            repetir = False
 
         # ■■ CACHO LA CELDA DE INICIO COMO CELDA
         if isinstance(celda_inicio, str): 
@@ -1478,129 +1480,14 @@ class Rango(Celda):
         else:
             print(f'FORMATO DE celda_inicio ERRORNEO: {celda_inicio}')
         
-        # OBTENGO EL RANGO SOBRE EL DATO PASADO
-        rango = self.rangutan(data_push=data_push, celda_inicio = celda_ini.nombre_celda, b_lineal=b_lineal , EJE = EJE , REPETIR = REPETIR )
+        # ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+        # ■■■■■■ OBTENGO UN RANGO SOBRE EL DATO PASADO ■■■■■■ 
+        rango = self.rangutan(data_push=data_push, celda_inicio = celda_ini, b_lineal=b_lineal , EJE = eje , REPETIR = repetir )
         
-        # # ■■ PASAMOS A LA ACCION: VALIDACION DE TIPOS.
-        # es_matriz = SttS.es_lista_de_listas( matriz = data_push )
-        
-        # # ■■ EVALUAMOS EL TIPO        
-        # if not es_matriz: 
-            
-        #     if isinstance(data_push, list) or isinstance(data_push, tuple) or isinstance(data_push, set):                
-        #         """ 
-        #         >>> ITERADOR. ENTRA PLANO SI O SI 
-        #         """
-        #         if b_lineal == False or EJE == 'X':
-        #             """ 
-        #             ■■■■ (By Def) PREPARA LA DIMENSION PARA LA ■ LISTA HORIZONTAL   """
-        #             dimension = f'1x{len(data_push)}'
-
-        #         elif b_lineal == True or EJE == 'Y':
-        #             """ 
-        #             ■■■■ PERARA LA DIMENSION PARA LA ■ LISTA VERTICAL   """                    
-        #             dimension = f'{len(data_push)}X1'
-                
-        #         # SE CREA UN RANGO CON LA LISTA COMO VALOR INICIAL
-        #         rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_ini.nombre_celda , dimension = dimension , valor_inicial = data_push )                
-            
-        #     elif isinstance(data_push, str):                
-        #         """ 
-        #         ■■■■ METE data_push COMO UNA CADENA(O CHAR). 
-        #         """                    
-        #         if b_lineal == False:           
-        #             """ 
-        #             ■■■■ ES TRATADO COMO UN STR NORMAL. 
-        #             Ahora veo si se debe REPETIR o si sólo se coloca en el tablero una vez.
-        #             """
-        #             if REPETIR == False:        # byDef
-        #                 """ 
-        #                 ■■■■ (By Def) CADENA TO CELDA_INICIO """
-        #                 rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_ini.nombre_celda , dimension = f'1X1' , valor_inicial = data_push )                
-
-        #             elif REPETIR == True:       
-        #                 """ 
-        #                 ■■■■ REPETIR LA CADENA O CARACTER.
-        #                 Ahora hay que preguntar por EJE = ['X','Y'] para saber si Horizontal(Fila) o Vertical(Columna)
-        #                 """
-        #                 if str(EJE).upper() == 'X':                                
-        #                     """ ■■■■■ CON EJE HORIZONTAL"""
-        #                     dimension = f'1x{self.total_columnas - celda_ini.columna}'  # PREPARA LA DIMENSION PARA REPETIR DESDE CELDA_INICIO EN HORIZONTAL.
-                        
-        #                 elif str(EJE).upper() == 'Y':
-        #                     """ ■■■■■ CON EJE VERTICAL"""
-        #                     dimension = f'{self.total_filas - celda_ini.fila}X1'        # PREPARA LA DIMENSION PARA REPETIR DESDE CELDA_INICIO EN VERTICAL.
-
-        #                 rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_ini.nombre_celda , dimension = dimension , valor_inicial = data_push )                
-                
-        #         elif b_lineal == True:   
-        #             """  
-        #             ■■■■ METE LA CADENA COMO SI FUERA UNA LISTA A PARTIR DE LA CELDA DE INICIO PALABRA A PALABRA. 
-        #             """                    
-        #             lst_palabras = ' '.join(data_push)
-        #             if not lst_palabras: return None
-        #             # POR SI ACASO HA EMPEZADO O TERMINADO CON ' '
-        #             lst_palabras = [palabra for palabra in lst_palabras if palabra != ' ']
-                    
-        #             # PREUNTO POR EL EJE PARA COLOCAR LA LISTA HORIZONTAL(EJE X) O VERTICAL(EJE Y)                    
-        #             dimension = f'1x{len(lst_palabras)}'        # PONGO HORIZONTAL POR DEFECTO
-        #             if EJE == 'Y':
-        #                 dimension = f'{len(lst_palabras)}X1'    # Y SI LO TENGO QUE CAMBIAR A VERTICAL PUES LO CAMBIO.                        
-
-        #             rango = Rango( nombre_rango = "rango_aux" , celda_inicio = celda_ini.nombre_celda , dimension = dimension , valor_inicial = data_push )                
-            
-        #     elif isinstance(data_push, Rango):
-        #         """ >>> ■■■■ ENTRA UN RANGO!!
-        #         """                
-        #         dimension       = data_push.get_dimension()
-        #         valor_inicial   = data_push.get_valores()
-
-        #         rango = Rango( nombre_rango = "aux_rango" , celda_inicio = celda_ini.nombre_celda , dimension = dimension , valor_inicial = valor_inicial )
-        #     else:
-        #         """ >>> ■■■■ EL RESTO: int, float, bool, objetos, date, time, ....
-        #         """
-        #         if any(celda_ini.nombre_celda in celda_lst.nombre_celda for celda_lst in self.lst_celdas):
-        #             rango = Rango( nombre_rango = "aux_other" , celda_inicio = celda_ini.nombre_celda , dimension = '1x1' , valor_inicial = data_push )                                    
-        # else:
-        #     """ 
-        #     >>> ES MATRIZ 
-        #     """
-        #     # QUIERO METER LOS DATOS A CAPÓN UNO DETRAS DE OTRO SIN ESTRUCTURA.
-        #     if b_lineal == True:    
-        #         """ >>> ■■■■ METE LOS DATOS EN LA MATRIZ DE FORMA PLANA 
-        #         """
-        #         rango = Rango( nombre_rango = "aux_matriz_lineal" , celda_inicio = celda_ini.nombre_celda , dimension = dimension , valor_inicial = data_push )
-        #     else:            
-        #         """ >>> ■■■■ QUIERO METER LOS DATOS  CON LA ESTRUCTURA DE MATRIZ CON LA QUE ESTÁ. 
-        #         """
-        #         # CREO UNA MATRIZ CUADRADA DEPENDIENDO DEL MAXIMO NUMERO DE COLUMNAS QUE TENGA LA MATRIZ ENTRANTE
-        #         matriz_cuadrada = SttS.encuadrar_matriz(matriz = data_push)        
-        #         # SACO LOS DATOS QUE NECESITO DE LA MATRIZ RE-CREADA PARA CREAR UN RANGO CUADRADO
-        #         filas = len(matriz_cuadrada)
-        #         columnas = len(matriz_cuadrada[0])
-        #         dimension = f'{filas}X{columnas}'
-        #         try:
-        #             # ▄▄▄▄▄ CREO EL RANGO CUADRADO
-        #             rango = Rango( nombre_rango = 'rango_aux' , celda_inicio = celda_ini.nombre_celda , dimension = dimension , valor_inicial = matriz_cuadrada )            
-        #             if not rango: return False
-            
-        #             # VALIDO LIMITES DEL RANGO
-        #             retorno = self.es_rango_in(rango=rango)
-        #             if not retorno: 
-        #                 print("Error Logico ::: Limites ")
-        #                 return False
-        #         except Exception as e:
-        #             print(f'Error ::: Tablero ::: push ::: {e}')
-        #             return False
-
-        #     # •••••••••••••••••••••••••••••••••
-        #     print(f'\n\nLast Fila Used: {self.__last_fila_used()}')    
-        # pass
-        
-
-        # CRUZO LOS DATOS CON EL RANGO QUE HACE PUSH CON EL RANGO CREADO 
+        # ■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+        # ■■■■■ CRUZO LOS DATOS ■■■■■ 
         if rango:
-            return self.cross(rango = rango) if rango else None
+            return self.cross(rango = rango)
         else:
             return None
         
@@ -1657,7 +1544,118 @@ class Rango(Celda):
     # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     # BORRAR VALORES DEL RANGO
     # •••••••••••••••••••••••••••••••••••••••••••••••••••••
+    def delete(self, **kwargs):
+        """ ELIMINA(valor/Rango) DEL TABLERO. 
+        
+        SE PUEDEN ELIMINAR:
+        ■ Valores en Objeto Celda
+        ■ Valores en Columna
+        ■ Valores en Fila
+        ■ Valores en Rango, no borra el rango. Para borrar el rango está self.delete_rango()
 
+        AL FINAL HAY QUE HACER UN PULL_ALL PARA QUE SE ACTUALIZEN TODOS LOS RANGOS DEL TABLERO.
+        """
+        # ■■ RECOGO LOS DATOS DE LA ENTRADA
+        fila = kwargs.get('fila', None)         
+        columna = kwargs.get('columna', None)   
+        celda = kwargs.get('celda', None)       
+        rango = kwargs.get('rango', None)       
+        del_rango = kwargs.get('b_rango', False)  # Sólo para rango y es una opicion que si se pone a True elimina el rango de self.lst_rangos
+
+
+        b_pull = True
+        # ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+        # ■■ ANALIZO LOS DATOS DE ENTRADA Y LOS PONGO EN LA FORMA CORRECTA
+        if fila == None and columna == None and celda == None and rango == None:
+            return False
+        elif rango != None:
+            """ ■ 1º RANGO SOBRE TODO LO DEMAS. Si entra rango, ya no miro lo demas. """
+            if isinstance(rango, str):
+                if del_rango == True:
+                    """ ■■ ELIMINA RANGO """
+                    rango = self.buscar_rango(nombre_rango=rango)
+                    self.delete_rango( rango = rango )
+                    
+                    b_pull = False
+                else:
+                    """ ■■ ELIMINA VALOR RANGO """
+                    rango = self.buscar_rango(nombre_rango=rango)
+                    rango.iniciar(valor=self.valor_inicial)
+                pass
+            elif isinstance(rango, Rango):
+                if del_rango == True:
+                    """ ■■ ELIMINA RANGO """
+                    self.eliminar_rango( rango=rango )
+                    
+                    b_pull = False
+                else:
+                    """ ■■ ELIMINA VALOR RANGO """
+                    rango = self.buscar_rango(nombre_rango=rango)
+                    rango.iniciar(valor=self.valor_inicial)
+                pass
+            else:
+                return False
+
+        elif celda != None:
+            """ ■ 2º CELDA. Si entra celda y no entra rango, ya no miro lo demás.  """
+            if isinstance(celda, str):
+                obj_celda = self.getting(celda=celda)
+                if not obj_celda: return False
+            elif isinstance(celda, Celda):
+                obj_celda = self.getting(celda=celda.nombre_celda)
+                if not obj_celda: return False
+            else:
+                return False
+
+            obj_celda.valor = self.valor_inicial
+
+        elif fila != None and columna != None:
+            """ ■ 3º FILAS Y COLUMNAS. Configuran una Celda. Pasa por aquí cuando ni hay rango, ni celda.  """
+            try:
+                fila = abs(int(fila))
+            except Exception as e:
+                return False
+
+            # PERMITE LETRA Y NUMERO PARA COLUMNA
+            columna = Celda.numero_columna(columna=columna)
+            if not columna: 
+                return False
+
+            # AHORA TENGO LA FILA Y LA COLUMNA COMO NUMEROS
+            obj_celda = self.getting(fila=fila, columna= columna)
+            if not obj_celda: return False
+
+            obj_celda.valor = self.valor_inicial  
+            
+        elif fila != None and columna == None:
+            """ ■ 4º FILAS . Configuracion fija de la celda_inicio.  """
+            try:
+                fila = abs(int(fila))
+            except Exception as e:
+                return False
+            
+            self.push(data_push=self.valor_inicial, celda_inicio=f'{self.celda_inicio.letra}:{fila}', b_lineal=False, repetir=True, eje='X')
+
+        elif fila == None and columna != None:
+            """ ■ 5º COLUMNAS  """
+            # PERMITE LETRA Y NUMERO PARA COLUMNA
+            columna = Celda.numero_columna(columna=columna)
+            if not columna: return False
+            # MONTO UNA CELDA SOBRE LA FILA 0 PARA RECUPERAR LA LETRA(COLUMNA) ;)
+            fila = 0
+            celda = Celda(fila=fila, columna=columna)
+            if not celda: return False
+
+            self.push(data_push=self.valor_inicial, celda_inicio=f'{celda.letra}:0', b_lineal=False, repetir=True, eje='Y')
+
+        elif fila == None and columna == None:
+            return False    # NO SE PUEDE DAR, PERO LO DEJO POR DEJAR TODAS LAS OPCIONES A LA VISTA
+        else:
+            return False    # NO SE PUEDE DAR, PERO LO DEJO POR DEJAR TODAS LAS OPCIONES A LA VISTA
+
+        # EL ULTIMO PASO NECESARIO ES LINKEAR LOS CAMBIOS CON LOS RANGOS PARA QUE SIEMPRE TENGAN LA INFO ACTUALIZADA.
+        if b_pull == True:
+            self.pull_all()
     
 
     # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -2114,7 +2112,7 @@ class Tablero(Rango):
         if not self.lst_rangos: return None
         
         if isinstance(rango, str):
-            rango = self.buscar_rango(nombre_rango = nombre_rango)        
+            rango = self.buscar_rango(nombre_rango = rango)        
         elif isinstance(rango, Rango):
             pass
         else:
@@ -2141,7 +2139,7 @@ class Tablero(Rango):
                 return None
             # ■■■ OPERACION
             for rango in lst_rangos_to_pull:
-                self.cross(rango = rango)            
+                self.cross(rango = rango, to_rango=True)            
                 pass
 
         except Exception as e:
@@ -2245,19 +2243,30 @@ class Tablero(Rango):
             return True
         return False
     
+
     # ELIMINA RANGO DE LA LISTA
-    def delete_rango(self, nombre_rango:str):
-        i_rango = self.buscar_rango(nombre_rango=nombre_rango, b_index=True)        
+    def delete_rango(self, rango):
+        """ Elimina un rango de la lista de Tablero self.lst_rangos """
+        i_rango = None
+
+        # ME PERMITE PODER PASAR O UN OBJETO RANGO O UN NOMBRE DE RANGO
+        if isinstance(rango, str):
+            i_rango = self.buscar_rango(nombre_rango = rango, b_index=True)        
+        elif isinstance(rango, Rango):             
+            i_rango = self.buscar_rango(nombre_rango = rango.nombre, b_index=True)        
+        else:
+            return False            
+        # i_rango = self.buscar_rango(nombre_rango=nombre_rango, b_index=True)        
         if i_rango != None:
             try:
                 rango = self.lst_rangos.pop(i_rango)
                 return rango
             except Exception as e:
                 print(f'Error Elimina Rango: :::: {e}')
-                return None
+                return Falso
         else:
             print(f'ESE RANGO: {nombre_rango}, NO ESTA REGISTRADO :( ')
-            return None
+            return False
     
     # ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
     #                             -  MISCELANEA  -  

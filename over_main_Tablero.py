@@ -50,7 +50,7 @@ def main():
     The_X_Men.addX( titulo='SUB_PUSH' , padre='MenuPpal' , ipadre="PUSH"     , lst_items = [("PUSH MATRIZ",matriz_to_tablero), ("PUSH LISTA", push_lista) ,("PUSH OVER Fila",push_valor_over_fila), ("PUSH OVER Column",push_valor_over_columna), ('PUSH Valor By Celda (C:3)', push_celda), ('PUSH valor by fila / columna', push_fila_columna)] )
     The_X_Men.addX( titulo='SUB_DEL'  , padre='MenuPpal' , ipadre="DEL"      , lst_items = [("DEL Fila Over TABLERO",del_fila), ("Del Column",del_columna), ("Del Celda", del_celda)] )    
     The_X_Men.addX( titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS"   , lst_items = [("CREAR Rango",crear_rango), ("BUSCAR Rango",buscar_rango), ("ELIMINAR Rango",delete_rango) , ('VER INFO Rangos Tablero', ver_info_rangos), ('PULL TO RANGO', pull)] )  
-    The_X_Men.addX( titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Impresion Masiva" , impresion_masiva), ("prueba Sdata", puebas_Sdata)] )    
+    The_X_Men.addX( titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Impresion Masiva" , impresion_masiva), ("-", None)] )    
 
     # 3 ■■■■■■■■■■ LLAMO A MYSTYCA PARA VISUALIZAR EL MENU 
     retorno = The_X_Men.Mystyca(titulo='MenuPpal', configurado=True, execFunc=True, tipo_marcador='a', execAll=True, Loop=True , padX=50)
@@ -280,7 +280,9 @@ def del_celda():
     if not celda: return
 
     # LE PONEMOS EL VALOR INICIAL EN SU LUGAR
-    TABLERO.push(data_push=TABLERO.get_valor_inicial(), celda_inicio=celda.nombre_celda)
+    
+    TABLERO.delete(fila=dat['F'], columna=dat['C'])
+    # TABLERO.push(data_push=TABLERO.get_valor_inicial(), celda_inicio=celda.nombre_celda)
 
 # ELIMINA LOS VALORES DE TODA UNA FILA Y DEJA EL VALOR INICIAL
 def del_fila():
@@ -296,11 +298,11 @@ def del_fila():
     if dat['IF']==False: 
         print('Crear Anulado... Chaoooo') 
         return 
-    
     # ■■ OPERO. TB PUEDO HACER UN PUSH DEL VALOR INICIAL SOBRE LA FILA CON REPETIR = TRUE 
-    for fila in matriz:
-        for celda in fila:
-            celda.valor = TABLERO.get_valor_inicial()
+    TABLERO.delete(fila=dat['F'])
+    # for fila in matriz:
+    #     for celda in fila:
+    #         celda.valor = TABLERO.get_valor_inicial()
 
 # ELIMINA LOS VALORES DE TODA UNA COLUMNA Y DEJA EL VALOR INICIAL
 # USO OTRO MÉTODO(PUSH) DISTINTO QUE EN DEL_FILA (OPERO)
@@ -316,7 +318,8 @@ def del_columna():
         print('Crear Anulado... Chaoooo') 
         return 
 
-    TABLERO.push(data_push=TABLERO.get_valor_inicial(), celda_inicio=f'{celda.letra}:0', b_lineal=False, repetir=True, eje='Y')
+    TABLERO.delete(columna = celda.columna)
+    # TABLERO.push(data_push=TABLERO.get_valor_inicial(), celda_inicio=f'{celda.letra}:0', b_lineal=False, repetir=True, eje='Y')
 
 
 
@@ -326,14 +329,19 @@ def info_RANGO():
         ■■■■■■■■  I N F O R M E   R A N G O   ■■■■■■■■
     GESTIONA LA LISTA lst_rangos del Objeto TABLERO.
 
-    [crear_rango] Dentro del Objeto TABLERO se pueden creaar Objetos Rango() .... self.lst_rangos(list)
+    • [crear_rango] Dentro del Objeto TABLERO se pueden creaar Objetos Rango() .... self.lst_rangos(list)
                   Se necesita un nombre(str) y una dimension(str) que puede ser: celda_fin  ó  filasXcolumnas
                   [valor_entrada] Se va a introducir siempre 'plano' si es un iterable y su valor si no es iterable. puede ser una matriz.
-    [buscar_rango] = Da informacion sobre el objeto rango. Si No se introduce el Nombre del rango, Da información sobre el Tablero.
-    [delet e_rango] = Elimina un Objeto Rango de self.lst_rangos. Devuelve el objeto Rango.
-    [ver_info_rangos] = Da información de los rangos de TABLERO. puedes filtrar X  like_name y X  flag   para el listado.
-    [pull] = Lleva los datos desde TABLERO hasta el rango pasado como argumento.
-    [pull_All] = Lleva los datos desde TABLERO hasta todos los rangos. Admite FILTRO LIKE para nombre.
+    
+    • [buscar_rango] = Da informacion sobre el objeto rango. Si No se introduce el Nombre del rango, Da información sobre el Tablero.
+    
+    • [delet e_rango] = Elimina un Objeto Rango de self.lst_rangos. Devuelve el objeto Rango.
+    
+    • [ver_info_rangos] = Da información de los rangos de TABLERO. puedes filtrar X  like_name y X  flag   para el listado.
+    
+    • [pull] = Lleva los datos desde TABLERO hasta el rango pasado como argumento.
+    
+    • [pull_All] = Lleva los datos desde TABLERO hasta todos los rangos. Admite FILTRO LIKE para nombre.
 
     """)
 
@@ -363,9 +371,10 @@ def buscar_rango():
 
 def delete_rango():
     global TABLERO
-    dat = Sdata.get_data( key_dict='r', tipo=str, msg_entrada='NOMBRE DEL RANGO A ELIMINAR')    
-    rango = TABLERO.delete_rango(nombre_rango = dat['r'])
-    print(rango) if rango else f'BORRAR RANGO :('
+    dat = Sdata.get_data( key_dict='R', tipo=str, msg_entrada='NOMBRE DEL RANGO A ELIMINAR')    
+    # rango = TABLERO.delete_rango(rango = dat['R'])
+    retorno = TABLERO.delete(rango=dat['R'], b_rango=True)
+    print(retorno) if retorno else f'BORRAR RANGO :('
 
 def ver_info_rangos():
     global TABLERO
@@ -390,57 +399,84 @@ def info_push():
     print(""" 
         ■■■■■■■■  I N F O R M E   P U S H  ■■■■■■■■
 
-        ■■■ TABLERO.push( data_push = '◙◙◙' )  ▓  celda_inicio = 'A:0' ▓ b_lineal = False ▓ repetir = False ▓ eje = None
-            SI MATRIZ ◙◙◙   Mete la matriz en 'A:0' de forma matricial. 
-            SI LIST ◙◙◙     Mete la lista de forma Horizontal.
-            SI STR ◙◙◙      Intro 'Loren Ipsum' desde A:0  ocupando una celda.
-            SI OTRO ◙◙◙     Intro X desde A:0 ocupando una celda.
+
         
-        ■■■ TABLERO.push( data_push = '◙◙◙' , celda_inicio = 'C:3')   ▓ b_lineal = False  ▓ repetir = False ▓ eje = None
-            SI MATRIZ ◙◙◙   Mete la matriz en 'C:3' de forma matricial. 
-            SI LIST ◙◙◙     Mete la lista de forma Horizontal.
-            SI STR ◙◙◙      Intro 'Loren Ipsum' desde A:0  ocupando una celda.
-            SI OTRO ◙◙◙     Intro X desde A:0 ocupando una celda.
+        CREA UN RANGO CON data_push EN CELDA_INICIO, LO FORMATEA SEGUN  b_lineal, eje y repetir. 
         
-        ■■■ TABLERO.push( data_push = '◙◙◙', celda_inicio = 'C:3' , b_lineal = False )    ▓ repetir = False ▓ eje = None
-            SI MATRIZ ◙◙◙   Mete la matriz en C:3 de Forma MATRICIAL (b_lineal = False )
-            SI LIST ◙◙◙     Mete la list(items separados por comas) en C:3 , b_lineal no le afecta(una lista siempre es plana), si eje = None, en list pasa a 'X' (horizontal) byDef 
-            SI STR ◙◙◙      Mete el str en C:3. 
+        [data_push](any, matriz): LOS DATOS PUEDEN SER TIPOS PYTHON, ITERADORES(LIST, TUPLE, SET), MATRICES.
+        [celda_inicio](Objeto Celda) Celda de inicio del Rango donde se va a introducir data_push. 
+                                     Entra como objeto para tener acceso a filas y columnas para formar las dimensiones para el Rango.
+        ■■  'EJE' = 'X' o 'Y'  ■ solo en caso de que data_push sea list.
+        ■■  'REPETIR': True, False ■ solo en caso de que data_push sea str 
+        ■■  b_lineal: True, si se hace el cruce lineal (como vengan las celdas en linea)(self.__push_plana)
+                    False, Si el cruce Celda a Celda coincidente(self.cross())
+                                        
+                    En caso de que data_push sea un str, se puede introducir:
+                    'H' para REPETIR data_push horizontalmente celda_inicio hasta fin linea
+                    'V', para REPETIR data_push verticalmente  desde celda_inicio hasta fin columna.
+
+        • LOS ARGUMENTOS ( excepto data_push ) VIENEN VALIDADOS DE self.push().
+        • CREO UN OBJETO ■ Rango  CON ■ data_push CON ■ celda_inicio  COMO PRIMERA CELDA DEL RANGO.
+        • EN EL RANGO SIEMPRE SE METEN LOS DATOS DE FORMA PLANA.
+        ENTONCES LO QUE HAGO ES JUGAR CON LAS ■ DIMENSIONES  PARA CONTROLAR COMO ENTRAN LOS DATOS EN EL RANGO. 
+        • PARA MATRICES, A VECES, HAY QUE HACER RELLENOS, QUE SE HACEN CON self.valor_inicial
+        • HAY 10 TIPOS DE OBJETOS RANGOS DISTINTOS QUE SE PUEDEN FORMAR:
+        ████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+        █ 1- MATRIZ_LINEAL  █ 2- MATRIZ_CUADRADA     █ 3- RANGO-RANGO             █ 4- LISTA_VERTICAL      █ 5-  LISTA_HORIZONTAL                  █
+        █ 6- STR_CELDA      █ 7- STR_REPETIDO_FILA   █ 8- STR_REPETIDO_COLUMNA    █ 9- STR_TO_LISTAWORDS   █ 10- X_TO_CELDA (int, float, bool,...) █
+        ████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+         
+        ■■■ TABLERO.push( data_push = '◙◙◙' )  ▓  celda_inicio = 'A:0' ▓ b_lineal = False ▓ repetir = False ▓ eje = 'X'
+            SI MATRIZ ◙◙◙   Mete la matriz en 'A:0' de forma matricial. ni ■ eje ni ■ repetir tienen efecto.
+            SI LIST   ◙◙◙   Mete la lista de forma Horizontal. 
+            SI STR    ◙◙◙   Intro 'Loren Ipsum' desde A:0  ocupando una celda.
+            SI OTRO   ◙◙◙   Intro X desde A:0 ocupando una celda.
+        
+        ■■■ TABLERO.push( data_push = '◙◙◙' , celda_inicio = 'C:3')   ▓ b_lineal = False  ▓ repetir = False ▓ eje = 'X'
+            SI MATRIZ ◙◙◙   Mete la matriz en 'C:3' de forma matricial. ni ■ eje ni ■ repetir tienen efecto.
+            SI LIST   ◙◙◙   Mete la lista de forma Horizontal.
+            SI STR    ◙◙◙   Intro 'Loren Ipsum' desde A:0  ocupando una celda.
+            SI OTRO   ◙◙◙   Intro X desde A:0 ocupando una celda.
+        
+        ■■■ TABLERO.push( data_push = '◙◙◙', celda_inicio = 'C:3' , b_lineal = False )    ▓ repetir = False ▓ eje = 'X'
+            SI MATRIZ ◙◙◙   Mete la matriz en C:3 de Forma MATRICIAL (b_lineal = False ). ni ■ eje ni ■ repetir tienen efecto.
+            SI LIST   ◙◙◙   Mete la list(items separados por comas) en C:3 , b_lineal no le afecta(una lista siempre es plana), si eje = None, en list pasa a 'X' (horizontal) byDef 
+            SI STR    ◙◙◙   Mete el str en C:3. 
                             Si b_lineal = False (byDef) introduce la cadena en la celda. 
-            SI OTRO ◙◙◙     Mete X en C:3.
+            SI OTRO   ◙◙◙   Mete X en C:3.
         
-        ■■■ TABLERO.push( data_push = '◙◙◙', celda_inicio = 'C:3' , b_lineal = True)      ▓ repetir = False ▓ eje = None
-            SI MATRIZ ◙◙◙   Mete la matriz en C:3 de Forma LINEAL (b_lineal = True ). 
-            SI LIST ◙◙◙     Mete la list(items separados por comas) en C:3 , b_lineal no le afecta(una lista siempre es plana), 
+        ■■■ TABLERO.push( data_push = '◙◙◙', celda_inicio = 'C:3' , b_lineal = True)      ▓ repetir = False ▓ eje = 'X'
+            SI MATRIZ ◙◙◙   Mete la matriz en C:3 de Forma LINEAL (b_lineal = True ). ni ■ eje ni ■ repetir tienen efecto.
+            SI LIST   ◙◙◙   Mete la list(items separados por comas) en C:3 , b_lineal no le afecta(una lista siempre es plana), 
                             Si eje = None es 'X' (horizontal) byDef 
-            SI STR ◙◙◙      Si b_lineal = True introduce la cadena separando las palabras como una lista a partir de la celda en el eje X.
-            SI OTRO ◙◙◙
+            SI STR    ◙◙◙   Si b_lineal = True introduce la cadena separando las palabras como una lista a partir de la celda en el eje X. DIMESION 1 X n
+            SI OTRO   ◙◙◙   Mete X en C:3. [eje] no le afecta. [repetir] no le afecta. [b_lineal] no le afecta. DIMESION 1 X 1
         
         ■■■ TABLERO.push( data_push = '◙◙◙', celda_inicio = 'C:3', b_lineal = True ,  eje = 'Y' , repetir = True  ) 
-            SI MATRIZ ◙◙◙   Mete la matriz en C:3 de forma LINEAL pero manteniendo la Matriz. 
+            SI MATRIZ ◙◙◙   Mete la matriz en C:3 de forma LINEAL pero manteniendo la Matriz. ni ■ eje ni ■ repetir tienen efecto.
                             Coge los items de entrada en plano y los mete en la matriz con la dimension según las filas y columnas de data_push.(no ideal)
-                            ni [eje] ni [repetir] le afectan.
-            SI LIST ◙◙◙     Mete la List en C:3. [eje] = 'Y' mete la lista VERTICAL. [repetir] no le afecta.
-            SI STR ◙◙◙      Mete el str en C:3. [eje] = 'Y' no le afecta. [repetir] hace que repita el string  desde C:3 hasta el final de la fila.
-            SI OTRO ◙◙◙     Mete X en C:3. [eje] 'Y' no le afecta. [repetir] no le afecta. [b_lineal] no le afecta.
+                            ni [eje] ni [repetir] le afectan. DIMESION n X m
+            SI LIST   ◙◙◙   Mete la List en C:3. [eje] = 'Y' mete la lista VERTICAL. [repetir] no le afecta. DIMESION n x 1
+            SI STR    ◙◙◙   Mete el str en C:3. [eje] = 'Y' no le afecta. [repetir] hace que repita el string  desde C:3 hasta el final de la fila.
+            SI OTRO   ◙◙◙   Mete X en C:3. [eje] 'Y' no le afecta. [repetir] no le afecta. [b_lineal] no le afecta. DIMESION 1X1
         
         ■■■ TABLERO.push(data_push = '◙◙◙', celda_inicio = 'C:3', b_lineal = False, eje = 'X' , repetir = True )  
-            SI MATRIZ ◙◙◙
-            SI LIST ◙◙◙
-            SI STR ◙◙◙
-            SI OTRO ◙◙◙
+            SI MATRIZ ◙◙◙ Mete la matriz de forma MATRICIAL. ni ■ eje ni ■ repetir tienen efecto.   DIMESION n X m
+            SI LIST   ◙◙◙ Mete la lista de forma lineal sobre el eje X (HORIZONTL). ■ b_lineal no tiene efecto pq una LISTA siempre es LINEAL. DIMESION 1 X n
+            SI STR    ◙◙◙ Mete el string en la celda de inicio. DIMESION 1X1 
+            SI OTRO   ◙◙◙ Mete el datoX(int, float, bool) en la celda de inicio. DIMESION 1X1
         
-        ■■■ TABLERO.push(data_push = '◙◙◙', celda_inicio = 'C:3', b_lineal = False, eje = 'X'   )           ▓ repetir = False
-            SI MATRIZ ◙◙◙
-            SI LIST ◙◙◙
-            SI STR ◙◙◙
-            SI OTRO ◙◙◙
+        ■■■ TABLERO.push(data_push = '◙◙◙', celda_inicio = 'C:3', b_lineal = False, eje = 'X'   )  ▓ repetir = False
+            SI MATRIZ ◙◙◙ Mete la matriz de forma MATRICIAL. ni ■ eje ni ■ repetir tienen efecto. DIMESION n X m
+            SI LIST   ◙◙◙ Mete la lista de forma lineal sobre el eje X (HORIZONTL)  DIMESION 1Xn
+            SI STR    ◙◙◙ Mete el string en la celda de inicio.                  DIMESION 1X1
+            SI OTRO   ◙◙◙ Mete el datoX(int, float, bool) en la celda de inicio. DIMESION 1X1
         
         ■■■ TABLERO.push(data_push = '◙◙◙', celda_inicio = 'C:3', b_lineal = False, eje = 'Y'   )  ▓ repetir = False
-            SI MATRIZ ◙◙◙
-            SI LIST ◙◙◙
-            SI STR ◙◙◙
-            SI OTRO ◙◙◙
+            SI MATRIZ ◙◙◙ Mete la matriz de forma LINEAL (le da igual la estructura de datos, los va a aplanar y meter uno x uno en la matriz.)
+            SI LIST   ◙◙◙ Mete la lista de forma lineal sobre el eje Y (VERTICAL)
+            SI STR    ◙◙◙ Mete el string en la celda de inicio. ni ■ eje ni ■ repetir tienen efecto.
+            SI OTRO   ◙◙◙ Mete el datoX(int, float, bool) en la celda de inicio. ni ■ eje ni ■ repetir tienen efecto.
     
     """)
 
@@ -513,36 +549,13 @@ def push_lista():
     b_lineal = None
     dat = Sdata.get_data( key_dict='L', tipo=list , msg_entrada='INTRODUCE LISTA SEPARANDO POR COMAS (1,2,3,...)', permite_nulo=False)
     dat = Sdata.get_data( dicc=dat , key_dict='i', tipo=str , msg_entrada='INTRODUCE CELDA DE INICIO', permite_nulo=False)
-    dat = Sdata.get_data( dicc=dat , key_dict='VH', tipo='between' , msg_entrada=['(Y)VERTICAL', '(X)HORIZONTAL'], permite_nulo=False, valores_between=['V','H'])    
+    dat = Sdata.get_data( dicc=dat , key_dict='VH', tipo='between' , msg_entrada=['(Y)VERTICAL', '(X)HORIZONTAL'], permite_nulo=False, valores_between=['X','Y'])    
     
     # if dat['VH'] == 'V':
     #     b_lineal = True
     # else:
     #     b_lineal = False
-    TABLERO.push(data_push=dat['L'], celda_inicio=dat['i'] , b_lineal=True, EJE = dat['VH'])
-
-
-
-# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ ESTO NO CORRESPONDE AQUI, PERO REALMENNTE ES DONDE ESTOY HACIENDO LAS PRUEBAS ASÍ QUE EL BUEN SDATA ES ESTE ▓▓▓▓▓▓▓▓▓▓▓▓▓
-def puebas_Sdata():
-    from datetime import date 
-    from datetime import time 
-
-    lista = Sdata.get_data( key_dict='l', tipo=list , msg_entrada='INTRODUCE LISTA SEPARANDO POR COMAS (1,2,3,...)', permite_nulo=True)
-    lista = Sdata.get_data( dicc=lista , key_dict='ci',tipo=str , msg_entrada='INTRODUCE LA CELDA DE INCIO SOBRE EL TABLERO ( M:8 )', permite_nulo = False)
-    lista = Sdata.get_data( dicc=lista , key_dict='pos', tipo='between' , msg_entrada=['VERTICAL', 'HORIZONTAL'], permite_nulo=False, valores_between=['V', 'H'])    
-    lista = Sdata.get_data( dicc=lista , key_dict='dat', tipo = date , msg_entrada='INTRODUCE FECHA (dd/mm/yyyy)')    
-    lista = Sdata.get_data( dicc=lista , key_dict='hor', tipo = time , msg_entrada='INTRODUCE HORA (HH:MM)', permite_nulo=True)    
-    lista = Sdata.get_data( dicc=lista , key_dict='bool', tipo = bool , msg_entrada='QUIERES CONTINUAR?')    
-
-    print(f'lista: {lista['l']} - str:  {lista['ci']} - between: {lista['pos']} - fecha: {lista['dat']} - hora: {lista['hor']} - bool {lista['bool']}    ')
-    # print(f'lista: {lista['l']} - fecha: {lista['dat']} - hora: {lista['hor']} - bool {lista['bool']}    ')
-    if lista.get('pos', False) == True:
-        pass
-    else:
-        pass
-
-
+    TABLERO.push(data_push=dat['L'], celda_inicio=dat['i'] , b_lineal=True, eje = dat['VH'])
     
 # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
