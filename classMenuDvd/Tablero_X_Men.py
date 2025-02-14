@@ -2640,9 +2640,9 @@ class Brackets(Tablero):
         if pad_x: self.pad_x = pad_x
         if x_pad: self.x_pad = x_pad
     
-    def texto_fuente_color(self, texto, fuente="mini", color=Fore.CYAN):
-        ascii_art = pyfiglet.figlet_format(texto, font=fuente)
-        return color + ascii_art + Style.RESET_ALL
+    # def texto_fuente_color(self, texto, fuente="mini", color=Fore.CYAN):
+    #     ascii_art = pyfiglet.figlet_format(texto, font=fuente)
+    #     return color + ascii_art + Style.RESET_ALL
    
 # ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 # ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
