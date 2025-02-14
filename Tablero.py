@@ -1667,16 +1667,16 @@ class Rango(Celda):
     def imprimir(self, sp_columna:int = 0 , **kwargs ):    
         """ 
         Imprime el Rango con configuracion. Es la base de impresion sobre todo. 
-        [sp_columna] (int): el espacio entre columnas
-        [**kwargs] (dict):  "ancho"(int)  = ancho de columna fixed or 
+        [sp_columna] (int): el espacio entre columnas.
+        [**kwargs] (dict):  "ancho"(int)  = ancho de columna fixed or. 
                             "lista"(list) = lista de anchos para cada columna. 
         
-        >>> ejemplo: imprimir( ) => ajusta al maximo de cada columna(mode tabla)
-        >>> ejemplo: imprimir( sp_columna = 2 ) => maximo de cada columna (mode tabla)        
-        >>> ejemplo: imprimir( ancho = 0 , sp_columna = 0 ) => Literal Puro ....XindeX
-        >>> ejemplo: imprimir( ancho = 1 , sp_columna = 0 ) => Literal   con espacio entre columnaas
-        >>> ejemplo: imprimir( ancho = 15 , sp_columna = 5 ) => columnas al 15 todas. no restrictivo. sp_columna = 5 . espacio entre columnas de 5 char
-        >>> ejemplo: imprimir( lista = [0,1,5,4,3,2] , sp_columna = 5 ) => cada columna a su ajuste y 5 entre columnas
+        >>> ejemplo: imprimir( ) => ajusta al maximo de cada columna(mode tabla).
+        >>> ejemplo: imprimir( sp_columna = 2 ) => maximo de cada columna (mode tabla).        
+        >>> ejemplo: imprimir( ancho = 0 , sp_columna = 0 ) => Literal Puro ....XindeX.
+        >>> ejemplo: imprimir( ancho = 1 , sp_columna = 0 ) => Literal   con espacio entre columnaas.
+        >>> ejemplo: imprimir( ancho = 15 , sp_columna = 5 ) => columnas al 15 todas. no restrictivo. sp_columna = 5 . espacio entre columnas de 5 char.
+        >>> ejemplo: imprimir( lista = [0,1,5,4,3,2] , sp_columna = 5 ) => cada columna a su ajuste y 5 entre columnas.
         >>> ejemplo: imprimir( ancho = 15 , lista = [0,1,5,4,3,2] , sp_columna = 3 ) => Prevalece la lista. y deja 3 entre columnas.
         >>> ejemplo: imprimir( ancho = 15 , lista = [0,1,5,4,3,2] , sp_columna = 0 ) => Prevalece la lista. y deja 0 entre columnas.
         """
