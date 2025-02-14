@@ -199,17 +199,17 @@ def info_GETTING():
 
         OBTENEMOS DATOS DEL TABLERO.
 
-        ■ getting = TABLERO.getting( celda = cel_v['celda'] , b_valor=True )  => Devuelve el valor de la celda. el Valor va Tipado.
-        ■ getting = TABLERO.getting( celda = cel_v['celda'] , b_valor=False ) => Devuelve el Objeto Celda.
+        ■ getting = TABLERO.getting( celda = 'C:2' , b_valor=True )  => Devuelve el valor de la celda. el Valor va Tipado.
+        ■ getting = TABLERO.getting( celda = 'C:2' , b_valor=False ) => Devuelve el Objeto Celda.
         
-        ■ getting = TABLERO.getting( fila=fc['f'], columna=fc['c'], b_valor=False )     => Devuelve el Objeto Celda.
-        ■ getting = TABLERO.getting( fila=fc['f'], columna=fc['c'], b_valor=True )      => Devuleve el valor de la celda definida por fila y columna.
+        ■ getting = TABLERO.getting( fila = 2 , columna= 3 , b_valor=False )  => Devuelve el Objeto Celda.
+        ■ getting = TABLERO.getting( fila = 2, columna = 3 , b_valor=True )   => Devuleve el valor de la celda definida por fila y columna.
 
-        ■ getting = TABLERO.getting( fila=dh['fd'], fila_to=dh['fh'], b_valor=True )    => Devuelve una matriz de filas de valores desde 'fila' hasta 'fila_to'
-        ■ getting = TABLERO.getting( fila=dh['fd'], fila_to=dh['fh'], b_valor=False )   => Devuelve una matriz de filas de celdas desde 'fila' hasta 'fila_to' 
+        ■ getting = TABLERO.getting( fila = 2 , fila_to = 5 , b_valor=True )    => Devuelve una matriz de filas de valores desde 'fila' hasta 'fila_to'
+        ■ getting = TABLERO.getting( fila = 2 , fila_to = 5 , b_valor=False )   => Devuelve una matriz de filas de celdas desde 'fila' hasta 'fila_to' 
 
-        ■ getting = TABLERO.getting( columna=col['f'], columna_to=col['t'], b_valor=True ) => Devuelve una matriz de columnas de valores desde 'columna' hasta 'columna_to'
-        ■ getting = TABLERO.getting( columna=col['f'], columna_to=col['t'], b_valor=False ) => Devuelve una matriz de columnas de celdas desde 'columna' hasta 'columna_to'
+        ■ getting = TABLERO.getting( columna = 2 , columna_to = 5 , b_valor = True  ) => Devuelve una matriz de columnas de valores desde 'columna' hasta 'columna_to'
+        ■ getting = TABLERO.getting( columna = 2 , columna_to = 5 , b_valor = False ) => Devuelve una matriz de columnas de celdas desde 'columna' hasta 'columna_to'
 
         ■ get_values() => Devuelve la matriz de valores de tablero.(list de list)
         ■ get_lst_rangos()  => Devuelve la lista de los rangos usados en tablero (todos los de fila y columna como minimo.)
@@ -270,7 +270,13 @@ def info_DEL():
         ■■■■■■■■  I N F O R M E   D E L E T E   ■■■■■■■■
 
         ELIMINA LOS DATOS DEL TABLERO PONIENDO EL VALOR_INICIAL DE TABLERO.
-        
+        SE PUEDEN ELIMINAR:
+        ■ Valores en Objeto Celda   ==> TABLERO.delet e(fila = 2 , columna = 3 )  █   TABLERO.delet e(fila = 2 , columna = 'C' )
+        ■ Valores en Columna        ==> TABLERO.delet e(columna = 3)   █   TABLERO.delet e(columna = 'C')
+        ■ Valores en Fila           ==> TABLERO.delet e(fila=2)
+        ■ Valores en Rango          ==> TABLERO.delet e(rango = 'nombre_rango_1')    █   TABLERO.delet e(rango = Rango1)  
+        ■ Rango                     ==> TABLERO.delet e(rango = 'nombre_rango_1', b_rango=True)   █   TABLERO.delet e(rango = Rango1, b_rango=True)
+    
     """)
 # PONE EL VALOR DE TABLERO.valor_inicial EN TODO EL TABLERO.
 def del_celda():

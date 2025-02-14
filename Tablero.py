@@ -1541,6 +1541,7 @@ class Rango(Celda):
         
         return True            
 
+
     # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
     # BORRAR VALORES DEL RANGO
     # •••••••••••••••••••••••••••••••••••••••••••••••••••••
@@ -1551,7 +1552,7 @@ class Rango(Celda):
         ■ Valores en Objeto Celda
         ■ Valores en Columna
         ■ Valores en Fila
-        ■ Valores en Rango, no borra el rango. Para borrar el rango está self.delete_rango()
+        ■ Valores en Rango o el Rango, tb se puede usar está self.delete_rango()
 
         AL FINAL HAY QUE HACER UN PULL_ALL PARA QUE SE ACTUALIZEN TODOS LOS RANGOS DEL TABLERO.
         """
@@ -1672,11 +1673,12 @@ class Rango(Celda):
         
         >>> ejemplo: imprimir( ) => ajusta al maximo de cada columna(mode tabla)
         >>> ejemplo: imprimir( sp_columna = 2 ) => maximo de cada columna (mode tabla)        
-        >>> ejemplo: imprimir( ancho = 0 , sp_columna = 0 ) => L i t e r a l   P u r o ....XindeX
-        >>> ejemplo: imprimir( ancho = 1 , sp_columna = 0 ) => L i t e r a l   con espacio entre columnaas
+        >>> ejemplo: imprimir( ancho = 0 , sp_columna = 0 ) => Literal Puro ....XindeX
+        >>> ejemplo: imprimir( ancho = 1 , sp_columna = 0 ) => Literal   con espacio entre columnaas
         >>> ejemplo: imprimir( ancho = 15 , sp_columna = 5 ) => columnas al 15 todas. no restrictivo. sp_columna = 5 . espacio entre columnas de 5 char
         >>> ejemplo: imprimir( lista = [0,1,5,4,3,2] , sp_columna = 5 ) => cada columna a su ajuste y 5 entre columnas
         >>> ejemplo: imprimir( ancho = 15 , lista = [0,1,5,4,3,2] , sp_columna = 3 ) => Prevalece la lista. y deja 3 entre columnas.
+        >>> ejemplo: imprimir( ancho = 15 , lista = [0,1,5,4,3,2] , sp_columna = 0 ) => Prevalece la lista. y deja 0 entre columnas.
         """
         # CACHO  LOS DATOS DE ENTRADA
         ancho_columna = kwargs.get('ancho', None)  # Si no existe, usa 0
