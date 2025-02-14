@@ -20,8 +20,9 @@ class Sdata():
     
     # ■■■ Ejemplo de uso:   dato_tipado = Sdata.TIPOS_VALIDOS[tipo](entrada)
     TIPOS_VALIDOS = {
-        int: lambda v: StringTo.esInt(v),
-        float: lambda v: StringTo.esFloat(v),
+        # int: lambda v: StringTo.esInt(v) if StringTo.esInt(v) != False else None,
+        int: lambda v: StringTo.esInt(v) if StringTo.esInt(v) is not False else None,
+        float: lambda v: StringTo.esFloat(v) if StringTo.esFloat(v) != False else None,
         str: lambda v: v  ,
         bool: lambda v: v ,  # SOLO DEVUELVE VALOR, VALIDACION FUERA
         list: lambda v: v ,  # SOLO DEVUELVE VALOR, VALIDACION FUERA
@@ -498,7 +499,7 @@ class StringTo():
         # .... Se lee: en toda la cadena [ From Ini(^); to Fin ($) ]
         #              Buscamos:  guion(-) opcional(?) y/o  0-9(\d)   ,  n veces(+)(solo el digito) 
         patronInt=r'^-?\d+$'
-        num=re.match(patronInt, str(strNum))        
+        num = re.match(patronInt, str(strNum))        
         if num:
             return int(strNum) 
         else:
