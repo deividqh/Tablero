@@ -1678,11 +1678,11 @@ class Rango(Celda):
         >>> ejemplo: imprimir( lista = [0,1,5,4,3,2] , sp_columna = 5 ) => cada columna a su ajuste y 5 entre columnas
         >>> ejemplo: imprimir( ancho = 15 , lista = [0,1,5,4,3,2] , sp_columna = 3 ) => Prevalece la lista. y deja 3 entre columnas.
         """
-        # C a c h o   LOS DATOS DE ENTRADA
+        # CACHO  LOS DATOS DE ENTRADA
         ancho_columna = kwargs.get('ancho', None)  # Si no existe, usa 0
         lista = kwargs.get('lista', None)  # Si no existe, usa 0
 
-        # V a l i d a c i o n   y asignacion a numero natural (por si se introducen numeros negativos)
+        # VALIDACION   y asignacion a numero natural (por si se introducen numeros negativos)
         try:
             if ancho_columna: 
                 ancho_columna = abs(ancho_columna)
@@ -1695,14 +1695,15 @@ class Rango(Celda):
         except Exception as e:
             print(f'Error ::: imprimir ::: {e}')
             return None
-        #  A N A L I S I S  DE LOS DATOS DE ENTRADA
+
+        #  ANALISIS DE LOS DATOS DE ENTRADA
         if ancho_columna == None and lista == None:     # No mete ningún dato sobre el ancho de la columna ni en numero ni en lista. 
             if sp_columna == 0:   
-                """ >>> < M o d e   M a x L e n - C o l u m n a   P u r o >  
+                """ ■■  < MODE MAX-LEN COLUMNA sin/sp >  
                 """
                 str_format = self.__formato_to_prango_maxcol( sp_columna = 0  )
             else:
-                """ >>> < M o d e   M a x L e n - C o l u m n a >   ...con espacio entre columnas   
+                """ ■■  < MODE MAX-LEN COLUMNA con/sp >   ...con espacio entre columnas   
                 """
                 str_format = self.__formato_to_prango_maxcol(  sp_columna = sp_columna  )
         
@@ -1711,31 +1712,30 @@ class Rango(Celda):
             sp_columna = abs(sp_columna)
 
             if ancho_columna == 0 and sp_columna == 0:                   
-                """ >>> < M o d o   L i t e r a l >                        | sin tamaño de columna | escribes literalmente 
+                """ ■■ < MODE LITERAL >                      | sin tamaño de columna | escribes literalmente 
                 """
                 str_format = self.__formato_to_prango_fixed(  len_columnas = 0, sp_columna = 0)
-                pass
 
             elif ancho_columna == 0 and sp_columna > 0:                   
-                """ >>> < M o d o   L i t e r a l >                        | con  Espacios Entre Columnas 
+                """ ■■ < MODE LITERAL con/sp>                      | con  Espacios Entre Columnas 
                 """
                 str_format = self.__formato_to_prango_fixed(  len_columnas = 0, sp_columna = sp_columna)
                 lst_max_len = self.__get_lst_max_filas()
             
             elif ancho_columna > 0 and sp_columna == 0:                   
-                """ >>> < M o d o  F i x e d   P u r o > 
+                """ ■■  < MODE FIXED sin/sp > 
                 """
                 str_format = self.__formato_to_prango_fixed( len_columnas = ancho_columna, sp_columna = 0)
 
             elif ancho_columna > 0 and sp_columna > 0:                   
-                """ >>> < M o d o   F i x e d >                          | con Espacios 
+                """ ■■  < MODE FIXED con/sp > 
                 """
                 str_format = self.__formato_to_prango_fixed( len_columnas = ancho_columna, sp_columna = sp_columna)
                 lst_max_len = self.__get_lst_max_filas()
             pass
         
         elif ancho_columna != None and lista != None:
-            """ >>> < Modo  personalizado >  ... PERO RELLENA CON ANCHO_COLUMNA EN CASO DE QUE LA LISTA SEA MAS CORTA. 
+            """ ■■  < Modo  Personalizado >  ... PERO RELLENA CON ANCHO_COLUMNA EN CASO DE QUE LA LISTA SEA MAS CORTA. 
             Y SP_COLUMNA
             """            
             try:
@@ -1754,11 +1754,12 @@ class Rango(Celda):
             pass
 
         elif ancho_columna == None and lista != None:       
-            """ >>> < Modo  personalizado >  Y o   E l i j o              
+            """ ■■  < Modo  personalizado Yo Elijo >                
             """            
             try:
                 # Valida que son enteros lo que hay en la lista y si no, peta aquí.
                 lst_lens = [int(item) for item in lista]
+
                 # Crea el formato preparado con los datos de la lista
                 str_format = self.__formato_to_prango_list(lista=lst_lens , sp_columna = sp_columna)
             except Exception as e:
@@ -1770,7 +1771,7 @@ class Rango(Celda):
             return None
         
         """ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-        >>> I m p r i m e   v a l o r e s  
+             I M P R I M E   V A L O R E S
         """
         try:                
             # Recorro las filas
@@ -1780,9 +1781,11 @@ class Rango(Celda):
                 
                 lst_values_fila = [celda.valor for celda in lst_fila]
 
+                # DUPLICA LAS COLUMNAS PQ EN REALIDAD HAY QUE IMPRIMIR TANTO EL VALOR DE LA COLUMNA COMO EL ESPACIO ENTRE LAS COLUMNAS
                 lst_format_to_print = Rango.between_listas(lista=lst_values_fila)
                 
                 print(str_format.format(*lst_format_to_print))  # Cuando b_num_filas == False, no imprime los numeros de las Filas
+
         except Exception as e:
             print(f'{e}')
             return None
@@ -1900,17 +1903,17 @@ class Rango(Celda):
     # •••••••••••••••••••••••••••••••••••••••••••••••••••••
     
     # ULTIMA FILA CON USO DE UN TABLERO
-    def __last_fila_used(self):
-        """ Devuelve la última fila usada de la matriz.
-        """        
-        for i, fila in enumerate(self.matriz):
-            b_match = 0
-            for celda in fila:
-                if celda.valor == Celda.VALOR_INICIAL:
-                    b_match += 1
-            if b_match == self.total_columnas:
-                return i-1
+    def last_fila_used(self):
+        """ Devuelve el índice de la última fila que contiene algún valor distinto de 'valor_inicial'. """    
+        if not self.matriz:
+            return None    
+
+        for i, fila in enumerate(reversed(self.matriz)):
+            if any(celda.valor != self.valor_inicial for celda in fila):  
+                return len(self.matriz) - 1 - i  # Convertir índice de reversed al original
+
         return None
+
 
     @staticmethod
     def between_listas(lista:list , char:str=Celda.VALOR_INICIAL):

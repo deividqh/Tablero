@@ -42,7 +42,7 @@ def main():
     # 2 ■■■■■■■■■■ CREO LOS MENUS Y SUS FUNCIONES ASOCIADAS ╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬
     The_X_Men.addX(titulo='MenuPpal',  padre=None, ipadre=None,  
                     fraseHead="| - M A I N    O V E R   T A B L E R O - "  , 
-                    lst_items=[ ("TABLERO" , None) , ('IMPRIMIR', None) , ("GET" , None) , ("PUSH" , info_push) , ("DEL" , None) , ("RANGOS" , None) , ('MISCELANEA', None)] 
+                    lst_items=[ ("TABLERO" , info_TABLERO) , ('IMPRIMIR', info_IMPRIMIR) , ("GET" , info_GETTING) , ("PUSH" , info_push) , ("DEL" , info_DEL) , ("RANGOS" , info_RANGO) , ('MISCELANEA', None)] 
                     )
     The_X_Men.addX( titulo='SUB_CREAR', padre='MenuPpal' , ipadre="TABLERO"  , lst_items = [("CREAR Tablero",crear_tablero), ("INICIAR Tablero", iniciar_tablero)] )  
     The_X_Men.addX( titulo='SUB_IMPR' , padre='MenuPpal' , ipadre="IMPRIMIR" , lst_items = [("IMPRIMIR Modo Max sin/sp",print_max_ssp),("IMPRIMIR Modo Max con/sp",print_max_csp) , ("IMPRIMIR Modo Literal",print_literal) , ('IMPRIMIR Modo Fixed sin/sp', print_fixed_ssp), ("IMPRIMIR Modo Fixed con/sp",print_fixed_csp), ('IMPRIMIR Modo Personal', print_personal), ('IMPRIMIR Ambbigous', print_ambigous), ('IMPRIMIR RANGO', print_rango)] )
@@ -50,7 +50,7 @@ def main():
     The_X_Men.addX( titulo='SUB_PUSH' , padre='MenuPpal' , ipadre="PUSH"     , lst_items = [("PUSH MATRIZ",matriz_to_tablero), ("PUSH LISTA", push_lista) ,("PUSH OVER Fila",push_valor_over_fila), ("PUSH OVER Column",push_valor_over_columna), ('PUSH Valor By Celda (C:3)', push_celda), ('PUSH valor by fila / columna', push_fila_columna)] )
     The_X_Men.addX( titulo='SUB_DEL'  , padre='MenuPpal' , ipadre="DEL"      , lst_items = [("DEL Fila Over TABLERO",del_fila), ("Del Column",del_columna), ("Del Celda", del_celda)] )    
     The_X_Men.addX( titulo='SUB_RANGOS', padre='MenuPpal', ipadre="RANGOS"   , lst_items = [("CREAR Rango",crear_rango), ("BUSCAR Rango",buscar_rango), ("ELIMINAR Rango",delete_rango) , ('VER INFO Rangos Tablero', ver_info_rangos), ('PULL TO RANGO', pull)] )  
-    The_X_Men.addX( titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Impresion Masiva" , impresion_masiva), ("-", None)] )    
+    The_X_Men.addX( titulo='SUB_MISC'  , padre='MenuPpal', ipadre="MISCELANEA" , lst_items=[("Prueba Impresion Masiva" , impresion_masiva), ('ULTIMA FILA USADA', last_fila_used)] )    
 
     # 3 ■■■■■■■■■■ LLAMO A MYSTYCA PARA VISUALIZAR EL MENU 
     retorno = The_X_Men.Mystyca(titulo='MenuPpal', configurado=True, execFunc=True, tipo_marcador='a', execAll=True, Loop=True , padX=50)
@@ -556,7 +556,12 @@ def push_lista():
     # else:
     #     b_lineal = False
     TABLERO.push(data_push=dat['L'], celda_inicio=dat['i'] , b_lineal=True, eje = dat['VH'])
-    
+
+def last_fila_used():
+    global TABLERO
+    ultima_fila_usada = TABLERO.last_fila_used()
+    print(f'\nULTIMA FILA USADA = {ultima_fila_usada}')
+
 # ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
 def impresion_masiva():
