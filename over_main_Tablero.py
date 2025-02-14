@@ -17,19 +17,16 @@ import time
 
 # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 # El objeto de estas pruebas xxxxxxxxxxxxxxxxxxxxxxxxxx
-# from classMenuDvd.Tablero_X_Men import Rangutan as Rangutan
-from classMenuDvd.Tablero_X_Men import Rango as Rango
-from classMenuDvd.Tablero_X_Men import Tablero
+# from classMenuDvd.Tablero import Rangutan as Rangutan
+from Tablero import Rango as Rango
+from Tablero import Tablero
 
 # mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
 # El Menu de todo Esto mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
-from classMenuDvd.classXindeX import XindeX 
-# _____________________________________________________________________________
+from classXindeX.classXindeX import XindeX 
+
 # Cachar Datos Seguros por Teclado 
 from classTeclado.Sdata import Sdata
-# ____________________________________________________________
-# Para validar: mail, valores entre, fechas... 
-from classTeclado.validator import StringTo as VAL
 
 # ====================================================================================
 # DEF: Desarrollo y memoria de la clase Tablero. 
